@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Part 1: The value of @Value</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Use cases for @Value annotation in Spring Framework">
+    <meta name="author" content="Krešimir Nesek">
+    <meta name="keywords" content="@Value, Value annotation, Spring, Spring Framework, Spring MVC, properties, property file">
+    <meta name="generator" content="JBake">
+
+    <!-- Le styles -->
+    <link href="../../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../css/asciidoctor.css" rel="stylesheet">
+    <link href="../../css/base.css" rel="stylesheet">
+    <link href="../../css/prettify.css" rel="stylesheet">
+    <link href="../../css/highlight_default.min.css" rel="stylesheet">
+    <!-- link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/default.min.css" -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!--<link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">-->
+    <link rel="shortcut icon" href="../../favicon.ico">
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+  </head>
+  <body onload="prettyPrint()">
+    <div id="wrap">
+   
+	
+	<!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../../">Teh Artikli
+          </a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="../../archive.html"><i class="icon-calendar"></i> Archive</a></li>
+            <li><a href="../../feed.xml"><i class="icon-rss"></i> Rss</a></li>
+            <li><a href="https://github.com/knes1"><i class="icon-github"></i> knes1</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+    <div class="container">	
+	<div class="page-header">
+		<h1>Part 1: The value of @Value</h1>
+	</div>
+
+	<p><em>07 February 2015</em></p>
+
+	<p><p>Did it ever happen to you that after spending some time and gaining experience with a framework or a programming language, you learn things that would have made your programmer's life much easier if you had known them right from the start? You would have done things differently, more quickly, in a simpler, cleaner and more maintainable way?</p><p>I decided to write a series of posts about features and aspects of Spring Framework (the framework in which I spend most of my professional software development time) that I found useful (usually far later than I'd like to admit :) ), but which are often not covered in entry level guides and tutorials.</p><p>In this first post I would like to discuss the <code>@Value</code> annotation.<br/><!-- more --></p><p>I started working with Spring framework since the 2.5 version. Later on, when 3.0 was released, JavaConfig became the part of the core framework along with the <code>@Value</code> that was part of it. I unfortunately didn't notice that improvement for quite some time, mostly because the projects I worked on relied on XML based config.</p><p>Here's what <a href="http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/beans/factory/annotation/Value.html">Spring javadocs</a> say about <code>@Value</code>:</p>
+<blockquote><p>Annotation at the field or method/constructor parameter level that indicates a default value expression for the affected argument.</p><p>Typically used for expression-driven dependency injection. Also supported for dynamic resolution of handler method parameters, e.g. in Spring MVC.</p><p>A common use case is to assign default field values using "#{systemProperties.myProp}" style expressions.</p>
+</blockquote><p>Let's see how we can make use of it.</p><h4>Assigning values from property files</h4><p>This is likely the most common use case for <code>@Value</code> annotation. <code>@Value</code> allows us to easily inject a value from a property file to, for example, a bean's field or a constructor argument.</p><p>If we had a property file that looks like this:</p>
+<pre><code>app.name = My Excellent Application
+</code></pre><p>Then we could use that property definition in, say, a controller using<code>@Value(&quot;${propertyName}&quot;)</code> syntax:</p>
+<pre><code class="java">@Controller
+public class HelloController {
+	
+	@Value(&quot;${app.name}&quot;)
+	private String appName;
+
+	@RequestMapping(&quot;/&quot;)
+	@ResponseBody
+	public String hello() {
+		return &quot;Hello from &quot; + appName;
+	}
+
+}
+</code></pre><p>The code in the example will read the property app.name from property file and inject it into <code>appName</code> field. The <code>${...}</code> syntax is Spring's property placeholder syntax used in property placeholder replacement mechanism. If <code>app.name</code> is not defined, then an exception will be thrown. Which brings us to a less known fact about property placeholders - it's possible to set a default value for a property that Spring would use if the property is not defined. The syntax for default values in property placeholders is <code>${property:defaultValue}</code>. You can read about it the javadocs for <a href="http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/beans/factory/config/PlaceholderConfigurerSupport.html">PlaceholderConfigurerSupport</a> class. I find default values quite useful, especially in situations where a particular property of a bean is not likely to be changed in different environments and as such you don't want to introduce it needlessly into a property file, but still want to give yourself an option to change your mind later. If we were to modify our example to use a default value, it would look like this:</p>
+<pre><code class="java">@Controller
+public class HelloController {
+	
+	@Value(&quot;${app.name:My Excellent Application}&quot;)
+	private String appName;
+
+	@RequestMapping(&quot;/&quot;)
+	@ResponseBody
+	public String hello() {
+		return &quot;Hello from &quot; + appName;
+	}
+
+}
+</code></pre><h4>Injecting a SpringEL dynamically evaluated value</h4><p>Do you remember <code>@Value</code>'s javadoc that was shown previously? It described a <code>#{...}</code> syntax rather than property replacement <code>${...}</code> syntax that we used in our example. What's the difference? The <code>#{...}</code> syntax invokes Spring Expression Language (SpringEL) and evaluates the expression dynamically. For example we could obtain a value from the system settings:</p>
+<pre><code class="java">@Value(&quot;#{systemSettings[&#39;user.region&#39;]}&quot;)
+private String locale; 
+</code></pre><p>The above expression works because systemSettings is a variable that's always available to SpringEL when it's invoked in this context (e.g. when configuring beans).</p><p>We may even inject a return value of a method of another bean:</p>
+<pre><code class="java">@Value(&quot;#{&#39;V1.0S&#39; + migrationService.version}&quot;)
+private String version;
+</code></pre><p>In this example Spring will inject string "V1.0S" prepended to the return value of method <code>getVersion()</code> of a bean with name <code>migrationService</code> (all beans in Spring's context are available as variables in SpringEL).</p><p>To conclude,<code>@Value</code> annotation is indispensable asset when configuring your beans. When pursing convention-over-configuration style, default values for property placeholders used in<code>@Value</code> configs may come in handy. And finally, always keep on your mind that you can invoke SpringEL to help you to simplify scenarios that may otherwise require complex config or workarounds. </p>
+<hr><p>Did you find this article helpful? What is your favorite Spring feature? Do you have a related blog post? Feel welcome to leave feedback or comments below :)</p></p>
+
+	<hr />
+	
+	<script>hljs.initHighlightingOnLoad();</script>	
+		</div>
+		<div id="push"></div>
+    </div>
+    
+    <div id="footer">
+      <div class="container">
+        <p class="muted credit">&copy; 2015 | Krešimir Nesek | Baked with <a href="http://jbake.org">JBake v2.3.2</a></p>
+      </div>
+    </div>
+    
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../../js/jquery-1.11.1.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+    <script src="../../js/prettify.js"></script>
+
+
+    <script src="//static.getclicky.com/js" type="text/javascript"></script>
+    <script type="text/javascript">try{ clicky.init(100763555); }catch(e){}</script>
+    <noscript><p><img alt="Clicky" width="1" height="1" src="//in.getclicky.com/100763555ns.gif" /></p></noscript>
+
+    
+  </body>
+</html>

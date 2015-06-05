@@ -1,8 +1,5 @@
 *.[oa]
 *~
-*log
-*bk*
-.css
 ARCHIVE/
 .settings
 .settings/
@@ -14,7 +11,5 @@ target
 WebContent/
 .idea/
 .gradle/
-output/
-build
 *.iml
 bin/
