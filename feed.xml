@@ -6,8 +6,8 @@
     <atom:link href="http://jbake.org/feed.xml" rel="self" type="application/rss+xml" />
     <description>JBake Bootstrap Template</description>
     <language>en-gb</language>
-    <pubDate>Fri, 5 Jun 2015 13:55:47 +0200</pubDate>
-    <lastBuildDate>Fri, 5 Jun 2015 13:55:47 +0200</lastBuildDate>
+    <pubDate>Fri, 5 Jun 2015 19:05:20 +0200</pubDate>
+    <lastBuildDate>Fri, 5 Jun 2015 19:05:20 +0200</lastBuildDate>
 
     <item>
       <title>I Discovered JBake</title>
@@ -15,7 +15,13 @@
       <pubDate>Thu, 4 Jun 2015 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2015/2015-06-04-i-discovered-jbake.html</guid>
       	<description>
-	&lt;p&gt;Whenever &lt;/p&gt;
+	&lt;p&gt;When I was starting this blog and was researching what options are out there in terms of blogging systems, I was looking for a simple developer focused blogging solution that I could use for publishing posts hosted on github pages. I found &lt;a href=&quot;http://octopress.org/&quot;&gt;Octopress&lt;/a&gt; and decided to use it, mostly because it popped up often in Google search results and had a tag line that I liked: A blogging framework designed for hackers. And it was fine.&lt;/p&gt;&lt;p&gt;Recently though, I stumbled upon &lt;a href=&quot;http://jbake.org/&quot;&gt;JBake&lt;/a&gt;. I liked it so much that I&apos;m switching my blog away from Octopress.&lt;!-- more --&gt; JBake is something that I often thought about creating myself. Here&apos;s what I like about it:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;It&apos;s written in Java and uses Java related templating technologies that I&apos;m familiar with. While I&apos;m no stranger to Ruby, I am primarily Java developer and I&apos;m happy that I can now use Freemarker as a template engine for my blog pages.&lt;/li&gt;
+  &lt;li&gt;It&apos;s simple. It has templates and content folders where you put, well, templates and content and that&apos;s about it. It took me about 10 minutes to understand the structure and start customizing. When I&apos;m publishing a post with Octopress, I have to go through a tutorial every time to refresh my memory on how to do it (admittedly, the reason for this is in part because I don&apos;t publish very often)&lt;/li&gt;
+  &lt;li&gt;I find it easy to customize (for my simple needs). I don&apos;t even have to read the docs about how to do it - it&apos;s logical and self-explanatory.&lt;/li&gt;
+  &lt;li&gt;Managing Octopress through git (as recommended on Octopress web site) is too confusing for me. For JBake based blog, I have one git repository in which I keep the sources (templates/content/assets etc.) and another one for generated output folder in order to push it to github pages.&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;There&apos;s one thing I miss in JBake - I wish it had &quot;watch for changes&quot; mode that would automatically build the pages once a change in content or templates is detected.&lt;/p&gt;&lt;p&gt;Finally, to be fair, in retrospect I probably shouldn&apos;t have chosen Octopress. It&apos;s not what I&apos;ve been looking for in the first place. Without knowing JBake existed, I probably should have used &lt;a href=&quot;http://jekyllrb.com/&quot;&gt;Jekyll&lt;/a&gt; - the engine that Octopress is built on top of. JBake is in fact inspired by Jekyll and Jekyll provides the simplicity that I was actually looking for.&lt;/p&gt;
 	</description>
     </item>
     <item>
@@ -151,116 +157,6 @@ public PasswordEncoder passwordEncoder() {
     return new SCryptPasswordEncoder();
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;}&lt;br/&gt;{% endcodeblock %}&lt;/p&gt;&lt;p&gt;Beans that we need to be mocked are now defined using our &lt;code&gt;@MockedBeans&lt;/code&gt; annotation. I find this approach more concise, simpler and easier to maintain, especially for more complex&lt;br/&gt;integration tests.&lt;/p&gt;
-	</description>
-    </item>
-    <item>
-      <title>Fourth Post</title>
-      <link>http://jbake.org/blog/2013/fourth-post.html</link>
-      <pubDate>Thu, 17 Oct 2013 00:00:00 +0200</pubDate>
-      <guid isPermaLink="false">blog/2013/fourth-post.html</guid>
-      	<description>
-	&lt;div class=&quot;paragraph&quot;&gt;
-&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vel diam purus. Curabitur ut nisi lacus.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class=&quot;ulist&quot;&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href=&quot;http://example.org&quot; class=&quot;bare&quot;&gt;http://example.org&lt;/a&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href=&quot;http://example.org&quot;&gt;Example.org&lt;/a&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-&lt;div class=&quot;paragraph&quot;&gt;
-&lt;p&gt;Nam id nisl quam. Donec a lorem sit amet libero pretium vulputate vel ut purus. Suspendisse leo arcu,
-mattis et imperdiet luctus, pulvinar vitae mi. Quisque fermentum sollicitudin feugiat. Mauris nec leo
-ligula. Vestibulum tristique odio ut risus ultricies a hendrerit quam iaculis. Duis tempor elit sit amet
-ligula vehicula et iaculis sem placerat. Fusce dictum, metus at volutpat lacinia, elit massa auctor risus,
-id auctor arcu enim eu augue. Donec ultrices turpis in mi imperdiet ac venenatis sapien sodales. In
-consequat imperdiet nunc quis bibendum. Nulla semper, erat quis ornare tristique, lectus massa posuere
-libero, ut vehicula lectus nunc ut lorem. Aliquam erat volutpat.&lt;/p&gt;
-&lt;/div&gt;
-	</description>
-    </item>
-    <item>
-      <title>Third Post</title>
-      <link>http://jbake.org/blog/2013/third-post.html</link>
-      <pubDate>Thu, 26 Sep 2013 00:00:00 +0200</pubDate>
-      <guid isPermaLink="false">blog/2013/third-post.html</guid>
-      	<description>
-	&lt;div class=&quot;paragraph&quot;&gt;
-&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vel diam purus. Curabitur ut nisi lacus.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class=&quot;ulist&quot;&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href=&quot;http://example.org&quot; class=&quot;bare&quot;&gt;http://example.org&lt;/a&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href=&quot;http://example.org&quot;&gt;Example.org&lt;/a&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-&lt;div class=&quot;paragraph&quot;&gt;
-&lt;p&gt;Nam id nisl quam. Donec a lorem sit amet libero pretium vulputate vel ut purus. Suspendisse leo arcu,
-mattis et imperdiet luctus, pulvinar vitae mi. Quisque fermentum sollicitudin feugiat. Mauris nec leo
-ligula. Vestibulum tristique odio ut risus ultricies a hendrerit quam iaculis. Duis tempor elit sit amet
-ligula vehicula et iaculis sem placerat. Fusce dictum, metus at volutpat lacinia, elit massa auctor risus,
-id auctor arcu enim eu augue. Donec ultrices turpis in mi imperdiet ac venenatis sapien sodales. In
-consequat imperdiet nunc quis bibendum. Nulla semper, erat quis ornare tristique, lectus massa posuere
-libero, ut vehicula lectus nunc ut lorem. Aliquam erat volutpat.&lt;/p&gt;
-&lt;/div&gt;
-	</description>
-    </item>
-    <item>
-      <title>Second Post</title>
-      <link>http://jbake.org/blog/2013/second-post.html</link>
-      <pubDate>Sun, 25 Aug 2013 00:00:00 +0200</pubDate>
-      <guid isPermaLink="false">blog/2013/second-post.html</guid>
-      	<description>
-	&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vel diam purus. Curabitur ut nisi lacus.&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;http://example.org&quot;&gt;http://example.org&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://example.org&quot;&gt;Example.org&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;p&gt;Nam id nisl quam. Donec a lorem sit amet libero pretium vulputate vel ut purus. Suspendisse leo arcu,&lt;br/&gt;mattis et imperdiet luctus, pulvinar vitae mi. Quisque fermentum sollicitudin feugiat. Mauris nec leo&lt;br/&gt;ligula. Vestibulum tristique odio ut risus ultricies a hendrerit quam iaculis. Duis tempor elit sit amet&lt;br/&gt;ligula vehicula et iaculis sem placerat. Fusce dictum, metus at volutpat lacinia, elit massa auctor risus,&lt;br/&gt;id auctor arcu enim eu augue. Donec ultrices turpis in mi imperdiet ac venenatis sapien sodales. In&lt;br/&gt;consequat imperdiet nunc quis bibendum. Nulla semper, erat quis ornare tristique, lectus massa posuere&lt;br/&gt;libero, ut vehicula lectus nunc ut lorem. Aliquam erat volutpat.&lt;/p&gt;
-	</description>
-    </item>
-    <item>
-      <title>First Post</title>
-      <link>http://jbake.org/blog/2013/first-post.html</link>
-      <pubDate>Wed, 24 Jul 2013 00:00:00 +0200</pubDate>
-      <guid isPermaLink="false">blog/2013/first-post.html</guid>
-      	<description>
-	
-&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vel diam purus. Curabitur ut nisi lacus.&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;http://example.org&quot;&gt;http://example.org&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://example.org&quot;&gt;Example.org&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Nam id nisl quam. Donec a lorem sit amet libero pretium vulputate vel ut purus. Suspendisse leo arcu, 
-mattis et imperdiet luctus, pulvinar vitae mi. Quisque fermentum sollicitudin feugiat. Mauris nec leo 
-ligula. Vestibulum tristique odio ut risus ultricies a hendrerit quam iaculis. Duis tempor elit sit amet 
-ligula vehicula et iaculis sem placerat. Fusce dictum, metus at volutpat lacinia, elit massa auctor risus, 
-id auctor arcu enim eu augue. Donec ultrices turpis in mi imperdiet ac venenatis sapien sodales.&lt;/p&gt; 
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&lt;code&gt;
-package org.jbake;
-
-public class Oven {
-	public static void main(String[] args) {
-		System.out.print(&quot;Baking!&quot;);
-  }
-}
-&lt;/code&gt;
-&lt;/pre&gt;
-
-&lt;p&gt;In consequat imperdiet nunc quis bibendum. Nulla semper, erat quis ornare tristique, lectus massa posuere 
-libero, ut vehicula lectus nunc ut lorem. Aliquam erat volutpat.&lt;/p&gt;
-
 	</description>
     </item>
 
