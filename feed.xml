@@ -1,0 +1,268 @@
+<?xml version="1.0"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>JBake</title>
+    <link>http://jbake.org</link>
+    <atom:link href="http://jbake.org/feed.xml" rel="self" type="application/rss+xml" />
+    <description>JBake Bootstrap Template</description>
+    <language>en-gb</language>
+    <pubDate>Fri, 5 Jun 2015 13:55:47 +0200</pubDate>
+    <lastBuildDate>Fri, 5 Jun 2015 13:55:47 +0200</lastBuildDate>
+
+    <item>
+      <title>I Discovered JBake</title>
+      <link>http://jbake.org/blog/2015/2015-06-04-i-discovered-jbake.html</link>
+      <pubDate>Thu, 4 Jun 2015 00:00:00 +0200</pubDate>
+      <guid isPermaLink="false">blog/2015/2015-06-04-i-discovered-jbake.html</guid>
+      	<description>
+	&lt;p&gt;Whenever &lt;/p&gt;
+	</description>
+    </item>
+    <item>
+      <title>Part 1: The value of @Value</title>
+      <link>http://jbake.org/blog/2015/2015-02-07-part1-the-value-of-at-value.html</link>
+      <pubDate>Sat, 7 Feb 2015 00:00:00 +0100</pubDate>
+      <guid isPermaLink="false">blog/2015/2015-02-07-part1-the-value-of-at-value.html</guid>
+      	<description>
+	&lt;p&gt;Did it ever happen to you that after spending some time and gaining experience with a framework or a programming language, you learn things that would have made your programmer&apos;s life much easier if you had known them right from the start? You would have done things differently, more quickly, in a simpler, cleaner and more maintainable way?&lt;/p&gt;&lt;p&gt;I decided to write a series of posts about features and aspects of Spring Framework (the framework in which I spend most of my professional software development time) that I found useful (usually far later than I&apos;d like to admit :) ), but which are often not covered in entry level guides and tutorials.&lt;/p&gt;&lt;p&gt;In this first post I would like to discuss the &lt;code&gt;@Value&lt;/code&gt; annotation.&lt;br/&gt;&lt;!-- more --&gt;&lt;/p&gt;&lt;p&gt;I started working with Spring framework since the 2.5 version. Later on, when 3.0 was released, JavaConfig became the part of the core framework along with the &lt;code&gt;@Value&lt;/code&gt; that was part of it. I unfortunately didn&apos;t notice that improvement for quite some time, mostly because the projects I worked on relied on XML based config.&lt;/p&gt;&lt;p&gt;Here&apos;s what &lt;a href=&quot;http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/beans/factory/annotation/Value.html&quot;&gt;Spring javadocs&lt;/a&gt; say about &lt;code&gt;@Value&lt;/code&gt;:&lt;/p&gt;
+&lt;blockquote&gt;&lt;p&gt;Annotation at the field or method/constructor parameter level that indicates a default value expression for the affected argument.&lt;/p&gt;&lt;p&gt;Typically used for expression-driven dependency injection. Also supported for dynamic resolution of handler method parameters, e.g. in Spring MVC.&lt;/p&gt;&lt;p&gt;A common use case is to assign default field values using &quot;#{systemProperties.myProp}&quot; style expressions.&lt;/p&gt;
+&lt;/blockquote&gt;&lt;p&gt;Let&apos;s see how we can make use of it.&lt;/p&gt;&lt;h4&gt;Assigning values from property files&lt;/h4&gt;&lt;p&gt;This is likely the most common use case for &lt;code&gt;@Value&lt;/code&gt; annotation. &lt;code&gt;@Value&lt;/code&gt; allows us to easily inject a value from a property file to, for example, a bean&apos;s field or a constructor argument.&lt;/p&gt;&lt;p&gt;If we had a property file that looks like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;app.name = My Excellent Application
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Then we could use that property definition in, say, a controller using&lt;code&gt;@Value(&amp;quot;${propertyName}&amp;quot;)&lt;/code&gt; syntax:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;java&quot;&gt;@Controller
+public class HelloController {
+	
+	@Value(&amp;quot;${app.name}&amp;quot;)
+	private String appName;
+
+	@RequestMapping(&amp;quot;/&amp;quot;)
+	@ResponseBody
+	public String hello() {
+		return &amp;quot;Hello from &amp;quot; + appName;
+	}
+
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The code in the example will read the property app.name from property file and inject it into &lt;code&gt;appName&lt;/code&gt; field. The &lt;code&gt;${...}&lt;/code&gt; syntax is Spring&apos;s property placeholder syntax used in property placeholder replacement mechanism. If &lt;code&gt;app.name&lt;/code&gt; is not defined, then an exception will be thrown. Which brings us to a less known fact about property placeholders - it&apos;s possible to set a default value for a property that Spring would use if the property is not defined. The syntax for default values in property placeholders is &lt;code&gt;${property:defaultValue}&lt;/code&gt;. You can read about it the javadocs for &lt;a href=&quot;http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/beans/factory/config/PlaceholderConfigurerSupport.html&quot;&gt;PlaceholderConfigurerSupport&lt;/a&gt; class. I find default values quite useful, especially in situations where a particular property of a bean is not likely to be changed in different environments and as such you don&apos;t want to introduce it needlessly into a property file, but still want to give yourself an option to change your mind later. If we were to modify our example to use a default value, it would look like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;java&quot;&gt;@Controller
+public class HelloController {
+	
+	@Value(&amp;quot;${app.name:My Excellent Application}&amp;quot;)
+	private String appName;
+
+	@RequestMapping(&amp;quot;/&amp;quot;)
+	@ResponseBody
+	public String hello() {
+		return &amp;quot;Hello from &amp;quot; + appName;
+	}
+
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h4&gt;Injecting a SpringEL dynamically evaluated value&lt;/h4&gt;&lt;p&gt;Do you remember &lt;code&gt;@Value&lt;/code&gt;&apos;s javadoc that was shown previously? It described a &lt;code&gt;#{...}&lt;/code&gt; syntax rather than property replacement &lt;code&gt;${...}&lt;/code&gt; syntax that we used in our example. What&apos;s the difference? The &lt;code&gt;#{...}&lt;/code&gt; syntax invokes Spring Expression Language (SpringEL) and evaluates the expression dynamically. For example we could obtain a value from the system settings:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;java&quot;&gt;@Value(&amp;quot;#{systemSettings[&amp;#39;user.region&amp;#39;]}&amp;quot;)
+private String locale; 
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The above expression works because systemSettings is a variable that&apos;s always available to SpringEL when it&apos;s invoked in this context (e.g. when configuring beans).&lt;/p&gt;&lt;p&gt;We may even inject a return value of a method of another bean:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;java&quot;&gt;@Value(&amp;quot;#{&amp;#39;V1.0S&amp;#39; + migrationService.version}&amp;quot;)
+private String version;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;In this example Spring will inject string &quot;V1.0S&quot; prepended to the return value of method &lt;code&gt;getVersion()&lt;/code&gt; of a bean with name &lt;code&gt;migrationService&lt;/code&gt; (all beans in Spring&apos;s context are available as variables in SpringEL).&lt;/p&gt;&lt;p&gt;To conclude,&lt;code&gt;@Value&lt;/code&gt; annotation is indispensable asset when configuring your beans. When pursing convention-over-configuration style, default values for property placeholders used in&lt;code&gt;@Value&lt;/code&gt; configs may come in handy. And finally, always keep on your mind that you can invoke SpringEL to help you to simplify scenarios that may otherwise require complex config or workarounds. &lt;/p&gt;
+&lt;hr&gt;&lt;p&gt;Did you find this article helpful? What is your favorite Spring feature? Do you have a related blog post? Feel welcome to leave feedback or comments below :)&lt;/p&gt;
+	</description>
+    </item>
+    <item>
+      <title>Concise Integration Tests That Contain Mocks In Spring Framework</title>
+      <link>http://jbake.org/blog/2014/2014-08-18-concise-integration-tests-that-contain-mocks-in-spring-framework.html</link>
+      <pubDate>Mon, 18 Aug 2014 00:00:00 +0200</pubDate>
+      <guid isPermaLink="false">blog/2014/2014-08-18-concise-integration-tests-that-contain-mocks-in-spring-framework.html</guid>
+      	<description>
+	&lt;p&gt;In this post I&apos;ll write about how to reduce a bit of boilerplate code&lt;br/&gt;when writing tests in Spring Framework in a situation where we don&apos;t want to bring up the whole&lt;br/&gt;Spring context in order to test if only a subset of components are working together correctly.&lt;/p&gt;&lt;p&gt;Our goal will be to have Spring load only the components that we are interested in testing,&lt;br/&gt;mock out everything else and do it in a simple and readable way.&lt;/p&gt;
+&lt;!-- more --&gt;&lt;p&gt;Let&apos;s start with an example. Our example application has a &lt;code&gt;UserService&lt;/code&gt; with a &lt;code&gt;registerNewUser&lt;/code&gt; method.&lt;br/&gt;Whenever a new user is added to the system, &lt;code&gt;UserService&lt;/code&gt;&apos;s &lt;code&gt;registerNewUser&lt;/code&gt; method is called. This&lt;br/&gt;method adds the user to the system, hashes user&apos;s password, stores user data to the database, updates application&apos;s user statistics&lt;br/&gt;and sends out confirmation e-mail. To accomplish these tasks, &lt;code&gt;UserService&lt;/code&gt; depends on &lt;code&gt;PasswordEncoder&lt;/code&gt;, &lt;code&gt;UserRepository&lt;/code&gt;, &lt;code&gt;StatisticsService&lt;/code&gt;&lt;br/&gt;and &lt;code&gt;EmailService&lt;/code&gt;.&lt;/p&gt;&lt;p&gt;We want to write an integration test that will verify that when &lt;code&gt;registerNewUser&lt;/code&gt; is called, the user is indeed stored&lt;br/&gt;correctly to the database and user password is hashed. To do this, we want actual &lt;code&gt;UserService&lt;/code&gt; implementation brought up in our test Spring context,&lt;br/&gt;along with &lt;code&gt;PasswordEncoder&lt;/code&gt; and persistence related components and have everything else mocked out (side note: I&apos;m using the term mock here, but since we&apos;re not&lt;br/&gt;verifying interactions with mock objects in the example tests, some testing vocabularies would refer to these kind of test objects as dummy objects).&lt;/p&gt;&lt;p&gt;To mock out the beans we&apos;ll be using &lt;a href=&quot;https://code.google.com/p/mockito/&quot;&gt;Mockito&lt;/a&gt; library. Our JUnit test will be run with &lt;code&gt;SpringJUnit4ClassRunner&lt;/code&gt;.&lt;br/&gt;Demo application&apos;s code is available at &lt;a href=&quot;https://github.com/knes1/springmockedtests&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Here&apos;s the test class:&lt;br/&gt;{% codeblock lang:java %}&lt;br/&gt;@RunWith(SpringJUnit4ClassRunner.class)&lt;br/&gt;@ContextConfiguration(loader=AnnotationConfigContextLoader.class)&lt;br/&gt;public class UserServiceImplIntegrationTest {&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Autowired
+UserService userService;
+
+@Autowired
+UserRepository userRepository;
+
+@Transactional
+@Test
+public void testRegisterNewUser() {
+    final String userName = &amp;quot;someone&amp;quot;;
+    final String password = &amp;quot;somepass&amp;quot;;
+    userService.registerNewUser(new User(&amp;quot;someone@example.com&amp;quot;, userName, password));
+    User user = userRepository.findByUserName(userName);
+    Assert.assertNotNull(user);
+    Assert.assertTrue(SCryptUtil.check(password, user.getPassword()));
+}
+
+@Configuration
+@Import(TestAppConfig.class)
+static class ContextConfiguration {
+
+    @Bean
+    public UserService userService() {
+       return new UserServiceImpl();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+       return new SCryptPasswordEncoder();
+    }
+
+    @Bean
+    public EmailService emailService() {
+       return Mockito.mock(EmailService.class);
+    }
+
+    @Bean
+    public StatisticsService statisticsService() {
+       return Mockito.mock(StatisticsService.class);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;}&lt;br/&gt;{% endcodeblock %}&lt;br/&gt;Let&apos;s examine the code:&lt;/p&gt;&lt;p&gt;With &lt;code&gt;@ContextConfiguration(loader=AnnotationConfigContextLoader.class)&lt;/code&gt; we instruct Spring to load test context configuration from the annotated class. We have defined&lt;br/&gt;the configuration class as a static inner class of our test class (&lt;code&gt;ContextConfiguration&lt;/code&gt;). We import common configuration that will be shared among different&lt;br/&gt;integration tests form &lt;code&gt;TestAppConfig.class&lt;/code&gt;. In the &lt;code&gt;ContextConfiguration&lt;/code&gt; we define the beans whose actual implementation will participate in the integration test&lt;br/&gt;(&lt;code&gt;UserServiceImpl&lt;/code&gt; and &lt;code&gt;SCryptPasswordEncoder&lt;/code&gt;) and we mock out their dependencies (&lt;code&gt;EmailService&lt;/code&gt;, &lt;code&gt;StatisticsService&lt;/code&gt;). The inspiration for this pattern of writing integration tests that&lt;br/&gt;combine actual and mocked beans originate from great answers found in this stack overflow question: &lt;a href=&quot;http://stackoverflow.com/questions/2457239/injecting-mockito-mocks-into-a-spring-bean&quot;&gt;Injecting Mockito mocks into a Spring bean&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;The idea is to keep common configuration that we plan to reuse between various tests in &lt;code&gt;TestAppConfig.class&lt;/code&gt; (in our example, &lt;code&gt;TestAppConfig&lt;/code&gt; contains test database,&lt;br/&gt;JPA and Spring-data configuration) and add keep per test specific configuration in an inner class of the test class. We also manually define beans that we need to mock out&lt;br/&gt;in order for Spring to satisfy all the dependencies of the beans we plan to test.&lt;/p&gt;&lt;p&gt;This works just fine, expect in certain more complex integration tests, there will be a lot of beans to be mocked out, and we have to write lots of boilerplate code to&lt;br/&gt;define those. For example, to mock out &lt;code&gt;EmailService&lt;/code&gt; class we write:&lt;br/&gt;{% codeblock lang:java %}&lt;br/&gt;@Bean&lt;br/&gt;public EmailService emailService() {&lt;br/&gt; return Mockito.mock(EmailService.class);&lt;br/&gt;}&lt;br/&gt;{% endcodeblock %}&lt;/p&gt;&lt;p&gt;Characters &quot;EmailService&quot; are typed three times (Type definition, method name and as a parameter to mock method) and we hat to write 4 lines of code. If there&apos;s 10&lt;br/&gt;beans to mock out, that&apos;s a lot of typing! Is there a way to make things more concise? It turns out there is, using the&lt;br/&gt;&lt;code&gt;ImportBeanDefinitionRegistrar&lt;/code&gt;. We will create an annotation that we&apos;ll use to specify which classes we plan to mock out, and then implement &lt;code&gt;ImportBeanDefinitionRegistrar&lt;/code&gt; that&lt;br/&gt;will look for the annotation and register bean definitions we specified as a mocked beans.&lt;/p&gt;&lt;p&gt;Here&apos;s the custom annotation:&lt;/p&gt;&lt;p&gt;{% codeblock lang:java %}&lt;br/&gt;@Import(MockImportRegistar.class)&lt;br/&gt;@Target(ElementType.TYPE)&lt;br/&gt;@Retention(RetentionPolicy.RUNTIME)&lt;br/&gt;@Documented&lt;br/&gt;public @interface MockedBeans {&lt;br/&gt; /**&lt;br/&gt; * Types that need to be mocked.&lt;br/&gt; * @return&lt;br/&gt; */&lt;br/&gt; Class&amp;lt;?&amp;gt;[] value() default {};&lt;br/&gt;}&lt;br/&gt;{% endcodeblock %}&lt;/p&gt;&lt;p&gt;Here&apos;s the code for &lt;code&gt;ImportBeanDefinitionRegistrar&lt;/code&gt; implementation (note that we referenced &lt;code&gt;MockImportRegistar&lt;/code&gt; with &lt;code&gt;@Import&lt;/code&gt; in &lt;code&gt;MockedBean&lt;/code&gt; annotation above):&lt;/p&gt;&lt;p&gt;{% codeblock lang:java %}&lt;br/&gt;public class MockImportRegistar implements ImportBeanDefinitionRegistrar {&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Override
+public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
+    if (importingClassMetadata.isAnnotated(MockedBeans.class.getName())) {
+       Object mockedBeanTypesValue = importingClassMetadata.getAnnotationAttributes(MockedBeans.class.getName()).get(&amp;quot;value&amp;quot;);
+       if (mockedBeanTypesValue instanceof Class&amp;lt;?&amp;gt;[]) {
+         Class&amp;lt;?&amp;gt;[] mockedBeanTypes = (Class&amp;lt;?&amp;gt;[]) mockedBeanTypesValue;
+         if (mockedBeanTypes != null &amp;amp;&amp;amp; mockedBeanTypes.length &amp;gt; 0) {
+          mockSpecifiedBeanTypes(registry, mockedBeanTypes);
+         }
+       }
+    }
+}
+
+private void mockSpecifiedBeanTypes(BeanDefinitionRegistry registry, Class&amp;lt;?&amp;gt;[] mockedBeanTypes) {
+    for (Class&amp;lt;?&amp;gt; mockedType : mockedBeanTypes) {
+       registry.registerBeanDefinition(&amp;quot;mock&amp;quot; + mockedType.getSimpleName(),
+       BeanDefinitionBuilder
+          .rootBeanDefinition(Mockito.class)
+          .setFactoryMethod(&amp;quot;mock&amp;quot;)
+          .addConstructorArgValue(mockedType.getName())
+          .getBeanDefinition()
+       );
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;}&lt;br/&gt;{% endcodeblock %}&lt;/p&gt;&lt;p&gt;Now that have defined the annotation and the registrar we can rewrite the &lt;code&gt;ContextConfiguration&lt;/code&gt; like this:&lt;/p&gt;&lt;p&gt;{% codeblock lang:java %}&lt;br/&gt;@Configuration&lt;br/&gt;@Import(TestAppConfig.class)&lt;br/&gt;@MockedBeans({EmailService.class, StatisticsService.class})&lt;br/&gt;static class ContextConfiguration {&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Bean
+public UserService userService() {
+    return new UserServiceImpl();
+}
+
+@Bean
+public PasswordEncoder passwordEncoder() {
+    return new SCryptPasswordEncoder();
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;}&lt;br/&gt;{% endcodeblock %}&lt;/p&gt;&lt;p&gt;Beans that we need to be mocked are now defined using our &lt;code&gt;@MockedBeans&lt;/code&gt; annotation. I find this approach more concise, simpler and easier to maintain, especially for more complex&lt;br/&gt;integration tests.&lt;/p&gt;
+	</description>
+    </item>
+    <item>
+      <title>Fourth Post</title>
+      <link>http://jbake.org/blog/2013/fourth-post.html</link>
+      <pubDate>Thu, 17 Oct 2013 00:00:00 +0200</pubDate>
+      <guid isPermaLink="false">blog/2013/fourth-post.html</guid>
+      	<description>
+	&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vel diam purus. Curabitur ut nisi lacus.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&quot;http://example.org&quot; class=&quot;bare&quot;&gt;http://example.org&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&quot;http://example.org&quot;&gt;Example.org&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Nam id nisl quam. Donec a lorem sit amet libero pretium vulputate vel ut purus. Suspendisse leo arcu,
+mattis et imperdiet luctus, pulvinar vitae mi. Quisque fermentum sollicitudin feugiat. Mauris nec leo
+ligula. Vestibulum tristique odio ut risus ultricies a hendrerit quam iaculis. Duis tempor elit sit amet
+ligula vehicula et iaculis sem placerat. Fusce dictum, metus at volutpat lacinia, elit massa auctor risus,
+id auctor arcu enim eu augue. Donec ultrices turpis in mi imperdiet ac venenatis sapien sodales. In
+consequat imperdiet nunc quis bibendum. Nulla semper, erat quis ornare tristique, lectus massa posuere
+libero, ut vehicula lectus nunc ut lorem. Aliquam erat volutpat.&lt;/p&gt;
+&lt;/div&gt;
+	</description>
+    </item>
+    <item>
+      <title>Third Post</title>
+      <link>http://jbake.org/blog/2013/third-post.html</link>
+      <pubDate>Thu, 26 Sep 2013 00:00:00 +0200</pubDate>
+      <guid isPermaLink="false">blog/2013/third-post.html</guid>
+      	<description>
+	&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vel diam purus. Curabitur ut nisi lacus.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&quot;http://example.org&quot; class=&quot;bare&quot;&gt;http://example.org&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&quot;http://example.org&quot;&gt;Example.org&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Nam id nisl quam. Donec a lorem sit amet libero pretium vulputate vel ut purus. Suspendisse leo arcu,
+mattis et imperdiet luctus, pulvinar vitae mi. Quisque fermentum sollicitudin feugiat. Mauris nec leo
+ligula. Vestibulum tristique odio ut risus ultricies a hendrerit quam iaculis. Duis tempor elit sit amet
+ligula vehicula et iaculis sem placerat. Fusce dictum, metus at volutpat lacinia, elit massa auctor risus,
+id auctor arcu enim eu augue. Donec ultrices turpis in mi imperdiet ac venenatis sapien sodales. In
+consequat imperdiet nunc quis bibendum. Nulla semper, erat quis ornare tristique, lectus massa posuere
+libero, ut vehicula lectus nunc ut lorem. Aliquam erat volutpat.&lt;/p&gt;
+&lt;/div&gt;
+	</description>
+    </item>
+    <item>
+      <title>Second Post</title>
+      <link>http://jbake.org/blog/2013/second-post.html</link>
+      <pubDate>Sun, 25 Aug 2013 00:00:00 +0200</pubDate>
+      <guid isPermaLink="false">blog/2013/second-post.html</guid>
+      	<description>
+	&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vel diam purus. Curabitur ut nisi lacus.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://example.org&quot;&gt;http://example.org&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://example.org&quot;&gt;Example.org&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;Nam id nisl quam. Donec a lorem sit amet libero pretium vulputate vel ut purus. Suspendisse leo arcu,&lt;br/&gt;mattis et imperdiet luctus, pulvinar vitae mi. Quisque fermentum sollicitudin feugiat. Mauris nec leo&lt;br/&gt;ligula. Vestibulum tristique odio ut risus ultricies a hendrerit quam iaculis. Duis tempor elit sit amet&lt;br/&gt;ligula vehicula et iaculis sem placerat. Fusce dictum, metus at volutpat lacinia, elit massa auctor risus,&lt;br/&gt;id auctor arcu enim eu augue. Donec ultrices turpis in mi imperdiet ac venenatis sapien sodales. In&lt;br/&gt;consequat imperdiet nunc quis bibendum. Nulla semper, erat quis ornare tristique, lectus massa posuere&lt;br/&gt;libero, ut vehicula lectus nunc ut lorem. Aliquam erat volutpat.&lt;/p&gt;
+	</description>
+    </item>
+    <item>
+      <title>First Post</title>
+      <link>http://jbake.org/blog/2013/first-post.html</link>
+      <pubDate>Wed, 24 Jul 2013 00:00:00 +0200</pubDate>
+      <guid isPermaLink="false">blog/2013/first-post.html</guid>
+      	<description>
+	
+&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vel diam purus. Curabitur ut nisi lacus.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://example.org&quot;&gt;http://example.org&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://example.org&quot;&gt;Example.org&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Nam id nisl quam. Donec a lorem sit amet libero pretium vulputate vel ut purus. Suspendisse leo arcu, 
+mattis et imperdiet luctus, pulvinar vitae mi. Quisque fermentum sollicitudin feugiat. Mauris nec leo 
+ligula. Vestibulum tristique odio ut risus ultricies a hendrerit quam iaculis. Duis tempor elit sit amet 
+ligula vehicula et iaculis sem placerat. Fusce dictum, metus at volutpat lacinia, elit massa auctor risus, 
+id auctor arcu enim eu augue. Donec ultrices turpis in mi imperdiet ac venenatis sapien sodales.&lt;/p&gt; 
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&lt;code&gt;
+package org.jbake;
+
+public class Oven {
+	public static void main(String[] args) {
+		System.out.print(&quot;Baking!&quot;);
+  }
+}
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;In consequat imperdiet nunc quis bibendum. Nulla semper, erat quis ornare tristique, lectus massa posuere 
+libero, ut vehicula lectus nunc ut lorem. Aliquam erat volutpat.&lt;/p&gt;
+
+	</description>
+    </item>
+
+  </channel> 
+</rss>
