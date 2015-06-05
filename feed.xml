@@ -2,16 +2,16 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>JBake</title>
-    <link>http://jbake.org</link>
-    <atom:link href="http://jbake.org/feed.xml" rel="self" type="application/rss+xml" />
+    <link>http://knes1.github.io/</link>
+    <atom:link href="http://knes1.github.io//feed.xml" rel="self" type="application/rss+xml" />
     <description>JBake Bootstrap Template</description>
     <language>en-gb</language>
-    <pubDate>Fri, 5 Jun 2015 19:05:20 +0200</pubDate>
-    <lastBuildDate>Fri, 5 Jun 2015 19:05:20 +0200</lastBuildDate>
+    <pubDate>Fri, 5 Jun 2015 19:39:22 +0200</pubDate>
+    <lastBuildDate>Fri, 5 Jun 2015 19:39:22 +0200</lastBuildDate>
 
     <item>
       <title>I Discovered JBake</title>
-      <link>http://jbake.org/blog/2015/2015-06-04-i-discovered-jbake.html</link>
+      <link>http://knes1.github.io//blog/2015/2015-06-04-i-discovered-jbake.html</link>
       <pubDate>Thu, 4 Jun 2015 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2015/2015-06-04-i-discovered-jbake.html</guid>
       	<description>
@@ -26,7 +26,7 @@
     </item>
     <item>
       <title>Part 1: The value of @Value</title>
-      <link>http://jbake.org/blog/2015/2015-02-07-part1-the-value-of-at-value.html</link>
+      <link>http://knes1.github.io//blog/2015/2015-02-07-part1-the-value-of-at-value.html</link>
       <pubDate>Sat, 7 Feb 2015 00:00:00 +0100</pubDate>
       <guid isPermaLink="false">blog/2015/2015-02-07-part1-the-value-of-at-value.html</guid>
       	<description>
@@ -74,7 +74,7 @@ private String version;
     </item>
     <item>
       <title>Concise Integration Tests That Contain Mocks In Spring Framework</title>
-      <link>http://jbake.org/blog/2014/2014-08-18-concise-integration-tests-that-contain-mocks-in-spring-framework.html</link>
+      <link>http://knes1.github.io//blog/2014/2014-08-18-concise-integration-tests-that-contain-mocks-in-spring-framework.html</link>
       <pubDate>Mon, 18 Aug 2014 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2014/2014-08-18-concise-integration-tests-that-contain-mocks-in-spring-framework.html</guid>
       	<description>

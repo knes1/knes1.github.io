@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
     <url>
-        <loc>http://jbake.orgabout.html</loc>
+        <loc>http://knes1.github.io/about.html</loc>
         <lastmod>2014-08-18</lastmod>
     </url>
     <url>
-        <loc>http://jbake.orgblog/2015/2015-06-04-i-discovered-jbake.html</loc>
+        <loc>http://knes1.github.io/blog/2015/2015-06-04-i-discovered-jbake.html</loc>
         <lastmod>2015-06-04</lastmod>
     </url>
     <url>
-        <loc>http://jbake.orgblog/2015/2015-02-07-part1-the-value-of-at-value.html</loc>
+        <loc>http://knes1.github.io/blog/2015/2015-02-07-part1-the-value-of-at-value.html</loc>
         <lastmod>2015-02-07</lastmod>
     </url>
     <url>
-        <loc>http://jbake.orgblog/2014/2014-08-18-concise-integration-tests-that-contain-mocks-in-spring-framework.html</loc>
+        <loc>http://knes1.github.io/blog/2014/2014-08-18-concise-integration-tests-that-contain-mocks-in-spring-framework.html</loc>
         <lastmod>2014-08-18</lastmod>
     </url>
 </urlset>
