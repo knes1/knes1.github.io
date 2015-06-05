@@ -66,85 +66,116 @@
 
 	<p><em>18 August 2014</em></p>
 
-	<p><p>In this post I'll write about how to reduce a bit of boilerplate code<br/>when writing tests in Spring Framework in a situation where we don't want to bring up the whole<br/>Spring context in order to test if only a subset of components are working together correctly.</p><p>Our goal will be to have Spring load only the components that we are interested in testing,<br/>mock out everything else and do it in a simple and readable way.</p>
-<!-- more --><p>Let's start with an example. Our example application has a <code>UserService</code> with a <code>registerNewUser</code> method.<br/>Whenever a new user is added to the system, <code>UserService</code>'s <code>registerNewUser</code> method is called. This<br/>method adds the user to the system, hashes user's password, stores user data to the database, updates application's user statistics<br/>and sends out confirmation e-mail. To accomplish these tasks, <code>UserService</code> depends on <code>PasswordEncoder</code>, <code>UserRepository</code>, <code>StatisticsService</code><br/>and <code>EmailService</code>.</p><p>We want to write an integration test that will verify that when <code>registerNewUser</code> is called, the user is indeed stored<br/>correctly to the database and user password is hashed. To do this, we want actual <code>UserService</code> implementation brought up in our test Spring context,<br/>along with <code>PasswordEncoder</code> and persistence related components and have everything else mocked out (side note: I'm using the term mock here, but since we're not<br/>verifying interactions with mock objects in the example tests, some testing vocabularies would refer to these kind of test objects as dummy objects).</p><p>To mock out the beans we'll be using <a href="https://code.google.com/p/mockito/">Mockito</a> library. Our JUnit test will be run with <code>SpringJUnit4ClassRunner</code>.<br/>Demo application's code is available at <a href="https://github.com/knes1/springmockedtests">GitHub</a>.</p><p>Here's the test class:<br/>{% codeblock lang:java %}<br/>@RunWith(SpringJUnit4ClassRunner.class)<br/>@ContextConfiguration(loader=AnnotationConfigContextLoader.class)<br/>public class UserServiceImplIntegrationTest {</p>
-<pre><code>@Autowired
-UserService userService;
+	<p><p>In this post I'll write about how to reduce a bit of boilerplate code when writing tests in Spring Framework in a situation where we don't want to bring up the whole Spring context in order to test if only a subset of components are working together correctly.</p><p>Our goal will be to have Spring load only the components that we are interested in testing, mock out everything else and do it in a simple and readable way.</p>
+<!-- more --><p>Let's start with an example. Our example application has a <code>UserService</code> with a <code>registerNewUser</code> method. Whenever a new user is added to the system, <code>UserService</code>'s <code>registerNewUser</code> method is called. This method adds the user to the system, hashes user's password, stores user data to the database, updates application's user statistics and sends out confirmation e-mail. To accomplish these tasks, <code>UserService</code> depends on <code>PasswordEncoder</code>, <code>UserRepository</code>, <code>StatisticsService</code> and <code>EmailService</code>.</p><p>We want to write an integration test that will verify that when <code>registerNewUser</code> is called, the user is indeed stored correctly to the database and user password is hashed. To do this, we want actual <code>UserService</code> implementation brought up in our test Spring context, along with <code>PasswordEncoder</code> and persistence related components and have everything else mocked out (side note: I'm using the term mock here, but since we're not verifying interactions with mock objects in the example tests, some testing vocabularies would refer to these kind of test objects as dummy objects).</p><p>To mock out the beans we'll be using <a href="https://code.google.com/p/mockito/">Mockito</a> library. Our JUnit test will be run with <code>SpringJUnit4ClassRunner</code>. Demo application's code is available at <a href="https://github.com/knes1/springmockedtests">GitHub</a>.</p><p>Here's the test class:</p>
+<pre><code class="java">@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(loader=AnnotationConfigContextLoader.class)
+public class UserServiceImplIntegrationTest {
 
-@Autowired
-UserRepository userRepository;
+	@Autowired
+	UserService userService;
 
-@Transactional
-@Test
-public void testRegisterNewUser() {
-    final String userName = &quot;someone&quot;;
-    final String password = &quot;somepass&quot;;
-    userService.registerNewUser(new User(&quot;someone@example.com&quot;, userName, password));
-    User user = userRepository.findByUserName(userName);
-    Assert.assertNotNull(user);
-    Assert.assertTrue(SCryptUtil.check(password, user.getPassword()));
+	@Autowired
+	UserRepository userRepository;
+
+	@Transactional
+	@Test
+	public void testRegisterNewUser() {
+		final String userName = &quot;someone&quot;;
+		final String password = &quot;somepass&quot;;
+		userService.registerNewUser(new User(&quot;someone@example.com&quot;, userName, password));
+		User user = userRepository.findByUserName(userName);
+		Assert.assertNotNull(user);
+		Assert.assertTrue(SCryptUtil.check(password, user.getPassword()));
+	}
+
+	@Configuration
+	@Import(TestAppConfig.class)
+	static class ContextConfiguration {
+
+		@Bean
+		public UserService userService() {
+			return new UserServiceImpl();
+		}
+
+		@Bean
+		public PasswordEncoder passwordEncoder() {
+			return new SCryptPasswordEncoder();
+		}
+
+		@Bean
+		public EmailService emailService() {
+			return Mockito.mock(EmailService.class);
+		}
+
+		@Bean
+		public StatisticsService statisticsService() {
+			return Mockito.mock(StatisticsService.class);
+		}
+	}
 }
+</code></pre><p>Let's examine the code:</p><p>With <code>@ContextConfiguration(loader=AnnotationConfigContextLoader.class)</code> we instruct Spring to load test context configuration from the annotated class. We have defined the configuration class as a static inner class of our test class (<code>ContextConfiguration</code>). We import common configuration that will be shared among different integration tests form <code>TestAppConfig.class</code>. In the <code>ContextConfiguration</code> we define the beans whose actual implementation will participate in the integration test (<code>UserServiceImpl</code> and <code>SCryptPasswordEncoder</code>) and we mock out their dependencies (<code>EmailService</code>, <code>StatisticsService</code>). The inspiration for this pattern of writing integration tests that combine actual and mocked beans originate from great answers found in this stack overflow question: <a href="http://stackoverflow.com/questions/2457239/injecting-mockito-mocks-into-a-spring-bean">Injecting Mockito mocks into a Spring bean</a>.</p><p>The idea is to keep common configuration that we plan to reuse between various tests in <code>TestAppConfig.class</code> (in our example, <code>TestAppConfig</code> contains test database, JPA and Spring-data configuration) and add keep per test specific configuration in an inner class of the test class. We also manually define beans that we need to mock out in order for Spring to satisfy all the dependencies of the beans we plan to test.</p><p>This works just fine, expect in certain more complex integration tests, there will be a lot of beans to be mocked out, and we have to write lots of boilerplate code to define those. For example, to mock out <code>EmailService</code> class we write:</p>
+<pre><code class="java">@Bean
+public EmailService emailService() {
+	return Mockito.mock(EmailService.class);
+}
+</code></pre><p>Characters "EmailService" are typed three times (Type definition, method name and as a parameter to mock method) and we hat to write 4 lines of code. If there's 10 beans to mock out, that's a lot of typing! Is there a way to make things more concise? It turns out there is, using the <code>ImportBeanDefinitionRegistrar</code>. We will create an annotation that we'll use to specify which classes we plan to mock out, and then implement <code>ImportBeanDefinitionRegistrar</code> that will look for the annotation and register bean definitions we specified as a mocked beans.</p><p>Here's the custom annotation:</p>
+<pre><code class="java">@Import(MockImportRegistar.class)
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface MockedBeans {
+	/**
+	 * Types that need to be mocked.
+	 * @return
+	 */
+	Class&lt;?&gt;[] value() default {};
+}
+</code></pre><p>Here's the code for <code>ImportBeanDefinitionRegistrar</code> implementation (note that we referenced <code>MockImportRegistar</code> with <code>@Import</code> in <code>MockedBean</code> annotation above):</p>
+<pre><code class="java">public class MockImportRegistar implements ImportBeanDefinitionRegistrar {
 
-@Configuration
+	@Override
+	public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
+		if (importingClassMetadata.isAnnotated(MockedBeans.class.getName())) {
+			Object mockedBeanTypesValue = importingClassMetadata.getAnnotationAttributes(MockedBeans.class.getName()).get(&quot;value&quot;);
+			if (mockedBeanTypesValue instanceof Class&lt;?&gt;[]) {
+				Class&lt;?&gt;[] mockedBeanTypes = (Class&lt;?&gt;[]) mockedBeanTypesValue;
+				if (mockedBeanTypes != null &amp;&amp; mockedBeanTypes.length &gt; 0) {
+					mockSpecifiedBeanTypes(registry, mockedBeanTypes);
+				}
+			}
+		}
+	}
+
+	private void mockSpecifiedBeanTypes(BeanDefinitionRegistry registry, Class&lt;?&gt;[] mockedBeanTypes) {
+		for (Class&lt;?&gt; mockedType : mockedBeanTypes) {
+			registry.registerBeanDefinition(&quot;mock&quot; + mockedType.getSimpleName(),
+			BeanDefinitionBuilder
+					.rootBeanDefinition(Mockito.class)
+					.setFactoryMethod(&quot;mock&quot;)
+					.addConstructorArgValue(mockedType.getName())
+					.getBeanDefinition()
+			);
+		}
+	}
+}
+</code></pre><p>Now that have defined the annotation and the registrar we can rewrite the <code>ContextConfiguration</code> like this:</p>
+<pre><code class="java">@Configuration
 @Import(TestAppConfig.class)
+@MockedBeans({EmailService.class, StatisticsService.class})
 static class ContextConfiguration {
 
-    @Bean
-    public UserService userService() {
-       return new UserServiceImpl();
-    }
+	@Bean
+	public UserService userService() {
+		return new UserServiceImpl();
+	}
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-       return new SCryptPasswordEncoder();
-    }
-
-    @Bean
-    public EmailService emailService() {
-       return Mockito.mock(EmailService.class);
-    }
-
-    @Bean
-    public StatisticsService statisticsService() {
-       return Mockito.mock(StatisticsService.class);
-    }
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new SCryptPasswordEncoder();
+	}
 }
-</code></pre><p>}<br/>{% endcodeblock %}<br/>Let's examine the code:</p><p>With <code>@ContextConfiguration(loader=AnnotationConfigContextLoader.class)</code> we instruct Spring to load test context configuration from the annotated class. We have defined<br/>the configuration class as a static inner class of our test class (<code>ContextConfiguration</code>). We import common configuration that will be shared among different<br/>integration tests form <code>TestAppConfig.class</code>. In the <code>ContextConfiguration</code> we define the beans whose actual implementation will participate in the integration test<br/>(<code>UserServiceImpl</code> and <code>SCryptPasswordEncoder</code>) and we mock out their dependencies (<code>EmailService</code>, <code>StatisticsService</code>). The inspiration for this pattern of writing integration tests that<br/>combine actual and mocked beans originate from great answers found in this stack overflow question: <a href="http://stackoverflow.com/questions/2457239/injecting-mockito-mocks-into-a-spring-bean">Injecting Mockito mocks into a Spring bean</a>.</p><p>The idea is to keep common configuration that we plan to reuse between various tests in <code>TestAppConfig.class</code> (in our example, <code>TestAppConfig</code> contains test database,<br/>JPA and Spring-data configuration) and add keep per test specific configuration in an inner class of the test class. We also manually define beans that we need to mock out<br/>in order for Spring to satisfy all the dependencies of the beans we plan to test.</p><p>This works just fine, expect in certain more complex integration tests, there will be a lot of beans to be mocked out, and we have to write lots of boilerplate code to<br/>define those. For example, to mock out <code>EmailService</code> class we write:<br/>{% codeblock lang:java %}<br/>@Bean<br/>public EmailService emailService() {<br/> return Mockito.mock(EmailService.class);<br/>}<br/>{% endcodeblock %}</p><p>Characters "EmailService" are typed three times (Type definition, method name and as a parameter to mock method) and we hat to write 4 lines of code. If there's 10<br/>beans to mock out, that's a lot of typing! Is there a way to make things more concise? It turns out there is, using the<br/><code>ImportBeanDefinitionRegistrar</code>. We will create an annotation that we'll use to specify which classes we plan to mock out, and then implement <code>ImportBeanDefinitionRegistrar</code> that<br/>will look for the annotation and register bean definitions we specified as a mocked beans.</p><p>Here's the custom annotation:</p><p>{% codeblock lang:java %}<br/>@Import(MockImportRegistar.class)<br/>@Target(ElementType.TYPE)<br/>@Retention(RetentionPolicy.RUNTIME)<br/>@Documented<br/>public @interface MockedBeans {<br/> /**<br/> * Types that need to be mocked.<br/> * @return<br/> */<br/> Class&lt;?&gt;[] value() default {};<br/>}<br/>{% endcodeblock %}</p><p>Here's the code for <code>ImportBeanDefinitionRegistrar</code> implementation (note that we referenced <code>MockImportRegistar</code> with <code>@Import</code> in <code>MockedBean</code> annotation above):</p><p>{% codeblock lang:java %}<br/>public class MockImportRegistar implements ImportBeanDefinitionRegistrar {</p>
-<pre><code>@Override
-public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-    if (importingClassMetadata.isAnnotated(MockedBeans.class.getName())) {
-       Object mockedBeanTypesValue = importingClassMetadata.getAnnotationAttributes(MockedBeans.class.getName()).get(&quot;value&quot;);
-       if (mockedBeanTypesValue instanceof Class&lt;?&gt;[]) {
-         Class&lt;?&gt;[] mockedBeanTypes = (Class&lt;?&gt;[]) mockedBeanTypesValue;
-         if (mockedBeanTypes != null &amp;&amp; mockedBeanTypes.length &gt; 0) {
-          mockSpecifiedBeanTypes(registry, mockedBeanTypes);
-         }
-       }
-    }
-}
-
-private void mockSpecifiedBeanTypes(BeanDefinitionRegistry registry, Class&lt;?&gt;[] mockedBeanTypes) {
-    for (Class&lt;?&gt; mockedType : mockedBeanTypes) {
-       registry.registerBeanDefinition(&quot;mock&quot; + mockedType.getSimpleName(),
-       BeanDefinitionBuilder
-          .rootBeanDefinition(Mockito.class)
-          .setFactoryMethod(&quot;mock&quot;)
-          .addConstructorArgValue(mockedType.getName())
-          .getBeanDefinition()
-       );
-    }
-}
-</code></pre><p>}<br/>{% endcodeblock %}</p><p>Now that have defined the annotation and the registrar we can rewrite the <code>ContextConfiguration</code> like this:</p><p>{% codeblock lang:java %}<br/>@Configuration<br/>@Import(TestAppConfig.class)<br/>@MockedBeans({EmailService.class, StatisticsService.class})<br/>static class ContextConfiguration {</p>
-<pre><code>@Bean
-public UserService userService() {
-    return new UserServiceImpl();
-}
-
-@Bean
-public PasswordEncoder passwordEncoder() {
-    return new SCryptPasswordEncoder();
-}
-</code></pre><p>}<br/>{% endcodeblock %}</p><p>Beans that we need to be mocked are now defined using our <code>@MockedBeans</code> annotation. I find this approach more concise, simpler and easier to maintain, especially for more complex<br/>integration tests.</p></p>
+</code></pre><p>Beans that we need to be mocked are now defined using our <code>@MockedBeans</code> annotation. I find this approach more concise, simpler and easier to maintain, especially for more complex integration tests.</p></p>
 
 	<hr />
 	
