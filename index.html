@@ -23,11 +23,6 @@
       <script src="js/html5shiv.min.js"></script>
     <![endif]-->
 
-    <!-- Fav and touch icons -->
-    <!--<link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">-->
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
     <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
@@ -36,9 +31,8 @@
   <body onload="prettyPrint()">
     <div id="wrap">
    
-	
 	<!-- Fixed navbar -->
-    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -53,39 +47,38 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li><a href="archive.html"><i class="icon-calendar"></i> Archive</a></li>
-            <li><a href="feed.xml"><i class="icon-rss"></i> Rss</a></li>
+            <li><a href="feed.xml"><i class="icon-rss"></i> Feed</a></li>
             <li><a href="https://github.com/knes1"><i class="icon-github"></i> knes1</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
     </div>
-    <div class="container">
-	<div class="page-header">
+    <div class="container">	<div class="page-header">
 		<h1>Teh Artikli - Recent Posts</h1>
 	</div>
   			<a href="blog/2015/2015-06-04-i-discovered-jbake.html"><h1>I Discovered JBake</h1></a>
-  			<p>
-	  			04 June 2015 | 
-	  			<a href="http://knes1.github.io/blog/2015/2015-06-04-i-discovered-jbake.html#disqus_thread">0 Comments</a>
-  				
+  			<p class="post-info">
+	  			<i class="icon-calendar"></i> 04 June 2015 |
+	  			<i class="icon-user"></i> Krešimir Nesek |
+	  			<i class="icon-comment"></i> <a href="http://knes1.github.io/blog/2015/2015-06-04-i-discovered-jbake.html#disqus_thread">0 Comments</a>
   			</p>
   			<p><p>When I was starting this blog and was researching what options are out there in terms of blogging systems, I was looking for a simple developer focused blogging solution that I could use for publishing posts hosted on github pages. I found <a href="http://octopress.org/">Octopress</a> and decided to use it, mostly because it popped up often in Google search results and had a tag line that I liked: A blogging framework designed for hackers. And it was fine.</p><p>Recently though, I stumbled upon <a href="http://jbake.org/">JBake</a>. I liked it so much that I'm switching my blog away from Octopress.</p>
 			<a class="btn btn-default" href="blog/2015/2015-06-04-i-discovered-jbake.html">Read More →</a>
 			<hr>
   			<a href="blog/2015/2015-02-07-part1-the-value-of-at-value.html"><h1>Part 1: The value of @Value</h1></a>
-  			<p>
-	  			07 February 2015 | 
-	  			<a href="http://knes1.github.io/blog/2015/2015-02-07-part1-the-value-of-at-value.html#disqus_thread">0 Comments</a>
-  				
+  			<p class="post-info">
+	  			<i class="icon-calendar"></i> 07 February 2015 |
+	  			<i class="icon-user"></i> Krešimir Nesek |
+	  			<i class="icon-comment"></i> <a href="http://knes1.github.io/blog/2015/2015-02-07-part1-the-value-of-at-value.html#disqus_thread">0 Comments</a>
   			</p>
   			<p><p>Did it ever happen to you that after spending some time and gaining experience with a framework or a programming language, you learn things that would have made your programmer's life much easier if you had known them right from the start? You would have done things differently, more quickly, in a simpler, cleaner and more maintainable way?</p><p>I decided to write a series of posts about features and aspects of Spring Framework (the framework in which I spend most of my professional software development time) that I found useful (usually far later than I'd like to admit :) ), but which are often not covered in entry level guides and tutorials.</p><p>In this first post I would like to discuss the <code>@Value</code> annotation.<br/></p>
 			<a class="btn btn-default" href="blog/2015/2015-02-07-part1-the-value-of-at-value.html">Read More →</a>
 			<hr>
   			<a href="blog/2014/2014-08-18-concise-integration-tests-that-contain-mocks-in-spring-framework.html"><h1>Concise Integration Tests That Contain Mocks In Spring Framework</h1></a>
-  			<p>
-	  			18 August 2014 | 
-	  			<a href="http://knes1.github.io/blog/2014/2014-08-18-concise-integration-tests-that-contain-mocks-in-spring-framework.html#disqus_thread">0 Comments</a>
-  				
+  			<p class="post-info">
+	  			<i class="icon-calendar"></i> 18 August 2014 |
+	  			<i class="icon-user"></i> Krešimir Nesek |
+	  			<i class="icon-comment"></i> <a href="http://knes1.github.io/blog/2014/2014-08-18-concise-integration-tests-that-contain-mocks-in-spring-framework.html#disqus_thread">0 Comments</a>
   			</p>
   			<p><p>In this post I'll write about how to reduce a bit of boilerplate code when writing tests in Spring Framework in a situation where we don't want to bring up the whole Spring context in order to test if only a subset of components are working together correctly.</p><p>Our goal will be to have Spring load only the components that we are interested in testing, mock out everything else and do it in a simple and readable way.</p>
 </p>
@@ -93,20 +86,16 @@
 			<hr>
 	
 	<p>Older posts are available in the <a href="/archive.html">archive</a>.</p>
-
 	<script type="text/javascript">
-	/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-	var disqus_shortname = 'teh-artikli';
+		var disqus_shortname = 'teh-artikli';
 
-	/* * * DON'T EDIT BELOW THIS LINE * * */
-	(function () {
-	var s = document.createElement('script'); s.async = true;
-	s.type = 'text/javascript';
-	s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-	(document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-	}());
+		(function () {
+		var s = document.createElement('script'); s.async = true;
+		s.type = 'text/javascript';
+		s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+		(document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+		}());
 	</script> 
-
 		</div>
 		<div id="push"></div>
     </div>

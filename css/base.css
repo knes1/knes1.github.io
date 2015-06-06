@@ -36,6 +36,12 @@ body {
   }
 }
 
+.post-info {
+  margin-top: -10px;
+  margin-bottom: 20px;
+  color: #807D7D
+}
+
 /* Custom page CSS
 -------------------------------------------------- */
 /* Not required for template or sticky footer method. */
