@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Counting Queries Per Request With Hibernate And Spring</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Counting Queries Per Request With Hibernate And Spring">
+    <meta name="author" content="Krešimir Nesek">
+    <meta name="keywords" content="Spring, Hibernate, SQL, query, performance, profiling">
+    <meta name="generator" content="JBake">
+
+    <!-- Le styles -->
+    <link href="../../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../css/asciidoctor.css" rel="stylesheet">
+    <link href="../../css/base.css" rel="stylesheet">
+    <link href="../../css/prettify.css" rel="stylesheet">
+    <link href="../../css/highlight_default.min.css" rel="stylesheet">
+    <!-- link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/default.min.css" -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+
+    <link rel="shortcut icon" href="../../favicon.ico">
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+  </head>
+  <body onload="prettyPrint()">
+    <div id="wrap">
+   
+	<!-- Fixed navbar -->
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../../">Teh Artikli
+          </a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="../../archive.html"><i class="icon-calendar"></i> Archive</a></li>
+            <li><a href="../../feed.xml"><i class="icon-rss"></i> Feed</a></li>
+            <li><a href="https://github.com/knes1"><i class="icon-github"></i> knes1</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+    <div class="container">	
+	<div class="page-header">
+		<h1>Counting Queries Per Request With Hibernate And Spring</h1>
+	</div>
+
+	<p><em>08 July 2015</em></p>
+
+	<p><p>Hibernate is a powerful ORM tool, no doubt about it. In projects using Hibernate, it can sometimes become easy to forget that underneath it there are actual SQL queries being executed, sometimes many of them, and sometimes, well, too many. As you navigate the object graphs of your entities and admire collections being populated automagically, beware that if Hibernate's query generation is left unchecked, you can easily end up executing gazzilions of unnecessary SQL queries unknowingly (I've actually seen thousands(!!) of queries executed per page render). Fortunately, these situations can usually be easily avoided once they are detected. I'm going to present one idea how to keep query generation in check. </p>
+<!-- more --><p>While there are many tools that can use JVM instrumentation to profile your app and likely tell you when, which and how many JPA/Hibernate/JDBC queries are being executed (<a href="https://www.ej-technologies.com/products/jprofiler/overview.html">JProfiler</a> is my favorite), they need to hook up to JVM and are usually not "always on" as you develop. And you have to learn how to use them.<br/>To detect a common problem with excessive query generation though, a simple log line with the number of executed queries would suffice. Unfortunately, it seems that Spring MVC and Hibernate do not offer such a function out of the box (you could turn on query logging, but that will log each and every query and will soon become too verbose to follow). </p><p>In this article I will show you how to use a thing called Hibernate Interceptor to count executed queries per each web request in Spring MVC <a href="https://github.com/knes1/todo">application</a> that uses JPA and Hibernate as the persistence implementation.</p><p>We will start by creating a HandlerInterceptor implementation (Spring MVC's equivalent of a filter) that will intercept incoming requests and initialze the statistics counters. HandlerInterceptors allow us to execute logic before the request processing is passed to controllers, after controller handler finishes execution (but before the view is rendered) and after the request is processed. We will use the HandlerInterceptor to gather statistics about a request so let's call it <code>RequestStatistcsInterceptor</code>. Before action is handled over to the controllers, in the <code>preHandle(...)</code> method of the <code>RequestStatistcsInterceptor</code> we will initialize a query counter in the other important component - Hibernate Interceptor. Hibernate Interceptor allows us to intercept some of the Hibernate functions and the one that we're interested in is <code>onPrepareStatement()</code> - it will be called each time Hibernate prepares an SQL statement to be sent to the database. We will do our counting there. Since each request is executed in its own thread, we'll need to have a counter per thread rather than a global counter so our interceptor's (let's call it <code>HibernateStatisticsInterceptor</code> from now on) will have to be ThreadLocal. Since an ascii picture is worth a thousand of words, hereby I present the diagram of our intended setup: </p>
+<pre><code>    			Request
+    			|
+    			v
+    			RequestStatisticsInterceptor#preHandle()
+    				|
+    				|------------------&gt;HibernateStatisticsInterceptor#startCounter()
+    				|                   :
+    				v              (ThreadLocal Counter)
+    				Controller          :                             ______
+    				    |               :                            /      \
+    				    |----Query 1---(+1)-----------------------&gt;  \______/
+    				    |----Query 2---(+1)-----------------------&gt;  \      /
+    				    ...             :                            \  DB  /
+    				    |----Query N---(+1)-----------------------&gt;  \______/
+    				    |               :
+    			RequestStatisticsInterceptor#afterCompletion(...)
+    				|                   :
+    				|&lt;---queryCount-----HibernateStatisticsInterceptor#getQueryCount()
+    				|------------------&gt;HibernateStatisticsInterceptor#clearCounter()
+    				|
+    				Log queryCount
+    				|
+    			|
+    			V
+    			Response
+</code></pre><p>Ok, now that everthing is clear let's take a look at the code.</p>
+<pre><code class="java">public class RequestStatisticsInterceptor implements AsyncHandlerInterceptor {
+
+	private ThreadLocal&lt;Long&gt; time = new ThreadLocal&lt;&gt;();
+
+	private static final Logger log = LoggerFactory.getLogger(RequestStatisticsInterceptor.class);
+
+	@Autowired
+	private HibernateStatisticsInterceptor statisticsInterceptor;
+
+	@Override
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+		time.set(System.currentTimeMillis());
+		statisticsInterceptor.startCounter();
+		return true;
+	}
+
+	@Override
+	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+		Long queryCount = statisticsInterceptor.getQueryCount();
+		modelAndView.addObject(&quot;_queryCount&quot;, queryCount);
+	}
+
+	@Override
+	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+		long duration = System.currentTimeMillis() - time.get();
+		Long queryCount = statisticsInterceptor.getQueryCount();
+		statisticsInterceptor.clearCounter();
+		time.remove();
+		log.info(&quot;[Time: {} ms] [Queries: {}] {} {}&quot;, duration, queryCount, request.getMethod(), request.getRequestURI());
+	}
+
+	@Override
+	public void afterConcurrentHandlingStarted(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+		//concurrent handling cannot be supported here
+		statisticsInterceptor.clearCounter();
+		time.remove();
+	}
+}
+
+</code></pre><p>As you may have noticed there are some additional things in here:<br/>- we're also recording time (since we already have a stats interceptor, why not also record the execution time of each request - it's a useful stat)<br/>- in postHandle we're adding query count to the model - while it's not stricly necessary, it allows us to print query counts on the actual page we're rendering while we're developing the application<br/>- we're implementing <code>AsyncHandlerInterceptor</code> and basically ignoring async requests as we cannot use the above approach for async requests because they request execution may happen in a different thread than the one that triggers the interceptor and hence we can't really use <code>ThreadLocal</code> to store the counters.</p>
+<pre><code class="java">public class HibernateStatisticsInterceptor extends EmptyInterceptor {
+
+	private static final Logger log = LoggerFactory.getLogger(HibernateStatisticsInterceptor.class);
+
+	private ThreadLocal&lt;Long&gt; queryCount = new ThreadLocal&lt;&gt;();
+
+	public void startCounter() {
+		queryCount.set(0l);
+	}
+
+	public Long getQueryCount() {
+		return queryCount.get();
+	}
+
+	public void clearCounter() {
+		queryCount.remove();
+	}
+
+	@Override
+	public String onPrepareStatement(String sql) {
+		Long count = queryCount.get();
+		if (count != null) {
+			queryCount.set(count + 1);
+		}
+		//log.info(sql);
+		return super.onPrepareStatement(sql);
+	}
+}
+</code></pre><p>Nothing too unusual here. It's worth noting that it's a good idea to ensure that clearCounter is called for each time startCounter is called (and in the same thread). We need to make sure to clear <code>ThreadLocal</code>s to avoid counters leaking to another thread or possibly memory leaks.</p><p>The last tricky part to solve is the fact that we need to reference <code>HibernateStatisticsInterceptor</code> from the <code>RequestStatisticsInterceptor</code> which means that <code>HibernateStatisticsInterceptor</code> needs to be Spring managed bean. Luckily, the answer for Spring Boot) can be found on StackOverflow: <a href="http://stackoverflow.com/questions/25283767/how-to-use-spring-managed-hibernate-interceptors-in-spring-boot">How to use Spring managed Hibernate interceptors in Spring Boot?</a></p><p>It is necessary to provide a custom <code>LocalContainerEntityManagerFactoryBean</code> (I love this short and concise name!) in order to inject our HibernateStatisticsInterceptor to JPA property <code>hibernate.ejb.interceptor</code>. We also need to register <code>RequestStatisticsInterceptor</code> and configure it to intercept all requests.</p><p>Here is the complete Spring Boot configuration for a simple application:</p>
+<pre><code class="java">@Configuration
+@EnableAutoConfiguration
+@ComponentScan
+public class Application {
+
+
+	public static void main(String[] args) {
+		start();
+	}
+
+	public static void start() {
+		SpringApplication.run(Application.class);
+	}
+
+	@Bean
+	public LocalContainerEntityManagerFactoryBean entityManagerFactory(
+			EntityManagerFactoryBuilder factory, DataSource dataSource,
+			JpaProperties properties) {
+		Map&lt;String, Object&gt; jpaProperties = new HashMap&lt;&gt;();
+		jpaProperties.putAll(properties.getHibernateProperties(dataSource));
+		jpaProperties.put(&quot;hibernate.ejb.interceptor&quot;, hibernateInterceptor());
+		return factory.dataSource(dataSource).packages(&quot;io.github.knes1.todo.model&quot;)
+				.properties(jpaProperties).build();
+	}
+
+	@Bean
+	public HibernateStatisticsInterceptor hibernateInterceptor() {
+		return new HibernateStatisticsInterceptor();
+	}
+
+	@Configuration
+	public static class WebApplicationConfig extends WebMvcConfigurerAdapter {
+
+		@Autowired
+		RequestStatisticsInterceptor requestStatisticsInterceptor;
+
+		@Bean
+		public RequestStatisticsInterceptor requestStatisticsInterceptor() {
+			return new RequestStatisticsInterceptor();
+		}
+
+		@Override
+		public void addInterceptors(InterceptorRegistry registry) {
+			registry.addInterceptor(requestStatisticsInterceptor).addPathPatterns(&quot;/**&quot;);
+		}
+	}
+
+}
+</code></pre><p>If the above config doesn't work for you because you use older Spring versions, take a look at this blog post for an alternative configuration: <a href="http://blog.krecan.net/2009/01/24/spring-managed-hibernate-interceptor-in-jpa/comment-page-1/">Spring managed Hibernate interceptor in JPA</a></p><p>To demonstrate what we achieved, I've built a small todo list application. Source code is available on <a href="https://github.com/knes1/todo">GitHub</a>.<br/>After running the application and creating a few todo items, here's what shows up in the log:</p>
+<pre><code>2015-07-10 11:26:55.707  INFO 85977 --- [qtp545373187-17] i.g.k.t.u.RequestStatisticsInterceptor   : [Time: 251 ms] [Queries: 1] GET /
+2015-07-10 11:26:59.347  INFO 85977 --- [qtp545373187-19] i.g.k.t.u.RequestStatisticsInterceptor   : [Time: 166 ms] [Queries: 2] GET /todos/1/delete
+2015-07-10 11:26:59.361  INFO 85977 --- [qtp545373187-16] i.g.k.t.u.RequestStatisticsInterceptor   : [Time: 7 ms] [Queries: 1] GET /
+2015-07-10 11:27:12.070  INFO 85977 --- [qtp545373187-17] i.g.k.t.u.RequestStatisticsInterceptor   : [Time: 21 ms] [Queries: 1] POST /todos
+2015-07-10 11:27:12.085  INFO 85977 --- [qtp545373187-18] i.g.k.t.u.RequestStatisticsInterceptor   : [Time: 9 ms] [Queries: 1] GET /
+2015-07-10 11:27:25.058  INFO 85977 --- [qtp545373187-15] i.g.k.t.u.RequestStatisticsInterceptor   : [Time: 4 ms] [Queries: 1] POST /todos
+2015-07-10 11:27:25.072  INFO 85977 --- [qtp545373187-19] i.g.k.t.u.RequestStatisticsInterceptor   : [Time: 9 ms] [Queries: 1] GET /
+2015-07-10 11:27:30.292  INFO 85977 --- [qtp545373187-18] i.g.k.t.u.RequestStatisticsInterceptor   : [Time: 5 ms] [Queries: 1] POST /todos
+2015-07-10 11:27:30.304  INFO 85977 --- [qtp545373187-15] i.g.k.t.u.RequestStatisticsInterceptor   : [Time: 8 ms] [Queries: 1] GET /
+2015-07-10 11:27:32.135  INFO 85977 --- [qtp545373187-19] i.g.k.t.u.RequestStatisticsInterceptor   : [Time: 24 ms] [Queries: 2] GET /todos/4/completed
+2015-07-10 11:27:32.143  INFO 85977 --- [qtp545373187-16] i.g.k.t.u.RequestStatisticsInterceptor   : [Time: 4 ms] [Queries: 1] GET /
+</code></pre><p>We have timings and query counts for each request - now we can easily detect early if something went wrong because we'll see query counts suddenly increase (if we for example hit the so called N+1 problems, or if we carelessly navigate through collections). As a bonus, since we included query counts in the model, we can even print them out on the page while we do development (notice the query count for current page in the screenshot below). Here's a screenshot form the sample application:</p><p><img src="/images/todolist.png" width="600px"></p><p>And that's all I have for this post - I hope I've helped in keeping query generation under control!</p><h2>References</h2>
+<ul>
+  <li><a href="https://github.com/knes1/todo">Sample application: Todo List</a></li>
+  <li><a href="http://stackoverflow.com/questions/25283767/how-to-use-spring-managed-hibernate-interceptors-in-spring-boot">How to use Spring managed Hibernate interceptors in Spring Boot?</a></li>
+  <li><a href="http://blog.krecan.net/2009/01/24/spring-managed-hibernate-interceptor-in-jpa/comment-page-1/">Spring managed Hibernate interceptor in JPA</a></li>
+</ul></p>
+
+	<hr />
+
+	<div id="disqus_thread"></div>
+	<script type="text/javascript">
+	    /* * * CONFIGURATION VARIABLES * * */
+	    var disqus_shortname = 'teh-artikli';
+		var disqus_identifier = 'blog/2015/2015-07-08-counting-queries-per-request-with-hibernate-and-spring.html';
+	    var disqus_url = 'http://knes1.github.io/blog/2015/2015-07-08-counting-queries-per-request-with-hibernate-and-spring.html';
+       
+	    /* * * DON'T EDIT BELOW THIS LINE * * */
+	    (function() {
+	        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	    })();
+	</script>
+	<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+	<script>hljs.initHighlightingOnLoad();</script>	
+		</div>
+		<div id="push"></div>
+    </div>
+    
+    <div id="footer">
+      <div class="container">
+        <p class="muted credit">&copy; 2015 | Krešimir Nesek | Baked with <a href="http://jbake.org">JBake v2.4.0</a></p>
+      </div>
+    </div>
+    
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../../js/jquery-1.11.1.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+    <script src="../../js/prettify.js"></script>
+
+
+    <script src="//static.getclicky.com/js" type="text/javascript"></script>
+    <script type="text/javascript">try{ clicky.init(100763555); }catch(e){}</script>
+    <noscript><p><img alt="Clicky" width="1" height="1" src="//in.getclicky.com/100763555ns.gif" /></p></noscript>
+
+    
+  </body>
+</html>
