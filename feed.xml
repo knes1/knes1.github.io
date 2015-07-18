@@ -6,9 +6,277 @@
     <atom:link href="http://knes1.github.io//feed.xml" rel="self" type="application/rss+xml" />
     <description>Teh Artikli - tech and software development blog by Krešimir Nesek</description>
     <language>en-gb</language>
-    <pubDate>Sun, 12 Jul 2015 12:28:25 +0200</pubDate>
-    <lastBuildDate>Sun, 12 Jul 2015 12:28:25 +0200</lastBuildDate>
+    <pubDate>Sat, 18 Jul 2015 15:53:33 +0200</pubDate>
+    <lastBuildDate>Sat, 18 Jul 2015 15:53:33 +0200</lastBuildDate>
 
+    <item>
+      <title>Manually installing e2guardian to pfSense</title>
+      <link>http://knes1.github.io//blog/2015/2015-07-18-manually-installing-e2guardian-to-pfsense.html</link>
+      <pubDate>Sat, 18 Jul 2015 00:00:00 +0200</pubDate>
+      <guid isPermaLink="false">blog/2015/2015-07-18-manually-installing-e2guardian-to-pfsense.html</guid>
+      	<description>
+	&lt;p&gt;DansGuardian package that provides web filtering capabilities seems not to work on the latest pfSense firewall distribution. Thanks to the effort of the&lt;br/&gt;open source community, and specifically Marcello Coutinho, e2guardian package (a fork of DansGuardian) made it to FreeBSD repos, and Marcello created&lt;br/&gt;a package for pfSense. While pfSense team is working to integrate the package into the official distribution to make it available through standard package&lt;br/&gt;management system, many people (including myself) would like to have e2guardian running right now and install it manually. Here are the step by step&lt;br/&gt;instruction for the manual installation process that I used to install it to my pfSense (with help from Marcello, Phil and other folks from pfSense forums).&lt;/p&gt;
+&lt;!-- more --&gt;&lt;p&gt;I used VirtualBox VM while writing this guide. Steps 1 - 3 describe the process of setting up the VM and installing the prerequisites (Squid). If you have&lt;br/&gt;a running pfSense box with Squid where you&apos;d like to try this out, you can skip the first 3 steps.&lt;/p&gt;&lt;h3&gt;Step 1) Test environment:&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;I tested this procedure using VirtualBox on OS X. Here&apos;s my setup:&lt;/li&gt;
+  &lt;li&gt;Virtual Box (BSD / FreeBSD 64bit Machine)&lt;/li&gt;
+  &lt;li&gt;1GB RAM, 6GB HDD&lt;/li&gt;
+  &lt;li&gt;2 NICs&lt;/li&gt;
+  &lt;li&gt;.. 1st: Connected to NAT (this will be WAN in pfSense)&lt;/li&gt;
+  &lt;li&gt;.. 2nd: Bridged to my wireless device (this will be LAN in pfSense)&lt;/li&gt;
+  &lt;li&gt;CD-ROM with pfSense-LiveCD-2.2.3-RELEASE-amd64.iso for installation&lt;/li&gt;
+  &lt;li&gt;After the install I chose option 2) to assign static IP address to LAN interface, I chose IP address from my home network&apos;s range&lt;br/&gt; (in my case it was 192.168.5.249/24)&lt;/li&gt;
+  &lt;li&gt;I also disabled DHCP on LAN interface to prevent potential interference with home network&apos;s DHCP&lt;/li&gt;
+  &lt;li&gt;I browsed to the admin UI at the assigned LAN&apos;s IP and went through the installation wizard, leaving everything as it except for DHCP which I disabled&lt;/li&gt;
+&lt;/ul&gt;&lt;h3&gt;Step 2) Install squid3 package&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Install Squid package using the package managed in admin UI&lt;/li&gt;
+  &lt;li&gt;Make Squid listen on LAN (so we can test it) and loopback (E2Guardian uses loopback to connect to squid by default)&lt;/li&gt;
+  &lt;li&gt;Verify that squid works (for example by setting a browser to use it as proxy on LAN&apos;s IP and port 3128)&lt;/li&gt;
+&lt;/ul&gt;&lt;h3&gt;Step 3) Enable SSH access&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;System -&amp;gt; Advanced: Enable Secure Shell&lt;/li&gt;
+&lt;/ul&gt;&lt;h3&gt;Step 4) SSH into console (alternatively use VirtualBox/VM console if using VM)&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;choose option &lt;strong&gt;8)&lt;/strong&gt; to enter the shell&lt;/li&gt;
+&lt;/ul&gt;&lt;h3&gt;Step 5) Install e2guardiang package using pkg&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;In the shell, type in the following:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;	pkg #(choose yes to install package manager)
+	pkg update
+	pkg install e2guardian
+&lt;/code&gt;&lt;/pre&gt;&lt;h3&gt;Step 6) Download Marcello&apos;s pull request for pfSense e2guardian package&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;You can download pull request&apos;s file from: &lt;a href=&quot;https://github.com/marcelloc/pfsense-packages/archive/be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff.zip&quot;&gt;https://github.com/marcelloc/pfsense-packages/archive/be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff.zip&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;In this walkthrough I&apos;ll download the zip directly to pfSense box (zip has 6Mb, once unpacked it will be 22Mb). Alternative method would be to&lt;br/&gt; download the zip file on your computer, unzip it, only transfer e2guardian directory from the zip file to pfSense&lt;/li&gt;
+  &lt;li&gt;To download the zip file to pfSense directly, we will first change directory to &lt;code&gt;/root&lt;/code&gt;, and then download the file there. While in SSH shell, type the following:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;	  cd /root
+	  fetch https://github.com/marcelloc/pfsense-packages/archive/be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff.zip
+&lt;/code&gt;&lt;/pre&gt;&lt;h3&gt;Step 7) Unzip the package and enter e2guardian directory&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Type in the following (you should still be in &lt;code&gt;/root&lt;/code&gt; directory in the SSH from the previous step)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;	unzip be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff.zip
+	rm be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff.zip #(we&amp;#39;re deleting the archive since we don&amp;#39;t need it anymore)
+	cd pfsense-packages-be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff/config/e2guardian/
+&lt;/code&gt;&lt;/pre&gt;&lt;h3&gt;Step 8) Copy the files to proper locations and adjust permissions&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;code&gt;e2guardian.xml&lt;/code&gt; file contains the locations where to put each file from the e2guardian directory (and which permissions to use)&lt;/li&gt;
+  &lt;li&gt;I&apos;ve created a script to parse the XML and genarate appropriate copy and chmod commands. Here&apos;s the result (which you need to execute in SSH):&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;cp e2guardian.inc /usr/local/pkg/e2guardian.inc
+chmod 0755 /usr/local/pkg/e2guardian.inc
+
+cp e2guardian.php /usr/local/www/e2guardian.php
+chmod 0755 /usr/local/www/e2guardian.php
+
+cp e2guardian_ldap.php /usr/local/www/e2guardian_ldap.php
+chmod 0755 /usr/local/www/e2guardian_ldap.php
+
+cp e2guardian_ldap.xml /usr/local/pkg/e2guardian_ldap.xml
+chmod 0755 /usr/local/pkg/e2guardian_ldap.xml
+
+cp e2guardian_limits.xml /usr/local/pkg/e2guardian_limits.xml
+chmod 0755 /usr/local/pkg/e2guardian_limits.xml
+
+cp e2guardian_ips_header.template /usr/local/pkg/e2guardian_ips_header.template
+chmod 0755 /usr/local/pkg/e2guardian_ips_header.template
+
+cp e2guardian_users_header.template /usr/local/pkg/e2guardian_users_header.template
+chmod 0755 /usr/local/pkg/e2guardian_users_header.template
+
+cp e2guardian_users_footer.template /usr/local/pkg/e2guardian_users_footer.template
+chmod 0755 /usr/local/pkg/e2guardian_users_footer.template
+
+cp e2guardian_about.php /usr/local/www/e2guardian_about.php
+chmod 0755 /usr/local/www/e2guardian_about.php
+
+cp e2guardian_config.xml /usr/local/pkg/e2guardian_config.xml
+chmod 0755 /usr/local/pkg/e2guardian_config.xml
+
+cp e2guardian_sync.xml /usr/local/pkg/e2guardian_sync.xml
+chmod 0755 /usr/local/pkg/e2guardian_sync.xml
+
+cp e2guardianfx.conf.template /usr/local/pkg/e2guardianfx.conf.template
+chmod 0755 /usr/local/pkg/e2guardianfx.conf.template
+
+cp e2guardian_url_acl.xml /usr/local/pkg/e2guardian_url_acl.xml
+chmod 0755 /usr/local/pkg/e2guardian_url_acl.xml
+
+cp e2guardian_site_acl.xml /usr/local/pkg/e2guardian_site_acl.xml
+chmod 0755 /usr/local/pkg/e2guardian_site_acl.xml
+
+cp e2guardian_search_acl.xml /usr/local/pkg/e2guardian_search_acl.xml
+chmod 0755 /usr/local/pkg/e2guardian_search_acl.xml
+
+cp e2guardian_pics_acl.xml /usr/local/pkg/e2guardian_pics_acl.xml
+chmod 0755 /usr/local/pkg/e2guardian_pics_acl.xml
+
+cp e2guardian_phrase_acl.xml /usr/local/pkg/e2guardian_phrase_acl.xml
+chmod 0755 /usr/local/pkg/e2guardian_phrase_acl.xml
+
+cp e2guardian_log.xml /usr/local/pkg/e2guardian_log.xml
+chmod 0755 /usr/local/pkg/e2guardian_log.xml
+
+cp e2guardian_header_acl.xml /usr/local/pkg/e2guardian_header_acl.xml
+chmod 0755 /usr/local/pkg/e2guardian_header_acl.xml
+
+cp e2guardian_groups.xml /usr/local/pkg/e2guardian_groups.xml
+chmod 0755 /usr/local/pkg/e2guardian_groups.xml
+
+cp e2guardian_file_acl.xml /usr/local/pkg/e2guardian_file_acl.xml
+chmod 0755 /usr/local/pkg/e2guardian_file_acl.xml
+
+cp e2guardian_content_acl.xml /usr/local/pkg/e2guardian_content_acl.xml
+chmod 0755 /usr/local/pkg/e2guardian_content_acl.xml
+
+cp e2guardian_blacklist.xml /usr/local/pkg/e2guardian_blacklist.xml
+chmod 0755 /usr/local/pkg/e2guardian_blacklist.xml
+
+cp e2guardian_antivirus_acl.xml /usr/local/pkg/e2guardian_antivirus_acl.xml
+chmod 0755 /usr/local/pkg/e2guardian_antivirus_acl.xml
+
+cp e2guardian.conf.template /usr/local/pkg/e2guardian.conf.template
+chmod 0755 /usr/local/pkg/e2guardian.conf.template
+
+cp e2guardian_rc.template /usr/local/pkg/e2guardian_rc.template
+chmod 0755 /usr/local/pkg/e2guardian_rc.template
+
+cp pkg_e2guardian.inc /usr/local/www/shortcuts/pkg_e2guardian.inc
+chmod 0755 /usr/local/www/shortcuts/pkg_e2guardian.inc
+
+cp e2guardian.xml  /usr/local/pkg/e2guardian.xml
+&lt;/code&gt;&lt;/pre&gt;&lt;h2&gt;Step 9) Modify config.xml to add e2guardian menu items to pfSense web UI menus&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;There are two ways to accomplish this. You can back up your existing &lt;code&gt;config.xml&lt;/code&gt; file through web UI, edit the downloaded backup file in a text editor and then&lt;br/&gt; upload it back to pfSense (restore backup). Other way to do it is to edit it directly in pfSense using a console editor. I did it using the console editor&lt;br/&gt; and that&apos;s what I&apos;ll describe here.&lt;/li&gt;
+  &lt;li&gt;Firstly, which ever method you intend to use, since we&apos;ll be editing the configuration file it&apos;s smart to back it up:&lt;/li&gt;
+  &lt;li&gt;Diagnostics -&amp;gt; Back/Restore: Back Configuration: Download Configuration&lt;/li&gt;
+  &lt;li&gt;Install &lt;code&gt;nano&lt;/code&gt; editor (just because I&apos;m not very familiar with &lt;code&gt;vi&lt;/code&gt;, if you&apos;re comfortable with &lt;code&gt;vi&lt;/code&gt;, you can use that and skip this step):&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;pkg install nano
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+  &lt;li&gt;Edit the &lt;code&gt;config.xml&lt;/code&gt; file:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;nano /cf/conf/config.xml
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+  &lt;li&gt;Press and hold the down arrow until you scroll down to an area which contains &lt;code&gt;&amp;lt;menu&amp;gt;&lt;/code&gt; entries - you should locate the entries for squid proxy which should look&lt;br/&gt; something like this:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;menu&amp;gt;
+	&amp;lt;name&amp;gt;Proxy server&amp;lt;/name&amp;gt;
+	&amp;lt;tooltiptext&amp;gt;Modify the proxy server&amp;#39;s settings&amp;lt;/tooltiptext&amp;gt;
+	&amp;lt;section&amp;gt;Services&amp;lt;/section&amp;gt;
+	&amp;lt;url&amp;gt;/pkg_edit.php?xml=squid.xml&amp;amp;amp;id=0&amp;lt;/url&amp;gt;
+&amp;lt;/menu&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+  &lt;li&gt;Underneath those, you should add a menu entry for e2guardian. Postion the cursor behind proxy server&apos;s closing &lt;code&gt;&amp;lt;/menu&amp;gt;&lt;/code&gt; tag, press enter to add new line,&lt;br/&gt; and copy paste the e2guardian menu xml fragment into the editor. Here&apos;s the fragment:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;menu&amp;gt;
+	&amp;lt;name&amp;gt;E2guradian&amp;lt;/name&amp;gt;
+	&amp;lt;tooltiptext&amp;gt;E2guradian&amp;lt;/tooltiptext&amp;gt;
+	&amp;lt;section&amp;gt;Services&amp;lt;/section&amp;gt;
+	&amp;lt;configfile&amp;gt;e2guardian.xml&amp;lt;/configfile&amp;gt;
+&amp;lt;/menu&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+  &lt;li&gt;Next, similary like you did for &lt;code&gt;&amp;lt;menu&amp;gt;&lt;/code&gt; entries, you should locate the &lt;code&gt;&amp;lt;service&amp;gt;&lt;/code&gt; entries. For example, &lt;code&gt;&amp;lt;service&amp;gt;&lt;/code&gt; for Squid looks like this:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;service&amp;gt;
+	&amp;lt;name&amp;gt;squid&amp;lt;/name&amp;gt;
+	&amp;lt;rcfile&amp;gt;squid.sh&amp;lt;/rcfile&amp;gt;
+	&amp;lt;executable&amp;gt;squid&amp;lt;/executable&amp;gt;
+	&amp;lt;description&amp;gt;&amp;lt;![CDATA[Proxy server Service]]&amp;gt;&amp;lt;/description&amp;gt;
+&amp;lt;/service&amp;gt; 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+  &lt;li&gt;Again, position your editor&apos;s cursor begind squid&apos;ss closing &lt;code&gt;&amp;lt;/service&amp;gt;&lt;/code&gt; tag, press enter to add a new line, and copy paste the e2guardian service xml fragment&lt;br/&gt; into the editor. Here&apos;s the fragment:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;service&amp;gt;
+	&amp;lt;name&amp;gt;e2guardian&amp;lt;/name&amp;gt;
+	&amp;lt;rcfile&amp;gt;e2guardian.sh&amp;lt;/rcfile&amp;gt;
+	&amp;lt;executable&amp;gt;e2guardian&amp;lt;/executable&amp;gt;
+	&amp;lt;description&amp;gt;&amp;lt;![CDATA[content filtering]]&amp;gt;&amp;lt;/description&amp;gt;
+&amp;lt;/service&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+  &lt;li&gt;Press &lt;strong&gt;Ctrl-X&lt;/strong&gt; (&lt;code&gt;nano&lt;/code&gt; editor&apos;s command to save and close the file), &lt;strong&gt;y&lt;/strong&gt; (to confirm) and press enter&lt;/li&gt;
+  &lt;li&gt;You can find complete listing of &lt;code&gt;&amp;lt;menu&amp;gt;&lt;/code&gt; and &lt;code&gt;&amp;lt;service&amp;gt;&lt;/code&gt; part of the configuration file at the bottom of the page to check how the conifg file should look like&lt;br/&gt; after the editing has completed.&lt;/li&gt;
+&lt;/ul&gt;&lt;h3&gt;Step 10) Reboot (and keep your fingers crossed :) )&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;We need to reboot pfSenes in order to apply the changes in the config&lt;/li&gt;
+  &lt;li&gt;Type exit in the SSH console, and choose option &lt;strong&gt;5)&lt;/strong&gt; from the console menu&lt;/li&gt;
+&lt;/ul&gt;&lt;h3&gt;Step 11) E2Guardian should now be ready for use!&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Go to Services -&amp;gt; E2Guardian&lt;/li&gt;
+  &lt;li&gt;Demon tab seems to be broken on first load, but just click on it (even though it is selected) and it will show up&lt;/li&gt;
+  &lt;li&gt;Enable E2Guardian and make it listen on LAN interface (or just go and follow any DansGuardian guide, settings seem to be the same)&lt;/li&gt;
+  &lt;li&gt;Configure the blacklist (for example, from &lt;a href=&quot;http://www.shallalist.de/&quot;&gt;http://www.shallalist.de/&lt;/a&gt;)&lt;/li&gt;
+  &lt;li&gt;Configure categories in ACLs&lt;/li&gt;
+  &lt;li&gt;Set your browser&apos;s proxy to LAN IP and port 8080&lt;/li&gt;
+  &lt;li&gt;Verify everything works and that sites are being blocked (on the first try, it didn&apos;t work for me because Squid was not listening on loopback, so double check that)&lt;/li&gt;
+&lt;/ul&gt;&lt;h3&gt;Step 12) Clean up&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;we can delete the file we downloaded intially&lt;/li&gt;
+  &lt;li&gt;Using SSH console, type in:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;	cd /root
+	rm -rf pfsense-packages-be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;That&apos;s it!&lt;/p&gt;&lt;h3&gt;Reference: Relevant file of config.xml file&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;xml&quot;&gt;...
+	&amp;lt;installedpackages&amp;gt;
+		&amp;lt;tab/&amp;gt;
+		&amp;lt;menu/&amp;gt;
+		&amp;lt;menu&amp;gt;
+			&amp;lt;name&amp;gt;Proxy server&amp;lt;/name&amp;gt;
+			&amp;lt;tooltiptext&amp;gt;Modify the proxy server&amp;#39;s settings&amp;lt;/tooltiptext&amp;gt;
+			&amp;lt;section&amp;gt;Services&amp;lt;/section&amp;gt;
+			&amp;lt;url&amp;gt;/pkg_edit.php?xml=squid.xml&amp;amp;amp;id=0&amp;lt;/url&amp;gt;
+		&amp;lt;/menu&amp;gt;
+		&amp;lt;menu&amp;gt;
+			&amp;lt;name&amp;gt;E2guradian&amp;lt;/name&amp;gt;
+			&amp;lt;tooltiptext&amp;gt;E2guradian&amp;lt;/tooltiptext&amp;gt;
+			&amp;lt;section&amp;gt;Services&amp;lt;/section&amp;gt;
+			&amp;lt;configfile&amp;gt;e2guardian.xml&amp;lt;/configfile&amp;gt;
+		&amp;lt;/menu&amp;gt;
+		&amp;lt;menu&amp;gt;
+			&amp;lt;name&amp;gt;Reverse Proxy&amp;lt;/name&amp;gt;
+			&amp;lt;tooltiptext&amp;gt;Modify the proxy reverse server&amp;#39;s settings&amp;lt;/tooltiptext&amp;gt;
+			&amp;lt;section&amp;gt;Services&amp;lt;/section&amp;gt;
+			&amp;lt;url&amp;gt;/pkg_edit.php?xml=squid_reverse_general.xml&amp;amp;amp;id=0&amp;lt;/url&amp;gt;
+		&amp;lt;/menu&amp;gt;
+		&amp;lt;service/&amp;gt;
+		&amp;lt;service&amp;gt;
+			&amp;lt;name&amp;gt;squid&amp;lt;/name&amp;gt;
+			&amp;lt;rcfile&amp;gt;squid.sh&amp;lt;/rcfile&amp;gt;
+			&amp;lt;executable&amp;gt;squid&amp;lt;/executable&amp;gt;
+			&amp;lt;description&amp;gt;&amp;lt;![CDATA[Proxy server Service]]&amp;gt;&amp;lt;/description&amp;gt;
+		&amp;lt;/service&amp;gt;
+		&amp;lt;service&amp;gt;
+			&amp;lt;name&amp;gt;e2guardian&amp;lt;/name&amp;gt;
+			&amp;lt;rcfile&amp;gt;e2guardian.sh&amp;lt;/rcfile&amp;gt;
+			&amp;lt;executable&amp;gt;e2guardian&amp;lt;/executable&amp;gt;
+			&amp;lt;description&amp;gt;&amp;lt;![CDATA[content filtering]]&amp;gt;&amp;lt;/description&amp;gt;
+		&amp;lt;/service&amp;gt;
+		&amp;lt;service&amp;gt;
+			&amp;lt;name&amp;gt;clamd&amp;lt;/name&amp;gt;
+			&amp;lt;rcfile&amp;gt;clamav-clamd&amp;lt;/rcfile&amp;gt;
+			&amp;lt;executable&amp;gt;clamd&amp;lt;/executable&amp;gt;
+			&amp;lt;description&amp;gt;&amp;lt;![CDATA[Clamav Antivirus]]&amp;gt;&amp;lt;/description&amp;gt;
+		&amp;lt;/service&amp;gt;
+		&amp;lt;service&amp;gt;
+			&amp;lt;name&amp;gt;c-icap&amp;lt;/name&amp;gt;
+			&amp;lt;rcfile&amp;gt;c-icap&amp;lt;/rcfile&amp;gt;
+			&amp;lt;executable&amp;gt;c-icap&amp;lt;/executable&amp;gt;
+			&amp;lt;description&amp;gt;&amp;lt;![CDATA[Icap inteface for squid and clamav integration]]&amp;gt;&amp;lt;/description&amp;gt;
+		&amp;lt;/service&amp;gt;
+...
+&lt;/code&gt;&lt;/pre&gt;
+	</description>
+    </item>
     <item>
       <title>Counting Queries Per Request With Hibernate And Spring</title>
       <link>http://knes1.github.io//blog/2015/2015-07-08-counting-queries-per-request-with-hibernate-and-spring.html</link>
