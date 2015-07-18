@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Manually installing e2guardian to pfSense</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Manually installing e2guardian to pfSense">
+    <meta name="author" content="Krešimir Nesek">
+    <meta name="keywords" content="DansGuardian,E2Guardian,pFsense">
+    <meta name="generator" content="JBake">
+
+    <!-- Le styles -->
+    <link href="../../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../css/asciidoctor.css" rel="stylesheet">
+    <link href="../../css/base.css" rel="stylesheet">
+    <link href="../../css/prettify.css" rel="stylesheet">
+    <link href="../../css/highlight_default.min.css" rel="stylesheet">
+    <!-- link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/default.min.css" -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+
+    <link rel="shortcut icon" href="../../favicon.ico">
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+  </head>
+  <body onload="prettyPrint()">
+    <div id="wrap">
+   
+	<!-- Fixed navbar -->
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../../">Teh Artikli
+          </a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="../../archive.html"><i class="icon-calendar"></i> Archive</a></li>
+            <li><a href="../../feed.xml"><i class="icon-rss"></i> Feed</a></li>
+            <li><a href="https://github.com/knes1"><i class="icon-github"></i> knes1</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+    <div class="container">	
+	<div class="page-header">
+		<h1>Manually installing e2guardian to pfSense</h1>
+	</div>
+
+	<p><em>18 July 2015</em></p>
+
+	<p><p>DansGuardian package that provides web filtering capabilities seems not to work on the latest pfSense firewall distribution. Thanks to the effort of the<br/>open source community, and specifically Marcello Coutinho, e2guardian package (a fork of DansGuardian) made it to FreeBSD repos, and Marcello created<br/>a package for pfSense. While pfSense team is working to integrate the package into the official distribution to make it available through standard package<br/>management system, many people (including myself) would like to have e2guardian running right now and install it manually. Here are the step by step<br/>instruction for the manual installation process that I used to install it to my pfSense (with help from Marcello, Phil and other folks from pfSense forums).</p>
+<!-- more --><p>I used VirtualBox VM while writing this guide. Steps 1 - 3 describe the process of setting up the VM and installing the prerequisites (Squid). If you have<br/>a running pfSense box with Squid where you'd like to try this out, you can skip the first 3 steps.</p><h3>Step 1) Test environment:</h3>
+<ul>
+  <li>I tested this procedure using VirtualBox on OS X. Here's my setup:</li>
+  <li>Virtual Box (BSD / FreeBSD 64bit Machine)</li>
+  <li>1GB RAM, 6GB HDD</li>
+  <li>2 NICs</li>
+  <li>.. 1st: Connected to NAT (this will be WAN in pfSense)</li>
+  <li>.. 2nd: Bridged to my wireless device (this will be LAN in pfSense)</li>
+  <li>CD-ROM with pfSense-LiveCD-2.2.3-RELEASE-amd64.iso for installation</li>
+  <li>After the install I chose option 2) to assign static IP address to LAN interface, I chose IP address from my home network's range<br/> (in my case it was 192.168.5.249/24)</li>
+  <li>I also disabled DHCP on LAN interface to prevent potential interference with home network's DHCP</li>
+  <li>I browsed to the admin UI at the assigned LAN's IP and went through the installation wizard, leaving everything as it except for DHCP which I disabled</li>
+</ul><h3>Step 2) Install squid3 package</h3>
+<ul>
+  <li>Install Squid package using the package managed in admin UI</li>
+  <li>Make Squid listen on LAN (so we can test it) and loopback (E2Guardian uses loopback to connect to squid by default)</li>
+  <li>Verify that squid works (for example by setting a browser to use it as proxy on LAN's IP and port 3128)</li>
+</ul><h3>Step 3) Enable SSH access</h3>
+<ul>
+  <li>System -&gt; Advanced: Enable Secure Shell</li>
+</ul><h3>Step 4) SSH into console (alternatively use VirtualBox/VM console if using VM)</h3>
+<ul>
+  <li>choose option <strong>8)</strong> to enter the shell</li>
+</ul><h3>Step 5) Install e2guardiang package using pkg</h3>
+<ul>
+  <li>In the shell, type in the following:</li>
+</ul>
+<pre><code class="bash">	pkg #(choose yes to install package manager)
+	pkg update
+	pkg install e2guardian
+</code></pre><h3>Step 6) Download Marcello's pull request for pfSense e2guardian package</h3>
+<ul>
+  <li>You can download pull request's file from: <a href="https://github.com/marcelloc/pfsense-packages/archive/be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff.zip">https://github.com/marcelloc/pfsense-packages/archive/be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff.zip</a></li>
+  <li>In this walkthrough I'll download the zip directly to pfSense box (zip has 6Mb, once unpacked it will be 22Mb). Alternative method would be to<br/> download the zip file on your computer, unzip it, only transfer e2guardian directory from the zip file to pfSense</li>
+  <li>To download the zip file to pfSense directly, we will first change directory to <code>/root</code>, and then download the file there. While in SSH shell, type the following:</li>
+</ul>
+<pre><code class="bash">	  cd /root
+	  fetch https://github.com/marcelloc/pfsense-packages/archive/be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff.zip
+</code></pre><h3>Step 7) Unzip the package and enter e2guardian directory</h3>
+<ul>
+  <li>Type in the following (you should still be in <code>/root</code> directory in the SSH from the previous step)</li>
+</ul>
+<pre><code class="bash">	unzip be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff.zip
+	rm be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff.zip #(we&#39;re deleting the archive since we don&#39;t need it anymore)
+	cd pfsense-packages-be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff/config/e2guardian/
+</code></pre><h3>Step 8) Copy the files to proper locations and adjust permissions</h3>
+<ul>
+  <li><code>e2guardian.xml</code> file contains the locations where to put each file from the e2guardian directory (and which permissions to use)</li>
+  <li>I've created a script to parse the XML and genarate appropriate copy and chmod commands. Here's the result (which you need to execute in SSH):</li>
+</ul>
+<pre><code class="bash">cp e2guardian.inc /usr/local/pkg/e2guardian.inc
+chmod 0755 /usr/local/pkg/e2guardian.inc
+
+cp e2guardian.php /usr/local/www/e2guardian.php
+chmod 0755 /usr/local/www/e2guardian.php
+
+cp e2guardian_ldap.php /usr/local/www/e2guardian_ldap.php
+chmod 0755 /usr/local/www/e2guardian_ldap.php
+
+cp e2guardian_ldap.xml /usr/local/pkg/e2guardian_ldap.xml
+chmod 0755 /usr/local/pkg/e2guardian_ldap.xml
+
+cp e2guardian_limits.xml /usr/local/pkg/e2guardian_limits.xml
+chmod 0755 /usr/local/pkg/e2guardian_limits.xml
+
+cp e2guardian_ips_header.template /usr/local/pkg/e2guardian_ips_header.template
+chmod 0755 /usr/local/pkg/e2guardian_ips_header.template
+
+cp e2guardian_users_header.template /usr/local/pkg/e2guardian_users_header.template
+chmod 0755 /usr/local/pkg/e2guardian_users_header.template
+
+cp e2guardian_users_footer.template /usr/local/pkg/e2guardian_users_footer.template
+chmod 0755 /usr/local/pkg/e2guardian_users_footer.template
+
+cp e2guardian_about.php /usr/local/www/e2guardian_about.php
+chmod 0755 /usr/local/www/e2guardian_about.php
+
+cp e2guardian_config.xml /usr/local/pkg/e2guardian_config.xml
+chmod 0755 /usr/local/pkg/e2guardian_config.xml
+
+cp e2guardian_sync.xml /usr/local/pkg/e2guardian_sync.xml
+chmod 0755 /usr/local/pkg/e2guardian_sync.xml
+
+cp e2guardianfx.conf.template /usr/local/pkg/e2guardianfx.conf.template
+chmod 0755 /usr/local/pkg/e2guardianfx.conf.template
+
+cp e2guardian_url_acl.xml /usr/local/pkg/e2guardian_url_acl.xml
+chmod 0755 /usr/local/pkg/e2guardian_url_acl.xml
+
+cp e2guardian_site_acl.xml /usr/local/pkg/e2guardian_site_acl.xml
+chmod 0755 /usr/local/pkg/e2guardian_site_acl.xml
+
+cp e2guardian_search_acl.xml /usr/local/pkg/e2guardian_search_acl.xml
+chmod 0755 /usr/local/pkg/e2guardian_search_acl.xml
+
+cp e2guardian_pics_acl.xml /usr/local/pkg/e2guardian_pics_acl.xml
+chmod 0755 /usr/local/pkg/e2guardian_pics_acl.xml
+
+cp e2guardian_phrase_acl.xml /usr/local/pkg/e2guardian_phrase_acl.xml
+chmod 0755 /usr/local/pkg/e2guardian_phrase_acl.xml
+
+cp e2guardian_log.xml /usr/local/pkg/e2guardian_log.xml
+chmod 0755 /usr/local/pkg/e2guardian_log.xml
+
+cp e2guardian_header_acl.xml /usr/local/pkg/e2guardian_header_acl.xml
+chmod 0755 /usr/local/pkg/e2guardian_header_acl.xml
+
+cp e2guardian_groups.xml /usr/local/pkg/e2guardian_groups.xml
+chmod 0755 /usr/local/pkg/e2guardian_groups.xml
+
+cp e2guardian_file_acl.xml /usr/local/pkg/e2guardian_file_acl.xml
+chmod 0755 /usr/local/pkg/e2guardian_file_acl.xml
+
+cp e2guardian_content_acl.xml /usr/local/pkg/e2guardian_content_acl.xml
+chmod 0755 /usr/local/pkg/e2guardian_content_acl.xml
+
+cp e2guardian_blacklist.xml /usr/local/pkg/e2guardian_blacklist.xml
+chmod 0755 /usr/local/pkg/e2guardian_blacklist.xml
+
+cp e2guardian_antivirus_acl.xml /usr/local/pkg/e2guardian_antivirus_acl.xml
+chmod 0755 /usr/local/pkg/e2guardian_antivirus_acl.xml
+
+cp e2guardian.conf.template /usr/local/pkg/e2guardian.conf.template
+chmod 0755 /usr/local/pkg/e2guardian.conf.template
+
+cp e2guardian_rc.template /usr/local/pkg/e2guardian_rc.template
+chmod 0755 /usr/local/pkg/e2guardian_rc.template
+
+cp pkg_e2guardian.inc /usr/local/www/shortcuts/pkg_e2guardian.inc
+chmod 0755 /usr/local/www/shortcuts/pkg_e2guardian.inc
+
+cp e2guardian.xml  /usr/local/pkg/e2guardian.xml
+</code></pre><h2>Step 9) Modify config.xml to add e2guardian menu items to pfSense web UI menus</h2>
+<ul>
+  <li>There are two ways to accomplish this. You can back up your existing <code>config.xml</code> file through web UI, edit the downloaded backup file in a text editor and then<br/> upload it back to pfSense (restore backup). Other way to do it is to edit it directly in pfSense using a console editor. I did it using the console editor<br/> and that's what I'll describe here.</li>
+  <li>Firstly, which ever method you intend to use, since we'll be editing the configuration file it's smart to back it up:</li>
+  <li>Diagnostics -&gt; Back/Restore: Back Configuration: Download Configuration</li>
+  <li>Install <code>nano</code> editor (just because I'm not very familiar with <code>vi</code>, if you're comfortable with <code>vi</code>, you can use that and skip this step):</li>
+</ul>
+<pre><code class="bash">pkg install nano
+</code></pre>
+<ul>
+  <li>Edit the <code>config.xml</code> file:</li>
+</ul>
+<pre><code class="bash">nano /cf/conf/config.xml
+</code></pre>
+<ul>
+  <li>Press and hold the down arrow until you scroll down to an area which contains <code>&lt;menu&gt;</code> entries - you should locate the entries for squid proxy which should look<br/> something like this:</li>
+</ul>
+<pre><code class="xml">&lt;menu&gt;
+	&lt;name&gt;Proxy server&lt;/name&gt;
+	&lt;tooltiptext&gt;Modify the proxy server&#39;s settings&lt;/tooltiptext&gt;
+	&lt;section&gt;Services&lt;/section&gt;
+	&lt;url&gt;/pkg_edit.php?xml=squid.xml&amp;amp;id=0&lt;/url&gt;
+&lt;/menu&gt;
+</code></pre>
+<ul>
+  <li>Underneath those, you should add a menu entry for e2guardian. Postion the cursor behind proxy server's closing <code>&lt;/menu&gt;</code> tag, press enter to add new line,<br/> and copy paste the e2guardian menu xml fragment into the editor. Here's the fragment:</li>
+</ul>
+<pre><code class="xml">&lt;menu&gt;
+	&lt;name&gt;E2guradian&lt;/name&gt;
+	&lt;tooltiptext&gt;E2guradian&lt;/tooltiptext&gt;
+	&lt;section&gt;Services&lt;/section&gt;
+	&lt;configfile&gt;e2guardian.xml&lt;/configfile&gt;
+&lt;/menu&gt;
+</code></pre>
+<ul>
+  <li>Next, similary like you did for <code>&lt;menu&gt;</code> entries, you should locate the <code>&lt;service&gt;</code> entries. For example, <code>&lt;service&gt;</code> for Squid looks like this:</li>
+</ul>
+<pre><code class="xml">&lt;service&gt;
+	&lt;name&gt;squid&lt;/name&gt;
+	&lt;rcfile&gt;squid.sh&lt;/rcfile&gt;
+	&lt;executable&gt;squid&lt;/executable&gt;
+	&lt;description&gt;&lt;![CDATA[Proxy server Service]]&gt;&lt;/description&gt;
+&lt;/service&gt; 
+</code></pre>
+<ul>
+  <li>Again, position your editor's cursor begind squid'ss closing <code>&lt;/service&gt;</code> tag, press enter to add a new line, and copy paste the e2guardian service xml fragment<br/> into the editor. Here's the fragment:</li>
+</ul>
+<pre><code class="xml">&lt;service&gt;
+	&lt;name&gt;e2guardian&lt;/name&gt;
+	&lt;rcfile&gt;e2guardian.sh&lt;/rcfile&gt;
+	&lt;executable&gt;e2guardian&lt;/executable&gt;
+	&lt;description&gt;&lt;![CDATA[content filtering]]&gt;&lt;/description&gt;
+&lt;/service&gt;
+</code></pre>
+<ul>
+  <li>Press <strong>Ctrl-X</strong> (<code>nano</code> editor's command to save and close the file), <strong>y</strong> (to confirm) and press enter</li>
+  <li>You can find complete listing of <code>&lt;menu&gt;</code> and <code>&lt;service&gt;</code> part of the configuration file at the bottom of the page to check how the conifg file should look like<br/> after the editing has completed.</li>
+</ul><h3>Step 10) Reboot (and keep your fingers crossed :) )</h3>
+<ul>
+  <li>We need to reboot pfSenes in order to apply the changes in the config</li>
+  <li>Type exit in the SSH console, and choose option <strong>5)</strong> from the console menu</li>
+</ul><h3>Step 11) E2Guardian should now be ready for use!</h3>
+<ul>
+  <li>Go to Services -&gt; E2Guardian</li>
+  <li>Demon tab seems to be broken on first load, but just click on it (even though it is selected) and it will show up</li>
+  <li>Enable E2Guardian and make it listen on LAN interface (or just go and follow any DansGuardian guide, settings seem to be the same)</li>
+  <li>Configure the blacklist (for example, from <a href="http://www.shallalist.de/">http://www.shallalist.de/</a>)</li>
+  <li>Configure categories in ACLs</li>
+  <li>Set your browser's proxy to LAN IP and port 8080</li>
+  <li>Verify everything works and that sites are being blocked (on the first try, it didn't work for me because Squid was not listening on loopback, so double check that)</li>
+</ul><h3>Step 12) Clean up</h3>
+<ul>
+  <li>we can delete the file we downloaded intially</li>
+  <li>Using SSH console, type in:</li>
+</ul>
+<pre><code class="bash">	cd /root
+	rm -rf pfsense-packages-be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff
+</code></pre><p>That's it!</p><h3>Reference: Relevant file of config.xml file</h3>
+<pre><code class="xml">...
+	&lt;installedpackages&gt;
+		&lt;tab/&gt;
+		&lt;menu/&gt;
+		&lt;menu&gt;
+			&lt;name&gt;Proxy server&lt;/name&gt;
+			&lt;tooltiptext&gt;Modify the proxy server&#39;s settings&lt;/tooltiptext&gt;
+			&lt;section&gt;Services&lt;/section&gt;
+			&lt;url&gt;/pkg_edit.php?xml=squid.xml&amp;amp;id=0&lt;/url&gt;
+		&lt;/menu&gt;
+		&lt;menu&gt;
+			&lt;name&gt;E2guradian&lt;/name&gt;
+			&lt;tooltiptext&gt;E2guradian&lt;/tooltiptext&gt;
+			&lt;section&gt;Services&lt;/section&gt;
+			&lt;configfile&gt;e2guardian.xml&lt;/configfile&gt;
+		&lt;/menu&gt;
+		&lt;menu&gt;
+			&lt;name&gt;Reverse Proxy&lt;/name&gt;
+			&lt;tooltiptext&gt;Modify the proxy reverse server&#39;s settings&lt;/tooltiptext&gt;
+			&lt;section&gt;Services&lt;/section&gt;
+			&lt;url&gt;/pkg_edit.php?xml=squid_reverse_general.xml&amp;amp;id=0&lt;/url&gt;
+		&lt;/menu&gt;
+		&lt;service/&gt;
+		&lt;service&gt;
+			&lt;name&gt;squid&lt;/name&gt;
+			&lt;rcfile&gt;squid.sh&lt;/rcfile&gt;
+			&lt;executable&gt;squid&lt;/executable&gt;
+			&lt;description&gt;&lt;![CDATA[Proxy server Service]]&gt;&lt;/description&gt;
+		&lt;/service&gt;
+		&lt;service&gt;
+			&lt;name&gt;e2guardian&lt;/name&gt;
+			&lt;rcfile&gt;e2guardian.sh&lt;/rcfile&gt;
+			&lt;executable&gt;e2guardian&lt;/executable&gt;
+			&lt;description&gt;&lt;![CDATA[content filtering]]&gt;&lt;/description&gt;
+		&lt;/service&gt;
+		&lt;service&gt;
+			&lt;name&gt;clamd&lt;/name&gt;
+			&lt;rcfile&gt;clamav-clamd&lt;/rcfile&gt;
+			&lt;executable&gt;clamd&lt;/executable&gt;
+			&lt;description&gt;&lt;![CDATA[Clamav Antivirus]]&gt;&lt;/description&gt;
+		&lt;/service&gt;
+		&lt;service&gt;
+			&lt;name&gt;c-icap&lt;/name&gt;
+			&lt;rcfile&gt;c-icap&lt;/rcfile&gt;
+			&lt;executable&gt;c-icap&lt;/executable&gt;
+			&lt;description&gt;&lt;![CDATA[Icap inteface for squid and clamav integration]]&gt;&lt;/description&gt;
+		&lt;/service&gt;
+...
+</code></pre></p>
+
+	<hr />
+
+	<div id="disqus_thread"></div>
+	<script type="text/javascript">
+	    /* * * CONFIGURATION VARIABLES * * */
+	    var disqus_shortname = 'teh-artikli';
+		var disqus_identifier = 'blog/2015/2015-07-18-manually-installing-e2guardian-to-pfsense.html';
+	    var disqus_url = 'http://knes1.github.io/blog/2015/2015-07-18-manually-installing-e2guardian-to-pfsense.html';
+       
+	    /* * * DON'T EDIT BELOW THIS LINE * * */
+	    (function() {
+	        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	    })();
+	</script>
+	<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+	<script>hljs.initHighlightingOnLoad();</script>	
+		</div>
+		<div id="push"></div>
+    </div>
+    
+    <div id="footer">
+      <div class="container">
+        <p class="muted credit">&copy; 2015 | Krešimir Nesek | Baked with <a href="http://jbake.org">JBake v2.4.0</a></p>
+      </div>
+    </div>
+    
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../../js/jquery-1.11.1.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+    <script src="../../js/prettify.js"></script>
+
+
+    <script src="//static.getclicky.com/js" type="text/javascript"></script>
+    <script type="text/javascript">try{ clicky.init(100763555); }catch(e){}</script>
+    <noscript><p><img alt="Clicky" width="1" height="1" src="//in.getclicky.com/100763555ns.gif" /></p></noscript>
+
+    
+  </body>
+</html>
