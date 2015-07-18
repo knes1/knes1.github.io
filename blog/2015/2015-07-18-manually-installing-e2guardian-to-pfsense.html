@@ -84,7 +84,7 @@
 </ul><h3>Step 4) SSH into console (alternatively use VirtualBox/VM console if using VM)</h3>
 <ul>
   <li>choose option <strong>8)</strong> to enter the shell</li>
-</ul><h3>Step 5) Install e2guardiang package using pkg</h3>
+</ul><h3>Step 5) Install e2guardian package using pkg</h3>
 <ul>
   <li>In the shell, type in the following:</li>
 </ul>
@@ -94,7 +94,7 @@
 </code></pre><h3>Step 6) Download Marcello's pull request for pfSense e2guardian package</h3>
 <ul>
   <li>You can download pull request's file from: <a href="https://github.com/marcelloc/pfsense-packages/archive/be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff.zip">https://github.com/marcelloc/pfsense-packages/archive/be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff.zip</a></li>
-  <li>In this walkthrough I'll download the zip directly to pfSense box (zip has 6Mb, once unpacked it will be 22Mb). Alternative method would be to<br/> download the zip file on your computer, unzip it, only transfer e2guardian directory from the zip file to pfSense</li>
+  <li>In this walk-through I'll download the zip directly to pfSense box (zip has 6Mb, once unpacked it will be 22Mb). Alternative method would be to<br/> download the zip file on your computer, unzip it, only transfer e2guardian directory from the zip file to pfSense</li>
   <li>To download the zip file to pfSense directly, we will first change directory to <code>/root</code>, and then download the file there. While in SSH shell, type the following:</li>
 </ul>
 <pre><code class="bash">	  cd /root
@@ -109,7 +109,7 @@
 </code></pre><h3>Step 8) Copy the files to proper locations and adjust permissions</h3>
 <ul>
   <li><code>e2guardian.xml</code> file contains the locations where to put each file from the e2guardian directory (and which permissions to use)</li>
-  <li>I've created a script to parse the XML and genarate appropriate copy and chmod commands. Here's the result (which you need to execute in SSH):</li>
+  <li>I've created a script to parse the XML and generate appropriate copy and chmod commands. Here's the result (which you need to execute in SSH):</li>
 </ul>
 <pre><code class="bash">cp e2guardian.inc /usr/local/pkg/e2guardian.inc
 chmod 0755 /usr/local/pkg/e2guardian.inc
@@ -218,7 +218,7 @@ cp e2guardian.xml  /usr/local/pkg/e2guardian.xml
 &lt;/menu&gt;
 </code></pre>
 <ul>
-  <li>Underneath those, you should add a menu entry for e2guardian. Postion the cursor behind proxy server's closing <code>&lt;/menu&gt;</code> tag, press enter to add new line,<br/> and copy paste the e2guardian menu xml fragment into the editor. Here's the fragment:</li>
+  <li>Underneath those, you should add a menu entry for e2guardian. Position the cursor behind proxy server's closing <code>&lt;/menu&gt;</code> tag, press enter to add new line,<br/> and copy paste the e2guardian menu xml fragment into the editor. Here's the fragment:</li>
 </ul>
 <pre><code class="xml">&lt;menu&gt;
 	&lt;name&gt;E2guradian&lt;/name&gt;
@@ -228,7 +228,7 @@ cp e2guardian.xml  /usr/local/pkg/e2guardian.xml
 &lt;/menu&gt;
 </code></pre>
 <ul>
-  <li>Next, similary like you did for <code>&lt;menu&gt;</code> entries, you should locate the <code>&lt;service&gt;</code> entries. For example, <code>&lt;service&gt;</code> for Squid looks like this:</li>
+  <li>Next, similarly like you did for <code>&lt;menu&gt;</code> entries, you should locate the <code>&lt;service&gt;</code> entries. For example, <code>&lt;service&gt;</code> for Squid looks like this:</li>
 </ul>
 <pre><code class="xml">&lt;service&gt;
 	&lt;name&gt;squid&lt;/name&gt;
@@ -238,7 +238,7 @@ cp e2guardian.xml  /usr/local/pkg/e2guardian.xml
 &lt;/service&gt; 
 </code></pre>
 <ul>
-  <li>Again, position your editor's cursor begind squid'ss closing <code>&lt;/service&gt;</code> tag, press enter to add a new line, and copy paste the e2guardian service xml fragment<br/> into the editor. Here's the fragment:</li>
+  <li>Again, position your editor's cursor behind squid's closing <code>&lt;/service&gt;</code> tag, press enter to add a new line, and copy paste the e2guardian service xml fragment<br/> into the editor. Here's the fragment:</li>
 </ul>
 <pre><code class="xml">&lt;service&gt;
 	&lt;name&gt;e2guardian&lt;/name&gt;
@@ -249,10 +249,10 @@ cp e2guardian.xml  /usr/local/pkg/e2guardian.xml
 </code></pre>
 <ul>
   <li>Press <strong>Ctrl-X</strong> (<code>nano</code> editor's command to save and close the file), <strong>y</strong> (to confirm) and press enter</li>
-  <li>You can find complete listing of <code>&lt;menu&gt;</code> and <code>&lt;service&gt;</code> part of the configuration file at the bottom of the page to check how the conifg file should look like<br/> after the editing has completed.</li>
+  <li>You can find complete listing of <code>&lt;menu&gt;</code> and <code>&lt;service&gt;</code> part of the configuration file at the bottom of the page to check how the config file should look like<br/> after the editing has been completed.</li>
 </ul><h3>Step 10) Reboot (and keep your fingers crossed :) )</h3>
 <ul>
-  <li>We need to reboot pfSenes in order to apply the changes in the config</li>
+  <li>We need to reboot pfSense in order to apply the changes in the config</li>
   <li>Type exit in the SSH console, and choose option <strong>5)</strong> from the console menu</li>
 </ul><h3>Step 11) E2Guardian should now be ready for use!</h3>
 <ul>
@@ -265,12 +265,12 @@ cp e2guardian.xml  /usr/local/pkg/e2guardian.xml
   <li>Verify everything works and that sites are being blocked (on the first try, it didn't work for me because Squid was not listening on loopback, so double check that)</li>
 </ul><h3>Step 12) Clean up</h3>
 <ul>
-  <li>we can delete the file we downloaded intially</li>
+  <li>We can delete the file we downloaded initially</li>
   <li>Using SSH console, type in:</li>
 </ul>
 <pre><code class="bash">	cd /root
 	rm -rf pfsense-packages-be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff
-</code></pre><p>That's it!</p><h3>Reference: Relevant file of config.xml file</h3>
+</code></pre><p>That's it!</p><h3>Reference: Relevant parts of config.xml file</h3>
 <pre><code class="xml">...
 	&lt;installedpackages&gt;
 		&lt;tab/&gt;

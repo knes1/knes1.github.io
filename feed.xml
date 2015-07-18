@@ -6,8 +6,8 @@
     <atom:link href="http://knes1.github.io//feed.xml" rel="self" type="application/rss+xml" />
     <description>Teh Artikli - tech and software development blog by Krešimir Nesek</description>
     <language>en-gb</language>
-    <pubDate>Sat, 18 Jul 2015 15:53:33 +0200</pubDate>
-    <lastBuildDate>Sat, 18 Jul 2015 15:53:33 +0200</lastBuildDate>
+    <pubDate>Sat, 18 Jul 2015 16:47:10 +0200</pubDate>
+    <lastBuildDate>Sat, 18 Jul 2015 16:47:10 +0200</lastBuildDate>
 
     <item>
       <title>Manually installing e2guardian to pfSense</title>
@@ -39,7 +39,7 @@
 &lt;/ul&gt;&lt;h3&gt;Step 4) SSH into console (alternatively use VirtualBox/VM console if using VM)&lt;/h3&gt;
 &lt;ul&gt;
   &lt;li&gt;choose option &lt;strong&gt;8)&lt;/strong&gt; to enter the shell&lt;/li&gt;
-&lt;/ul&gt;&lt;h3&gt;Step 5) Install e2guardiang package using pkg&lt;/h3&gt;
+&lt;/ul&gt;&lt;h3&gt;Step 5) Install e2guardian package using pkg&lt;/h3&gt;
 &lt;ul&gt;
   &lt;li&gt;In the shell, type in the following:&lt;/li&gt;
 &lt;/ul&gt;
@@ -49,7 +49,7 @@
 &lt;/code&gt;&lt;/pre&gt;&lt;h3&gt;Step 6) Download Marcello&apos;s pull request for pfSense e2guardian package&lt;/h3&gt;
 &lt;ul&gt;
   &lt;li&gt;You can download pull request&apos;s file from: &lt;a href=&quot;https://github.com/marcelloc/pfsense-packages/archive/be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff.zip&quot;&gt;https://github.com/marcelloc/pfsense-packages/archive/be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff.zip&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;In this walkthrough I&apos;ll download the zip directly to pfSense box (zip has 6Mb, once unpacked it will be 22Mb). Alternative method would be to&lt;br/&gt; download the zip file on your computer, unzip it, only transfer e2guardian directory from the zip file to pfSense&lt;/li&gt;
+  &lt;li&gt;In this walk-through I&apos;ll download the zip directly to pfSense box (zip has 6Mb, once unpacked it will be 22Mb). Alternative method would be to&lt;br/&gt; download the zip file on your computer, unzip it, only transfer e2guardian directory from the zip file to pfSense&lt;/li&gt;
   &lt;li&gt;To download the zip file to pfSense directly, we will first change directory to &lt;code&gt;/root&lt;/code&gt;, and then download the file there. While in SSH shell, type the following:&lt;/li&gt;
 &lt;/ul&gt;
 &lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;	  cd /root
@@ -64,7 +64,7 @@
 &lt;/code&gt;&lt;/pre&gt;&lt;h3&gt;Step 8) Copy the files to proper locations and adjust permissions&lt;/h3&gt;
 &lt;ul&gt;
   &lt;li&gt;&lt;code&gt;e2guardian.xml&lt;/code&gt; file contains the locations where to put each file from the e2guardian directory (and which permissions to use)&lt;/li&gt;
-  &lt;li&gt;I&apos;ve created a script to parse the XML and genarate appropriate copy and chmod commands. Here&apos;s the result (which you need to execute in SSH):&lt;/li&gt;
+  &lt;li&gt;I&apos;ve created a script to parse the XML and generate appropriate copy and chmod commands. Here&apos;s the result (which you need to execute in SSH):&lt;/li&gt;
 &lt;/ul&gt;
 &lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;cp e2guardian.inc /usr/local/pkg/e2guardian.inc
 chmod 0755 /usr/local/pkg/e2guardian.inc
@@ -173,7 +173,7 @@ cp e2guardian.xml  /usr/local/pkg/e2guardian.xml
 &amp;lt;/menu&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;ul&gt;
-  &lt;li&gt;Underneath those, you should add a menu entry for e2guardian. Postion the cursor behind proxy server&apos;s closing &lt;code&gt;&amp;lt;/menu&amp;gt;&lt;/code&gt; tag, press enter to add new line,&lt;br/&gt; and copy paste the e2guardian menu xml fragment into the editor. Here&apos;s the fragment:&lt;/li&gt;
+  &lt;li&gt;Underneath those, you should add a menu entry for e2guardian. Position the cursor behind proxy server&apos;s closing &lt;code&gt;&amp;lt;/menu&amp;gt;&lt;/code&gt; tag, press enter to add new line,&lt;br/&gt; and copy paste the e2guardian menu xml fragment into the editor. Here&apos;s the fragment:&lt;/li&gt;
 &lt;/ul&gt;
 &lt;pre&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;menu&amp;gt;
 	&amp;lt;name&amp;gt;E2guradian&amp;lt;/name&amp;gt;
@@ -183,7 +183,7 @@ cp e2guardian.xml  /usr/local/pkg/e2guardian.xml
 &amp;lt;/menu&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;ul&gt;
-  &lt;li&gt;Next, similary like you did for &lt;code&gt;&amp;lt;menu&amp;gt;&lt;/code&gt; entries, you should locate the &lt;code&gt;&amp;lt;service&amp;gt;&lt;/code&gt; entries. For example, &lt;code&gt;&amp;lt;service&amp;gt;&lt;/code&gt; for Squid looks like this:&lt;/li&gt;
+  &lt;li&gt;Next, similarly like you did for &lt;code&gt;&amp;lt;menu&amp;gt;&lt;/code&gt; entries, you should locate the &lt;code&gt;&amp;lt;service&amp;gt;&lt;/code&gt; entries. For example, &lt;code&gt;&amp;lt;service&amp;gt;&lt;/code&gt; for Squid looks like this:&lt;/li&gt;
 &lt;/ul&gt;
 &lt;pre&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;service&amp;gt;
 	&amp;lt;name&amp;gt;squid&amp;lt;/name&amp;gt;
@@ -193,7 +193,7 @@ cp e2guardian.xml  /usr/local/pkg/e2guardian.xml
 &amp;lt;/service&amp;gt; 
 &lt;/code&gt;&lt;/pre&gt;
 &lt;ul&gt;
-  &lt;li&gt;Again, position your editor&apos;s cursor begind squid&apos;ss closing &lt;code&gt;&amp;lt;/service&amp;gt;&lt;/code&gt; tag, press enter to add a new line, and copy paste the e2guardian service xml fragment&lt;br/&gt; into the editor. Here&apos;s the fragment:&lt;/li&gt;
+  &lt;li&gt;Again, position your editor&apos;s cursor behind squid&apos;s closing &lt;code&gt;&amp;lt;/service&amp;gt;&lt;/code&gt; tag, press enter to add a new line, and copy paste the e2guardian service xml fragment&lt;br/&gt; into the editor. Here&apos;s the fragment:&lt;/li&gt;
 &lt;/ul&gt;
 &lt;pre&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;service&amp;gt;
 	&amp;lt;name&amp;gt;e2guardian&amp;lt;/name&amp;gt;
@@ -204,10 +204,10 @@ cp e2guardian.xml  /usr/local/pkg/e2guardian.xml
 &lt;/code&gt;&lt;/pre&gt;
 &lt;ul&gt;
   &lt;li&gt;Press &lt;strong&gt;Ctrl-X&lt;/strong&gt; (&lt;code&gt;nano&lt;/code&gt; editor&apos;s command to save and close the file), &lt;strong&gt;y&lt;/strong&gt; (to confirm) and press enter&lt;/li&gt;
-  &lt;li&gt;You can find complete listing of &lt;code&gt;&amp;lt;menu&amp;gt;&lt;/code&gt; and &lt;code&gt;&amp;lt;service&amp;gt;&lt;/code&gt; part of the configuration file at the bottom of the page to check how the conifg file should look like&lt;br/&gt; after the editing has completed.&lt;/li&gt;
+  &lt;li&gt;You can find complete listing of &lt;code&gt;&amp;lt;menu&amp;gt;&lt;/code&gt; and &lt;code&gt;&amp;lt;service&amp;gt;&lt;/code&gt; part of the configuration file at the bottom of the page to check how the config file should look like&lt;br/&gt; after the editing has been completed.&lt;/li&gt;
 &lt;/ul&gt;&lt;h3&gt;Step 10) Reboot (and keep your fingers crossed :) )&lt;/h3&gt;
 &lt;ul&gt;
-  &lt;li&gt;We need to reboot pfSenes in order to apply the changes in the config&lt;/li&gt;
+  &lt;li&gt;We need to reboot pfSense in order to apply the changes in the config&lt;/li&gt;
   &lt;li&gt;Type exit in the SSH console, and choose option &lt;strong&gt;5)&lt;/strong&gt; from the console menu&lt;/li&gt;
 &lt;/ul&gt;&lt;h3&gt;Step 11) E2Guardian should now be ready for use!&lt;/h3&gt;
 &lt;ul&gt;
@@ -220,12 +220,12 @@ cp e2guardian.xml  /usr/local/pkg/e2guardian.xml
   &lt;li&gt;Verify everything works and that sites are being blocked (on the first try, it didn&apos;t work for me because Squid was not listening on loopback, so double check that)&lt;/li&gt;
 &lt;/ul&gt;&lt;h3&gt;Step 12) Clean up&lt;/h3&gt;
 &lt;ul&gt;
-  &lt;li&gt;we can delete the file we downloaded intially&lt;/li&gt;
+  &lt;li&gt;We can delete the file we downloaded initially&lt;/li&gt;
   &lt;li&gt;Using SSH console, type in:&lt;/li&gt;
 &lt;/ul&gt;
 &lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;	cd /root
 	rm -rf pfsense-packages-be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;That&apos;s it!&lt;/p&gt;&lt;h3&gt;Reference: Relevant file of config.xml file&lt;/h3&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;That&apos;s it!&lt;/p&gt;&lt;h3&gt;Reference: Relevant parts of config.xml file&lt;/h3&gt;
 &lt;pre&gt;&lt;code class=&quot;xml&quot;&gt;...
 	&amp;lt;installedpackages&amp;gt;
 		&amp;lt;tab/&amp;gt;
