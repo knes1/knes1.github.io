@@ -1,72 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8"/>
-    <title>I Discovered JBake</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Creating statically generated website using Java based tech with JBake">
-    <meta name="author" content="Krešimir Nesek">
-    <meta name="keywords" content="JBake, statically generated website, blog">
-    <meta name="generator" content="JBake">
+<head>
 
-    <!-- Le styles -->
-    <link href="../../css/bootstrap.min.css" rel="stylesheet">
-    <link href="../../css/asciidoctor.css" rel="stylesheet">
-    <link href="../../css/base.css" rel="stylesheet">
-    <link href="../../css/prettify.css" rel="stylesheet">
-    <link href="../../css/highlight_default.min.css" rel="stylesheet">
-    <!-- link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/default.min.css" -->
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
+    <meta charset="utf-8">
+  <title>I Discovered JBake</title>
+  <meta name="description" content="Creating statically generated website using Java based tech with JBake">
+  <meta name="author" content="Krešimir Nesek">
+  <meta name="keywords" content="JBake, statically generated website, blog">
+  <meta name="generator" content="JBake">
 
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="../../js/html5shiv.min.js"></script>
-    <![endif]-->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="shortcut icon" href="../../favicon.ico">
-    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
-    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
-    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
-  </head>
-  <body onload="prettyPrint()">
-    <div id="wrap">
-   
-	<!-- Fixed navbar -->
-        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="../../">Teh Artikli
-          </a>
+  <link herf="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,600,700,800,300&subset=latin,cyrillic-ext">
+  
+  <link rel="stylesheet" href="../../elusive-icons/css/elusive-icons.min.css">
+  
+  <link rel="stylesheet" href="../../css/normalize.css">
+  <link rel="stylesheet" href="../../css/skeleton.css">
+  <link rel="stylesheet" href="../../css/main.css">
+
+  <link href="../../css/highlight_default.min.css" rel="stylesheet">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
+
+  <link rel="shortcut icon" href="../../favicon.ico">
+  <link rel="icon" type="image/png" href="../../favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="../../favicon-16x16.png" sizes="16x16">
+</head>
+<body> <!-- BODY NAV -->
+<div class="navbar-container">
+    <div class="container" style="padding-bottom: 6px">
+        <div class="navtitle">
+             <a href="../../">Teh Artikli</a>
         </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li><a href="../../archive.html"><i class="icon-calendar"></i> Archive</a></li>
-            <li><a href="../../feed.xml"><i class="icon-rss"></i> Feed</a></li>
-            <li><a href="https://github.com/knes1"><i class="icon-github"></i> knes1</a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
+        <div style="float: right; margin-top: 15px">
+            <!-- Nav -->
+            <div class="navbar">
+                <ul>
+                    <li><a href="../../archive.html"><i class="el el-calendar"></i>
+ Archive</a></li>
+                    <li><a href="../../feed.xml"><i class="el el-rss"></i>
+ Feed</a></li>
+                    <li><a href="https://github.com/knes1"><i class="el el-github"></i>
+ knes1</a></li>
+                </ul>
+            </div>
+        </div>
     </div>
-    <div class="container">	
+</div>  <div class="container">
+    <div class="row">
+      <div class="twelve columns" style="margin-top: 100px">
+	
 	<div class="page-header">
 		<h1>I Discovered JBake</h1>
 	</div>
-
-	<p><em>04 June 2015</em></p>
-
-	<p><p>When I was starting this blog and was researching what options are out there in terms of blogging systems, I was looking for a simple developer focused blogging solution that I could use for publishing posts hosted on github pages. I found <a href="http://octopress.org/">Octopress</a> and decided to use it, mostly because it popped up often in Google search results and had a tag line that I liked: A blogging framework designed for hackers. And it was fine.</p><p>Recently though, I stumbled upon <a href="http://jbake.org/">JBake</a>. I liked it so much that I'm switching my blog away from Octopress.<!-- more --> JBake is something that I often thought about creating myself. Here's what I like about it:</p>
+	
+	<div class="post-info underline bottom-pad">
+		<i class="el el-calendar"></i>
+ 04 June 2015
+		| <i class="el el-user"></i>
+ Krešimir Nesek
+	</div>
+	
+	<div><p>When I was starting this blog and was researching what options are out there in terms of blogging systems, I was looking for a simple developer focused blogging solution that I could use for publishing posts hosted on github pages. I found <a href="http://octopress.org/">Octopress</a> and decided to use it, mostly because it popped up often in Google search results and had a tag line that I liked: A blogging framework designed for hackers. And it was fine.</p><p>Recently though, I stumbled upon <a href="http://jbake.org/">JBake</a>. I liked it so much that I'm switching my blog away from Octopress.<!-- more --> JBake is something that I often thought about creating myself. Here's what I like about it:</p>
 <ul>
   <li>It's written in Java and uses Java related templating technologies that I'm familiar with. While I'm no stranger to Ruby, I am primarily Java developer and I'm happy that I can now use Freemarker as a template engine for my blog pages.</li>
   <li>It's simple. It has templates and content folders where you put, well, templates and content and that's about it. It took me about 10 minutes to understand the structure and start customizing. When I'm publishing a post with Octopress, I have to go through a tutorial every time to refresh my memory on how to do it (admittedly, the reason for this is in part because I don't publish very often)</li>
   <li>I find it easy to customize (for my simple needs). I don't even have to read the docs about how to do it - it's logical and self-explanatory.</li>
   <li>Managing Octopress through git (as recommended on Octopress web site) is too confusing for me. For JBake based blog, I have one git repository in which I keep the sources (templates/content/assets etc.) and another one for generated output folder in order to push it to github pages.</li>
-</ul><p>There's one thing I miss in JBake - I wish it had "watch for changes" mode that would automatically build the pages once a change in content or templates is detected.</p><p>Finally, to be fair, in retrospect I probably shouldn't have chosen Octopress. It's not what I've been looking for in the first place. Without knowing JBake existed, I probably should have used <a href="http://jekyllrb.com/">Jekyll</a> - the engine that Octopress is built on top of. JBake is in fact inspired by Jekyll and Jekyll provides the simplicity that I was actually looking for.</p></p>
+</ul><p>There's one thing I miss in JBake - I wish it had "watch for changes" mode that would automatically build the pages once a change in content or templates is detected.</p><p>Finally, to be fair, in retrospect I probably shouldn't have chosen Octopress. It's not what I've been looking for in the first place. Without knowing JBake existed, I probably should have used <a href="http://jekyllrb.com/">Jekyll</a> - the engine that Octopress is built on top of. JBake is in fact inspired by Jekyll and Jekyll provides the simplicity that I was actually looking for.</p></div>
 
 	<hr />
 
@@ -87,28 +89,11 @@
 	<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
 
 	<script>hljs.initHighlightingOnLoad();</script>	
-		</div>
-		<div id="push"></div>
-    </div>
-    
-    <div id="footer">
-      <div class="container">
-        <p class="muted credit">&copy; 2015 | Krešimir Nesek | Baked with <a href="http://jbake.org">JBake v2.4.0</a></p>
       </div>
     </div>
-    
-    <!-- Le javascript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
+  </div>
     <script src="../../js/jquery-1.11.1.min.js"></script>
-    <script src="../../js/bootstrap.min.js"></script>
-    <script src="../../js/prettify.js"></script>
-
-
-    <script src="//static.getclicky.com/js" type="text/javascript"></script>
-    <script type="text/javascript">try{ clicky.init(100763555); }catch(e){}</script>
-    <noscript><p><img alt="Clicky" width="1" height="1" src="//in.getclicky.com/100763555ns.gif" /></p></noscript>
-
-    
-  </body>
+<script src="//static.getclicky.com/js" type="text/javascript"></script>
+<script type="text/javascript">try{ clicky.init(100763555); }catch(e){}</script>
+<noscript><p><img alt="Clicky" width="1" height="1" src="//in.getclicky.com/100763555ns.gif" /></p></noscript>  </body>
 </html>

@@ -6,8 +6,8 @@
     <atom:link href="http://knes1.github.io//feed.xml" rel="self" type="application/rss+xml" />
     <description>Teh Artikli - tech and software development blog by Krešimir Nesek</description>
     <language>en-gb</language>
-    <pubDate>Sat, 18 Jul 2015 16:47:10 +0200</pubDate>
-    <lastBuildDate>Sat, 18 Jul 2015 16:47:10 +0200</lastBuildDate>
+    <pubDate>Sun, 19 Jul 2015 21:17:36 +0200</pubDate>
+    <lastBuildDate>Sun, 19 Jul 2015 21:17:36 +0200</lastBuildDate>
 
     <item>
       <title>Manually installing e2guardian to pfSense</title>
@@ -15,8 +15,8 @@
       <pubDate>Sat, 18 Jul 2015 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2015/2015-07-18-manually-installing-e2guardian-to-pfsense.html</guid>
       	<description>
-	&lt;p&gt;DansGuardian package that provides web filtering capabilities seems not to work on the latest pfSense firewall distribution. Thanks to the effort of the&lt;br/&gt;open source community, and specifically Marcello Coutinho, e2guardian package (a fork of DansGuardian) made it to FreeBSD repos, and Marcello created&lt;br/&gt;a package for pfSense. While pfSense team is working to integrate the package into the official distribution to make it available through standard package&lt;br/&gt;management system, many people (including myself) would like to have e2guardian running right now and install it manually. Here are the step by step&lt;br/&gt;instruction for the manual installation process that I used to install it to my pfSense (with help from Marcello, Phil and other folks from pfSense forums).&lt;/p&gt;
-&lt;!-- more --&gt;&lt;p&gt;I used VirtualBox VM while writing this guide. Steps 1 - 3 describe the process of setting up the VM and installing the prerequisites (Squid). If you have&lt;br/&gt;a running pfSense box with Squid where you&apos;d like to try this out, you can skip the first 3 steps.&lt;/p&gt;&lt;h3&gt;Step 1) Test environment:&lt;/h3&gt;
+	&lt;p&gt;DansGuardian package that provides web filtering capabilities seems not to work on the latest pfSense firewall distribution. Thanks to the effort of the open source community, and specifically Marcello Coutinho, e2guardian package (a fork of DansGuardian) made it to FreeBSD repos, and Marcello created a package for pfSense. While pfSense team is working to integrate the package into the official distribution to make it available through standard package management system, many people (including myself) would like to have e2guardian running right now and install it manually. Here are the step by step instruction for the manual installation process that I used to install it to my pfSense (with help from Marcello, Phil and other folks from pfSense forums).&lt;/p&gt;
+&lt;!-- more --&gt;&lt;p&gt;I used VirtualBox VM while writing this guide. Steps 1 - 3 describe the process of setting up the VM and installing the prerequisites (Squid). If you have a running pfSense box with Squid where you&apos;d like to try this out, you can skip the first 3 steps.&lt;/p&gt;&lt;h3&gt;Step 1) Test environment:&lt;/h3&gt;
 &lt;ul&gt;
   &lt;li&gt;I tested this procedure using VirtualBox on OS X. Here&apos;s my setup:&lt;/li&gt;
   &lt;li&gt;Virtual Box (BSD / FreeBSD 64bit Machine)&lt;/li&gt;
@@ -25,7 +25,7 @@
   &lt;li&gt;.. 1st: Connected to NAT (this will be WAN in pfSense)&lt;/li&gt;
   &lt;li&gt;.. 2nd: Bridged to my wireless device (this will be LAN in pfSense)&lt;/li&gt;
   &lt;li&gt;CD-ROM with pfSense-LiveCD-2.2.3-RELEASE-amd64.iso for installation&lt;/li&gt;
-  &lt;li&gt;After the install I chose option 2) to assign static IP address to LAN interface, I chose IP address from my home network&apos;s range&lt;br/&gt; (in my case it was 192.168.5.249/24)&lt;/li&gt;
+  &lt;li&gt;After the install I chose option 2) to assign static IP address to LAN interface, I chose IP address from my home network&apos;s range (in my case it was 192.168.5.249/24)&lt;/li&gt;
   &lt;li&gt;I also disabled DHCP on LAN interface to prevent potential interference with home network&apos;s DHCP&lt;/li&gt;
   &lt;li&gt;I browsed to the admin UI at the assigned LAN&apos;s IP and went through the installation wizard, leaving everything as it except for DHCP which I disabled&lt;/li&gt;
 &lt;/ul&gt;&lt;h3&gt;Step 2) Install squid3 package&lt;/h3&gt;
@@ -49,7 +49,7 @@
 &lt;/code&gt;&lt;/pre&gt;&lt;h3&gt;Step 6) Download Marcello&apos;s pull request for pfSense e2guardian package&lt;/h3&gt;
 &lt;ul&gt;
   &lt;li&gt;You can download pull request&apos;s file from: &lt;a href=&quot;https://github.com/marcelloc/pfsense-packages/archive/be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff.zip&quot;&gt;https://github.com/marcelloc/pfsense-packages/archive/be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff.zip&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;In this walk-through I&apos;ll download the zip directly to pfSense box (zip has 6Mb, once unpacked it will be 22Mb). Alternative method would be to&lt;br/&gt; download the zip file on your computer, unzip it, only transfer e2guardian directory from the zip file to pfSense&lt;/li&gt;
+  &lt;li&gt;In this walk-through I&apos;ll download the zip directly to pfSense box (zip has 6Mb, once unpacked it will be 22Mb). Alternative method would be to download the zip file on your computer, unzip it, only transfer e2guardian directory from the zip file to pfSense&lt;/li&gt;
   &lt;li&gt;To download the zip file to pfSense directly, we will first change directory to &lt;code&gt;/root&lt;/code&gt;, and then download the file there. While in SSH shell, type the following:&lt;/li&gt;
 &lt;/ul&gt;
 &lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;	  cd /root
@@ -150,7 +150,7 @@ chmod 0755 /usr/local/www/shortcuts/pkg_e2guardian.inc
 cp e2guardian.xml  /usr/local/pkg/e2guardian.xml
 &lt;/code&gt;&lt;/pre&gt;&lt;h2&gt;Step 9) Modify config.xml to add e2guardian menu items to pfSense web UI menus&lt;/h2&gt;
 &lt;ul&gt;
-  &lt;li&gt;There are two ways to accomplish this. You can back up your existing &lt;code&gt;config.xml&lt;/code&gt; file through web UI, edit the downloaded backup file in a text editor and then&lt;br/&gt; upload it back to pfSense (restore backup). Other way to do it is to edit it directly in pfSense using a console editor. I did it using the console editor&lt;br/&gt; and that&apos;s what I&apos;ll describe here.&lt;/li&gt;
+  &lt;li&gt;There are two ways to accomplish this. You can back up your existing &lt;code&gt;config.xml&lt;/code&gt; file through web UI, edit the downloaded backup file in a text editor and then upload it back to pfSense (restore backup). Other way to do it is to edit it directly in pfSense using a console editor. I did it using the console editor and that&apos;s what I&apos;ll describe here.&lt;/li&gt;
   &lt;li&gt;Firstly, which ever method you intend to use, since we&apos;ll be editing the configuration file it&apos;s smart to back it up:&lt;/li&gt;
   &lt;li&gt;Diagnostics -&amp;gt; Back/Restore: Back Configuration: Download Configuration&lt;/li&gt;
   &lt;li&gt;Install &lt;code&gt;nano&lt;/code&gt; editor (just because I&apos;m not very familiar with &lt;code&gt;vi&lt;/code&gt;, if you&apos;re comfortable with &lt;code&gt;vi&lt;/code&gt;, you can use that and skip this step):&lt;/li&gt;
@@ -163,7 +163,7 @@ cp e2guardian.xml  /usr/local/pkg/e2guardian.xml
 &lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;nano /cf/conf/config.xml
 &lt;/code&gt;&lt;/pre&gt;
 &lt;ul&gt;
-  &lt;li&gt;Press and hold the down arrow until you scroll down to an area which contains &lt;code&gt;&amp;lt;menu&amp;gt;&lt;/code&gt; entries - you should locate the entries for squid proxy which should look&lt;br/&gt; something like this:&lt;/li&gt;
+  &lt;li&gt;Press and hold the down arrow until you scroll down to an area which contains &lt;code&gt;&amp;lt;menu&amp;gt;&lt;/code&gt; entries - you should locate the entries for squid proxy which should look something like this:&lt;/li&gt;
 &lt;/ul&gt;
 &lt;pre&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;menu&amp;gt;
 	&amp;lt;name&amp;gt;Proxy server&amp;lt;/name&amp;gt;
@@ -173,7 +173,7 @@ cp e2guardian.xml  /usr/local/pkg/e2guardian.xml
 &amp;lt;/menu&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;ul&gt;
-  &lt;li&gt;Underneath those, you should add a menu entry for e2guardian. Position the cursor behind proxy server&apos;s closing &lt;code&gt;&amp;lt;/menu&amp;gt;&lt;/code&gt; tag, press enter to add new line,&lt;br/&gt; and copy paste the e2guardian menu xml fragment into the editor. Here&apos;s the fragment:&lt;/li&gt;
+  &lt;li&gt;Underneath those, you should add a menu entry for e2guardian. Position the cursor behind proxy server&apos;s closing &lt;code&gt;&amp;lt;/menu&amp;gt;&lt;/code&gt; tag, press enter to add new line, and copy paste the e2guardian menu xml fragment into the editor. Here&apos;s the fragment:&lt;/li&gt;
 &lt;/ul&gt;
 &lt;pre&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;menu&amp;gt;
 	&amp;lt;name&amp;gt;E2guradian&amp;lt;/name&amp;gt;
@@ -193,7 +193,7 @@ cp e2guardian.xml  /usr/local/pkg/e2guardian.xml
 &amp;lt;/service&amp;gt; 
 &lt;/code&gt;&lt;/pre&gt;
 &lt;ul&gt;
-  &lt;li&gt;Again, position your editor&apos;s cursor behind squid&apos;s closing &lt;code&gt;&amp;lt;/service&amp;gt;&lt;/code&gt; tag, press enter to add a new line, and copy paste the e2guardian service xml fragment&lt;br/&gt; into the editor. Here&apos;s the fragment:&lt;/li&gt;
+  &lt;li&gt;Again, position your editor&apos;s cursor behind squid&apos;s closing &lt;code&gt;&amp;lt;/service&amp;gt;&lt;/code&gt; tag, press enter to add a new line, and copy paste the e2guardian service xml fragment into the editor. Here&apos;s the fragment:&lt;/li&gt;
 &lt;/ul&gt;
 &lt;pre&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;service&amp;gt;
 	&amp;lt;name&amp;gt;e2guardian&amp;lt;/name&amp;gt;
@@ -204,7 +204,7 @@ cp e2guardian.xml  /usr/local/pkg/e2guardian.xml
 &lt;/code&gt;&lt;/pre&gt;
 &lt;ul&gt;
   &lt;li&gt;Press &lt;strong&gt;Ctrl-X&lt;/strong&gt; (&lt;code&gt;nano&lt;/code&gt; editor&apos;s command to save and close the file), &lt;strong&gt;y&lt;/strong&gt; (to confirm) and press enter&lt;/li&gt;
-  &lt;li&gt;You can find complete listing of &lt;code&gt;&amp;lt;menu&amp;gt;&lt;/code&gt; and &lt;code&gt;&amp;lt;service&amp;gt;&lt;/code&gt; part of the configuration file at the bottom of the page to check how the config file should look like&lt;br/&gt; after the editing has been completed.&lt;/li&gt;
+  &lt;li&gt;You can find complete listing of &lt;code&gt;&amp;lt;menu&amp;gt;&lt;/code&gt; and &lt;code&gt;&amp;lt;service&amp;gt;&lt;/code&gt; part of the configuration file at the bottom of the page to check how the config file should look like after the editing has been completed.&lt;/li&gt;
 &lt;/ul&gt;&lt;h3&gt;Step 10) Reboot (and keep your fingers crossed :) )&lt;/h3&gt;
 &lt;ul&gt;
   &lt;li&gt;We need to reboot pfSense in order to apply the changes in the config&lt;/li&gt;
