@@ -6,8 +6,8 @@
     <atom:link href="http://knes1.github.io//feed.xml" rel="self" type="application/rss+xml" />
     <description>Teh Artikli - tech and software development blog by Krešimir Nesek</description>
     <language>en-gb</language>
-    <pubDate>Sun, 16 Aug 2015 16:52:31 +0200</pubDate>
-    <lastBuildDate>Sun, 16 Aug 2015 16:52:31 +0200</lastBuildDate>
+    <pubDate>Sun, 16 Aug 2015 17:09:04 +0200</pubDate>
+    <lastBuildDate>Sun, 16 Aug 2015 17:09:04 +0200</lastBuildDate>
 
     <item>
       <title>Manage Spring Boot Logs with Elasticsearch, Logstash and Kibana</title>
@@ -15,11 +15,11 @@
       <pubDate>Sun, 16 Aug 2015 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2015/2015-08-16-manage-spring-boot-logs-with-elasticsearch-kibana-and-logstash.html</guid>
       	<description>
-	&lt;p&gt;When time comes to deploy a new project, one often overlooked aspect is log managment. ELK stack (Elasticsearch, Logstash, Kibana) is, among other things, a powerful and freely available log management solution. In this article I will show you how to install and setup ELK and use it with default log format of a Spring Boot application. &lt;/p&gt;
-&lt;!-- more --&gt;&lt;p&gt;For this guide, I&apos;ve setup a demo Spring Boot application with logging enabled and with Logstash configuration that will send log entries to Elasticsearch. Demo application is a simple &lt;a href=&quot;https://github.com/knes1/todo&quot;&gt;todo list&lt;/a&gt; available &lt;a href=&quot;https://github.com/knes1/todo&quot;&gt;here&lt;/a&gt;. &lt;/p&gt;&lt;p&gt;&lt;img src=&quot;/images/ELK.svg&quot; onerror=&quot;this.src=&apos;/images/ELK.png&apos;&quot; alt=&quot;ELK setup overview&quot;&gt;&lt;/p&gt;&lt;p&gt;Application will store logs into a log file. Logstash will read and parse the log file and ship log entries to an Elasticsearch instance. Finally, we will use Kibana 4 (Elasticsearch web frontend) to search and analyse the logs. &lt;/p&gt;&lt;h3&gt;Step 1) Install Elasticsearch&lt;/h3&gt;
+	&lt;p&gt;When time comes to deploy a new project, one often overlooked aspect is log management. ELK stack (Elasticsearch, Logstash, Kibana) is, among other things, a powerful and freely available log management solution. In this article I will show you how to install and setup ELK and use it with default log format of a Spring Boot application. &lt;/p&gt;
+&lt;!-- more --&gt;&lt;p&gt;For this guide, I&apos;ve setup a demo Spring Boot application with logging enabled and with Logstash configuration that will send log entries to Elasticsearch. Demo application is a simple &lt;a href=&quot;https://github.com/knes1/todo&quot;&gt;todo list&lt;/a&gt; available &lt;a href=&quot;https://github.com/knes1/todo&quot;&gt;here&lt;/a&gt;. &lt;/p&gt;&lt;p&gt;&lt;img src=&quot;/images/ELK.svg&quot; onerror=&quot;this.src=&apos;/images/ELK.png&apos;&quot; alt=&quot;ELK setup overview&quot;&gt;&lt;/p&gt;&lt;p&gt;Application will store logs into a log file. Logstash will read and parse the log file and ship log entries to an Elasticsearch instance. Finally, we will use Kibana 4 (Elasticsearch web frontend) to search and analyze the logs. &lt;/p&gt;&lt;h3&gt;Step 1) Install Elasticsearch&lt;/h3&gt;
 &lt;ul&gt;
   &lt;li&gt;Download elasticsearch zip file from &lt;a href=&quot;https://www.elastic.co/downloads/elasticsearch&quot;&gt;https://www.elastic.co/downloads/elasticsearch&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;Extract it to a direcotry (unzip it)&lt;/li&gt;
+  &lt;li&gt;Extract it to a directory (unzip it)&lt;/li&gt;
   &lt;li&gt;Run it (&lt;code&gt;bin/elasticsearch&lt;/code&gt; or &lt;code&gt;bin/elasticsearch.bat&lt;/code&gt; on Windows)&lt;/li&gt;
   &lt;li&gt;Check that it runs using &lt;code&gt;curl -XGET http://localhost:9200&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;p&gt;Here&apos;s how to do it (steps are written of OS X but should be similar on other systems):&lt;/p&gt;
@@ -82,7 +82,7 @@ unzip logstash-1.5.3.zip
 &lt;ul&gt;
   &lt;li&gt;We&apos;re using &lt;code&gt;file&lt;/code&gt; plugin.&lt;/li&gt;
   &lt;li&gt;&lt;code&gt;type&lt;/code&gt; is set to &lt;code&gt;java&lt;/code&gt; - it&apos;s just additional piece of metadata in case you will use multiple types of log files in the future.&lt;/li&gt;
-  &lt;li&gt;&lt;code&gt;path&lt;/code&gt; is the absolute path to the log file. It must be absolute - LogStash is picky about this.&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;path&lt;/code&gt; is the absolute path to the log file. It must be absolute - Logstash is picky about this.&lt;/li&gt;
   &lt;li&gt;We&apos;re using &lt;code&gt;multiline&lt;/code&gt; &lt;code&gt;codec&lt;/code&gt; which means that multiple lines may correspond to a single log event,&lt;/li&gt;
   &lt;li&gt;In order to detect lines that should logically be grouped with a previous line we use a detection pattern:
   &lt;ul&gt;
@@ -94,7 +94,7 @@ unzip logstash-1.5.3.zip
 &lt;ul&gt;
   &lt;li&gt;Tag a log event if it contains a stacktrace. This will be useful when searching for exceptions later on.&lt;/li&gt;
   &lt;li&gt;Parse out (or grok, in logstash terminology) timestamp, log level, pid, thread, class name (logger actually) and log message.&lt;/li&gt;
-  &lt;li&gt;Specifed timestamp field and format - Kibana will use that later for time based searches.&lt;/li&gt;
+  &lt;li&gt;Specified timestamp field and format - Kibana will use that later for time based searches.&lt;/li&gt;
 &lt;/ul&gt;&lt;p&gt;Filter section for Spring Boot&apos;s log format that aforementioned things looks like this:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;ruby&quot;&gt;filter {
   #If log line contains tab character followed by &amp;#39;at&amp;#39; then we will tag that entry as stacktrace
@@ -124,7 +124,7 @@ unzip logstash-1.5.3.zip
   &lt;li&gt;&lt;code&gt;if [message] =~ &amp;quot;\tat&amp;quot;&lt;/code&gt; → If message contains &lt;code&gt;tab&lt;/code&gt; character followed by &lt;code&gt;at&lt;/code&gt; (this is ruby syntax) then...&lt;/li&gt;
   &lt;li&gt;... use the &lt;code&gt;grok&lt;/code&gt; plugin to tag stacktraces:
   &lt;ul&gt;
-    &lt;li&gt;&lt;code&gt;match =&amp;gt; [&amp;quot;message&amp;quot;, &amp;quot;^(\tat)&amp;quot;]&lt;/code&gt; → when &lt;code&gt;message&lt;/code&gt; matches beggining of the line followed by &lt;code&gt;tab&lt;/code&gt; followed by &lt;code&gt;at&lt;/code&gt; then...&lt;/li&gt;
+    &lt;li&gt;&lt;code&gt;match =&amp;gt; [&amp;quot;message&amp;quot;, &amp;quot;^(\tat)&amp;quot;]&lt;/code&gt; → when &lt;code&gt;message&lt;/code&gt; matches beginning of the line followed by &lt;code&gt;tab&lt;/code&gt; followed by &lt;code&gt;at&lt;/code&gt; then...&lt;/li&gt;
     &lt;li&gt;&lt;code&gt;add_tag =&amp;gt; [&amp;quot;stacktrace&amp;quot;]&lt;/code&gt; → ... tag the event with &lt;code&gt;stacktrace&lt;/code&gt; tag.&lt;/li&gt;
   &lt;/ul&gt;&lt;/li&gt;
   &lt;li&gt;Use the &lt;code&gt;grok&lt;/code&gt; plugin for regular Spring Boot log message parsing:
@@ -134,7 +134,7 @@ unzip logstash-1.5.3.zip
   &lt;/ul&gt;&lt;/li&gt;
   &lt;li&gt;Use &lt;code&gt;date&lt;/code&gt; plugin to parse and set the event date:
   &lt;ul&gt;
-    &lt;li&gt;&lt;code&gt;match =&amp;gt; [ &amp;quot;timestamp&amp;quot; , &amp;quot;yyyy-MM-dd HH:mm:ss.SSS&amp;quot; ]&lt;/code&gt; → &lt;code&gt;timestamp&lt;/code&gt; field (grokked eariler) contains the timestamp in the specified format&lt;/li&gt;
+    &lt;li&gt;&lt;code&gt;match =&amp;gt; [ &amp;quot;timestamp&amp;quot; , &amp;quot;yyyy-MM-dd HH:mm:ss.SSS&amp;quot; ]&lt;/code&gt; → &lt;code&gt;timestamp&lt;/code&gt; field (grokked earlier) contains the timestamp in the specified format&lt;/li&gt;
   &lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;h4&gt;Output Section&lt;/h4&gt;&lt;p&gt;Output section contains output plugins that send event data to a particular destination. Outputs are the final stage in the event pipeline. We will be sending our log events to stdout (console output, for debugging) and to Elasticsearch.&lt;/p&gt;&lt;p&gt;Compared to filter section, output section is rather straightforward:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;ruby&quot;&gt;output {
@@ -170,7 +170,7 @@ unzip logstash-1.5.3.zip
   &lt;li&gt;Index pattern interval: Daily&lt;/li&gt;
   &lt;li&gt;Index name or pattern: [logstash-]YYYY.MM.DD&lt;/li&gt;
   &lt;li&gt;Click on &quot;Create Index&quot;&lt;/li&gt;
-&lt;/ul&gt;&lt;p&gt;Now clieck on &quot;Discover&quot; tab. In my opinion, &quot;Discover&quot; tab is really named incorrectly in Kibana - it should be labeled as &quot;Search&quot; instead of &quot;Discover&quot; because it allows you to perform new searches and also to save/manage them. Log events should be showing up now in the main window. If they&apos;re not, than double check the time period filter in to right corner of the screen. Default table will have 2 columns by default: Time and _source. In order to make the listing more useful, we can configure the displayed columns. From the menu on the left select level, class and logmessage.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;/images/discover-kibana4.png&quot; alt=&quot;Kibana 4 Discover Tab&quot; style=&quot;max-width: 100%&quot;&gt;&lt;/p&gt;&lt;p&gt;Alright! You&apos;re now ready to take control of your logs using ELK stack and start customizing and tweaking your log managment configuration. You can download the sample application used when writing this articale from here: [https://github.com/knes1/todo]. It&apos;s already configured to write logs in a file and has the Logstash config as described above (although absolute paths will need to be tweaked in &lt;code&gt;logstash.conf&lt;/code&gt;).&lt;/p&gt;&lt;p&gt;As always, let know if you have any question/comments or ideas in the comments section below.&lt;/p&gt;
+&lt;/ul&gt;&lt;p&gt;Now click on &quot;Discover&quot; tab. In my opinion, &quot;Discover&quot; tab is really named incorrectly in Kibana - it should be labeled as &quot;Search&quot; instead of &quot;Discover&quot; because it allows you to perform new searches and also to save/manage them. Log events should be showing up now in the main window. If they&apos;re not, than double check the time period filter in to right corner of the screen. Default table will have 2 columns by default: Time and _source. In order to make the listing more useful, we can configure the displayed columns. From the menu on the left select level, class and logmessage.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;/images/discover-kibana4.png&quot; alt=&quot;Kibana 4 Discover Tab&quot; style=&quot;max-width: 100%&quot;&gt;&lt;/p&gt;&lt;p&gt;Alright! You&apos;re now ready to take control of your logs using ELK stack and start customizing and tweaking your log management configuration. You can download the sample application used when writing this article from here: &lt;a href=&quot;https://github.com/knes1/todo&quot;&gt;https://github.com/knes1/todo&lt;/a&gt;. It&apos;s already configured to write logs in a file and has the Logstash config as described above (although absolute paths will need to be tweaked in &lt;code&gt;logstash.conf&lt;/code&gt;).&lt;/p&gt;&lt;p&gt;As always, let me know if you have any question/comments or ideas in the comments section below.&lt;/p&gt;
 	</description>
     </item>
     <item>
