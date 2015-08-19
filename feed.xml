@@ -6,8 +6,8 @@
     <atom:link href="http://knes1.github.io//feed.xml" rel="self" type="application/rss+xml" />
     <description>Teh Artikli - tech and software development blog by Krešimir Nesek</description>
     <language>en-gb</language>
-    <pubDate>Sun, 16 Aug 2015 17:09:04 +0200</pubDate>
-    <lastBuildDate>Sun, 16 Aug 2015 17:09:04 +0200</lastBuildDate>
+    <pubDate>Wed, 19 Aug 2015 10:44:27 +0200</pubDate>
+    <lastBuildDate>Wed, 19 Aug 2015 10:44:27 +0200</lastBuildDate>
 
     <item>
       <title>Manage Spring Boot Logs with Elasticsearch, Logstash and Kibana</title>
@@ -22,12 +22,12 @@
   &lt;li&gt;Extract it to a directory (unzip it)&lt;/li&gt;
   &lt;li&gt;Run it (&lt;code&gt;bin/elasticsearch&lt;/code&gt; or &lt;code&gt;bin/elasticsearch.bat&lt;/code&gt; on Windows)&lt;/li&gt;
   &lt;li&gt;Check that it runs using &lt;code&gt;curl -XGET http://localhost:9200&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;p&gt;Here&apos;s how to do it (steps are written of OS X but should be similar on other systems):&lt;/p&gt;
+&lt;/ul&gt;&lt;p&gt;Here&apos;s how to do it (steps are written for OS X but should be similar on other systems):&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;wget https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.7.1.zip
 unzip elasticsearch-1.7.1.zip
 cd elasticsearch-1.7.1
 bin/elasticsearch
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Elasticsearch should be running now. You can verify it&apos;s running using curl. In a separate terminal window execute a GET request to Elasticsearch&apos;s status page:&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Elasticsearch should be running now. You can verify it&apos;s running using &lt;code&gt;curl&lt;/code&gt;. In a separate terminal window execute a GET request to Elasticsearch&apos;s status page:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;curl -XGET http://localhost:9200
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If all is well, you should get the following result:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;{
@@ -47,7 +47,7 @@ bin/elasticsearch
 &lt;ul&gt;
   &lt;li&gt;Download Kibana archive from &lt;a href=&quot;https://www.elastic.co/downloads/kibana&quot;&gt;https://www.elastic.co/downloads/kibana&lt;/a&gt;
   &lt;ul&gt;
-    &lt;li&gt;Please note that you need to download appropriate distribution for your OS, URL given below examples in here are for OS X&lt;/li&gt;
+    &lt;li&gt;Please note that you need to download appropriate distribution for your OS, URL given in examples below is for OS X&lt;/li&gt;
   &lt;/ul&gt;&lt;/li&gt;
   &lt;li&gt;Extract the archive&lt;/li&gt;
   &lt;li&gt;Run it (&lt;code&gt;bin/kibana&lt;/code&gt;)&lt;/li&gt;
@@ -66,7 +66,7 @@ bin/kibana
 unzip logstash-1.5.3.zip
 &lt;/code&gt;&lt;/pre&gt;&lt;h3&gt;Step 4) Configure Spring Boot&apos;s Log File&lt;/h3&gt;&lt;p&gt;In order to have Logstash ship log files to Elasticsearch, we must first configure Spring Boot to store log entries into a file. We will establish the following pipeline: Spring Boot App → Log File → Logstash → Elasticsearch. There are other ways of accomplishing the same thing, such as configuring logback to use TCP appender to send logs to a remote Logstash instance via TCP, and many other configurations. I prefer the file approach because it&apos;s simple, unobtrusive (you can easily add it to existing systems) and nothing will be lost/broken if for some reason Logstash stops working or if Elasticsearch dies.&lt;/p&gt;&lt;p&gt;Anyhow, let&apos;s configure Spring Boot&apos;s log file. The simplest way to do this is to configure log file name in &lt;code&gt;application.properties&lt;/code&gt;. It&apos;s enough to add the following line:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;yaml&quot;&gt;logging.file=application.log
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Spring Boot will now log ERROR, WARN and INFO level messages and the &lt;code&gt;application.log&lt;/code&gt; log file will rotate as it reaches 10 Mb.&lt;/p&gt;&lt;h3&gt;Step 5) Configure Logstash to Understand Spring Boot&apos;s Log File Format&lt;/h3&gt;&lt;p&gt;Now comes the tricky part. We need to create Logstash config file. Typical Logstash config file consists of three main sections: input, filter and output. Each section contains plugins that do relevant part of the processing (such as file input plugin or elasticsearch output plugin).&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;/images/logstash-conf.svg&quot; onerror=&quot;this.src=&apos;/images/logstash-conf.svg&apos;&quot; alt=&quot;Logstash config pipeline&quot;&gt;&lt;/p&gt;&lt;p&gt;Input section defines from where will Logstash read input data - in our case it will be a file hence we will use a &lt;code&gt;file&lt;/code&gt; plugin with &lt;code&gt;multiline&lt;/code&gt; &lt;code&gt;codec&lt;/code&gt;, which basically means that our input file may have multiple lines per log entry.&lt;/p&gt;&lt;h4&gt;Input Section&lt;/h4&gt;&lt;p&gt;Here&apos;s the input section:&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Spring Boot will now log ERROR, WARN and INFO level messages and the &lt;code&gt;application.log&lt;/code&gt; log file will rotate as it reaches 10 Mb.&lt;/p&gt;&lt;h3&gt;Step 5) Configure Logstash to Understand Spring Boot&apos;s Log File Format&lt;/h3&gt;&lt;p&gt;Now comes the tricky part. We need to create Logstash config file. Typical Logstash config file consists of three main sections: input, filter and output. Each section contains plugins that do relevant part of the processing (such as file input plugin that reads log events from a file or elasticsearch output plugin which sends log events to Elasticsearch).&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;/images/logstash-conf.svg&quot; onerror=&quot;this.src=&apos;/images/logstash-conf.svg&apos;&quot; alt=&quot;Logstash config pipeline&quot;&gt;&lt;/p&gt;&lt;p&gt;Input section defines from where Logstash will read input data - in our case it will be a file hence we will use a &lt;code&gt;file&lt;/code&gt; plugin with &lt;code&gt;multiline&lt;/code&gt; &lt;code&gt;codec&lt;/code&gt;, which basically means that our input file may have multiple lines per log entry.&lt;/p&gt;&lt;h4&gt;Input Section&lt;/h4&gt;&lt;p&gt;Here&apos;s the input section:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;ruby&quot;&gt;input {
   file {
     type =&amp;gt; &amp;quot;java&amp;quot;

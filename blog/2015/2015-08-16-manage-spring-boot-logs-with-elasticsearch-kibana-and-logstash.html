@@ -79,12 +79,12 @@
   <li>Extract it to a directory (unzip it)</li>
   <li>Run it (<code>bin/elasticsearch</code> or <code>bin/elasticsearch.bat</code> on Windows)</li>
   <li>Check that it runs using <code>curl -XGET http://localhost:9200</code></li>
-</ul><p>Here's how to do it (steps are written of OS X but should be similar on other systems):</p>
+</ul><p>Here's how to do it (steps are written for OS X but should be similar on other systems):</p>
 <pre><code class="bash">wget https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.7.1.zip
 unzip elasticsearch-1.7.1.zip
 cd elasticsearch-1.7.1
 bin/elasticsearch
-</code></pre><p>Elasticsearch should be running now. You can verify it's running using curl. In a separate terminal window execute a GET request to Elasticsearch's status page:</p>
+</code></pre><p>Elasticsearch should be running now. You can verify it's running using <code>curl</code>. In a separate terminal window execute a GET request to Elasticsearch's status page:</p>
 <pre><code class="bash">curl -XGET http://localhost:9200
 </code></pre><p>If all is well, you should get the following result:</p>
 <pre><code class="bash">{
@@ -104,7 +104,7 @@ bin/elasticsearch
 <ul>
   <li>Download Kibana archive from <a href="https://www.elastic.co/downloads/kibana">https://www.elastic.co/downloads/kibana</a>
   <ul>
-    <li>Please note that you need to download appropriate distribution for your OS, URL given below examples in here are for OS X</li>
+    <li>Please note that you need to download appropriate distribution for your OS, URL given in examples below is for OS X</li>
   </ul></li>
   <li>Extract the archive</li>
   <li>Run it (<code>bin/kibana</code>)</li>
@@ -123,7 +123,7 @@ bin/kibana
 unzip logstash-1.5.3.zip
 </code></pre><h3>Step 4) Configure Spring Boot's Log File</h3><p>In order to have Logstash ship log files to Elasticsearch, we must first configure Spring Boot to store log entries into a file. We will establish the following pipeline: Spring Boot App → Log File → Logstash → Elasticsearch. There are other ways of accomplishing the same thing, such as configuring logback to use TCP appender to send logs to a remote Logstash instance via TCP, and many other configurations. I prefer the file approach because it's simple, unobtrusive (you can easily add it to existing systems) and nothing will be lost/broken if for some reason Logstash stops working or if Elasticsearch dies.</p><p>Anyhow, let's configure Spring Boot's log file. The simplest way to do this is to configure log file name in <code>application.properties</code>. It's enough to add the following line:</p>
 <pre><code class="yaml">logging.file=application.log
-</code></pre><p>Spring Boot will now log ERROR, WARN and INFO level messages and the <code>application.log</code> log file will rotate as it reaches 10 Mb.</p><h3>Step 5) Configure Logstash to Understand Spring Boot's Log File Format</h3><p>Now comes the tricky part. We need to create Logstash config file. Typical Logstash config file consists of three main sections: input, filter and output. Each section contains plugins that do relevant part of the processing (such as file input plugin or elasticsearch output plugin).</p><p><img src="/images/logstash-conf.svg" onerror="this.src='/images/logstash-conf.svg'" alt="Logstash config pipeline"></p><p>Input section defines from where will Logstash read input data - in our case it will be a file hence we will use a <code>file</code> plugin with <code>multiline</code> <code>codec</code>, which basically means that our input file may have multiple lines per log entry.</p><h4>Input Section</h4><p>Here's the input section:</p>
+</code></pre><p>Spring Boot will now log ERROR, WARN and INFO level messages and the <code>application.log</code> log file will rotate as it reaches 10 Mb.</p><h3>Step 5) Configure Logstash to Understand Spring Boot's Log File Format</h3><p>Now comes the tricky part. We need to create Logstash config file. Typical Logstash config file consists of three main sections: input, filter and output. Each section contains plugins that do relevant part of the processing (such as file input plugin that reads log events from a file or elasticsearch output plugin which sends log events to Elasticsearch).</p><p><img src="/images/logstash-conf.svg" onerror="this.src='/images/logstash-conf.svg'" alt="Logstash config pipeline"></p><p>Input section defines from where Logstash will read input data - in our case it will be a file hence we will use a <code>file</code> plugin with <code>multiline</code> <code>codec</code>, which basically means that our input file may have multiple lines per log entry.</p><h4>Input Section</h4><p>Here's the input section:</p>
 <pre><code class="ruby">input {
   file {
     type =&gt; &quot;java&quot;
