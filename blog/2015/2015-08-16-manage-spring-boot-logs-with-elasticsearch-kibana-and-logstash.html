@@ -45,7 +45,13 @@
 <li>
   <a href="../../feed.xml">
     <i class="el el-rss"></i>
- <span class="link-label">Feed</span>
+ <span class="link-label">Subscribe</span>
+  </a>
+</li>
+<li>
+  <a href="https://twitter.com/intent/follow?screen_name=knes1">
+    <i class="el el-twitter"></i>
+ <span class="link-label">Follow</span>
   </a>
 </li>
 <li>
@@ -123,7 +129,7 @@ bin/kibana
 unzip logstash-1.5.3.zip
 </code></pre><h3>Step 4) Configure Spring Boot's Log File</h3><p>In order to have Logstash ship log files to Elasticsearch, we must first configure Spring Boot to store log entries into a file. We will establish the following pipeline: Spring Boot App → Log File → Logstash → Elasticsearch. There are other ways of accomplishing the same thing, such as configuring logback to use TCP appender to send logs to a remote Logstash instance via TCP, and many other configurations. I prefer the file approach because it's simple, unobtrusive (you can easily add it to existing systems) and nothing will be lost/broken if for some reason Logstash stops working or if Elasticsearch dies.</p><p>Anyhow, let's configure Spring Boot's log file. The simplest way to do this is to configure log file name in <code>application.properties</code>. It's enough to add the following line:</p>
 <pre><code class="yaml">logging.file=application.log
-</code></pre><p>Spring Boot will now log ERROR, WARN and INFO level messages and the <code>application.log</code> log file will rotate as it reaches 10 Mb.</p><h3>Step 5) Configure Logstash to Understand Spring Boot's Log File Format</h3><p>Now comes the tricky part. We need to create Logstash config file. Typical Logstash config file consists of three main sections: input, filter and output. Each section contains plugins that do relevant part of the processing (such as file input plugin that reads log events from a file or elasticsearch output plugin which sends log events to Elasticsearch).</p><p><img src="/images/logstash-conf.svg" onerror="this.src='/images/logstash-conf.svg'" alt="Logstash config pipeline"></p><p>Input section defines from where Logstash will read input data - in our case it will be a file hence we will use a <code>file</code> plugin with <code>multiline</code> <code>codec</code>, which basically means that our input file may have multiple lines per log entry.</p><h4>Input Section</h4><p>Here's the input section:</p>
+</code></pre><p>Spring Boot will now log ERROR, WARN and INFO level messages in the <code>application.log</code> log file and will also rotate it as it reaches 10 Mb.</p><h3>Step 5) Configure Logstash to Understand Spring Boot's Log File Format</h3><p>Now comes the tricky part. We need to create Logstash config file. Typical Logstash config file consists of three main sections: input, filter and output. Each section contains plugins that do relevant part of the processing (such as file input plugin that reads log events from a file or elasticsearch output plugin which sends log events to Elasticsearch).</p><p><img src="/images/logstash-conf.svg" onerror="this.src='/images/logstash-conf.svg'" alt="Logstash config pipeline"></p><p>Input section defines from where Logstash will read input data - in our case it will be a file hence we will use a <code>file</code> plugin with <code>multiline</code> <code>codec</code>, which basically means that our input file may have multiple lines per log entry.</p><h4>Input Section</h4><p>Here's the input section:</p>
 <pre><code class="ruby">input {
   file {
     type =&gt; &quot;java&quot;
@@ -227,7 +233,7 @@ unzip logstash-1.5.3.zip
   <li>Index pattern interval: Daily</li>
   <li>Index name or pattern: [logstash-]YYYY.MM.DD</li>
   <li>Click on "Create Index"</li>
-</ul><p>Now click on "Discover" tab. In my opinion, "Discover" tab is really named incorrectly in Kibana - it should be labeled as "Search" instead of "Discover" because it allows you to perform new searches and also to save/manage them. Log events should be showing up now in the main window. If they're not, than double check the time period filter in to right corner of the screen. Default table will have 2 columns by default: Time and _source. In order to make the listing more useful, we can configure the displayed columns. From the menu on the left select level, class and logmessage.</p><p><img src="/images/discover-kibana4.png" alt="Kibana 4 Discover Tab" style="max-width: 100%"></p><p>Alright! You're now ready to take control of your logs using ELK stack and start customizing and tweaking your log management configuration. You can download the sample application used when writing this article from here: <a href="https://github.com/knes1/todo">https://github.com/knes1/todo</a>. It's already configured to write logs in a file and has the Logstash config as described above (although absolute paths will need to be tweaked in <code>logstash.conf</code>).</p><p>As always, let me know if you have any question/comments or ideas in the comments section below.</p></div>
+</ul><p>Now click on "Discover" tab. In my opinion, "Discover" tab is really named incorrectly in Kibana - it should be labeled as "Search" instead of "Discover" because it allows you to perform new searches and also to save/manage them. Log events should be showing up now in the main window. If they're not, then double check the time period filter in to right corner of the screen. Default table will have 2 columns by default: Time and _source. In order to make the listing more useful, we can configure the displayed columns. From the menu on the left select level, class and logmessage.</p><p><img src="/images/discover-kibana4.png" alt="Kibana 4 Discover Tab" style="max-width: 100%"></p><p>Alright! You're now ready to take control of your logs using ELK stack and start customizing and tweaking your log management configuration. You can download the sample application used when writing this article from here: <a href="https://github.com/knes1/todo">https://github.com/knes1/todo</a>. It's already configured to write logs in a file and has the Logstash config as described above (although absolute paths will need to be tweaked in <code>logstash.conf</code>).</p><p>As always, let me know if you have any question/comments or ideas in the comments section below.</p></div>
 
 	<hr />
 
@@ -254,5 +260,6 @@ unzip logstash-1.5.3.zip
     <script src="../../js/jquery-1.11.1.min.js"></script>
 <script src="//static.getclicky.com/js" type="text/javascript"></script>
 <script type="text/javascript">try{ clicky.init(100763555); }catch(e){}</script>
-<noscript><p><img alt="Clicky" width="1" height="1" src="//in.getclicky.com/100763555ns.gif" /></p></noscript>  </body>
+<noscript><p><img alt="Clicky" width="1" height="1" src="//in.getclicky.com/100763555ns.gif" /></p></noscript>    <script src="https://platform.twitter.com/widgets.js"></script>
+  </body>
 </html>

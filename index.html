@@ -46,7 +46,13 @@
 <li>
   <a href="feed.xml">
     <i class="el el-rss"></i>
- <span class="link-label">Feed</span>
+ <span class="link-label">Subscribe</span>
+  </a>
+</li>
+<li>
+  <a href="https://twitter.com/intent/follow?screen_name=knes1">
+    <i class="el el-twitter"></i>
+ <span class="link-label">Follow</span>
   </a>
 </li>
 <li>
@@ -62,6 +68,21 @@
     <div class="row">
       <div class="twelve columns" style="margin-top: 100px">
 
+  			<a href="blog/2015/2015-10-19-streaming-mysql-results-using-java8-streams-and-spring-data.html"><h1>Streaming MySQL results using Java 8 streams and Spring Data JPA</h1></a>
+  			<p class="post-info">
+	  			<i class="el el-calendar"></i>
+ 19 October 2015 |
+	  			<i class="el el-user"></i>
+ Krešimir Nesek |
+	  			<i class="el el-comment"></i>
+ <a href="http://knes1.github.io/blog/2015/2015-10-19-streaming-mysql-results-using-java8-streams-and-spring-data.html#disqus_thread">0 Comments</a>
+  			</p>
+  			<div class="summary">
+  				<p>Since version 1.8, Spring data project includes an interesting feature - through a simple API call developer can request database query results to be returned as Java 8 stream. Where technically possible and supported by underlying database technology, results are being streamed one by one and are available for processing using stream operations. This technique can be particularly useful when processing large datasets (for example, exporting larger amounts of database data in a specific format) because, among other things, it can limit memory consumption in the processing layer of the application. In this article I will discuss some of the benefits (and gotchas!) when Spring Data streaming is used with MySQL database.</p>
+
+  			</div>
+			<a class="button" href="blog/2015/2015-10-19-streaming-mysql-results-using-java8-streams-and-spring-data.html">Read More →</a>
+			<hr>
   			<a href="blog/2015/2015-08-16-manage-spring-boot-logs-with-elasticsearch-kibana-and-logstash.html"><h1>Manage Spring Boot Logs with Elasticsearch, Logstash and Kibana</h1></a>
   			<p class="post-info">
 	  			<i class="el el-calendar"></i>
@@ -151,7 +172,7 @@
 			<a class="button" href="blog/2014/2014-08-18-concise-integration-tests-that-contain-mocks-in-spring-framework.html">Read More →</a>
 			<hr>
 
-	<p>Older posts are available in the <a href="/archive.html">archive</a>.</p>
+	<p>Older posts are available in the <a href="/archive.html">archive</a>. Site baked with <a href="http://jbake.org/">JBake</a>.</p>
 	<script type="text/javascript">
 		var disqus_shortname = 'teh-artikli';
 
@@ -168,5 +189,6 @@
     <script src="js/jquery-1.11.1.min.js"></script>
 <script src="//static.getclicky.com/js" type="text/javascript"></script>
 <script type="text/javascript">try{ clicky.init(100763555); }catch(e){}</script>
-<noscript><p><img alt="Clicky" width="1" height="1" src="//in.getclicky.com/100763555ns.gif" /></p></noscript>  </body>
+<noscript><p><img alt="Clicky" width="1" height="1" src="//in.getclicky.com/100763555ns.gif" /></p></noscript>    <script src="https://platform.twitter.com/widgets.js"></script>
+  </body>
 </html>

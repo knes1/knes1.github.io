@@ -6,9 +6,108 @@
     <atom:link href="http://knes1.github.io//feed.xml" rel="self" type="application/rss+xml" />
     <description>Teh Artikli - tech and software development blog by Krešimir Nesek</description>
     <language>en-gb</language>
-    <pubDate>Wed, 19 Aug 2015 10:44:27 +0200</pubDate>
-    <lastBuildDate>Wed, 19 Aug 2015 10:44:27 +0200</lastBuildDate>
+    <pubDate>Sun, 18 Oct 2015 17:11:46 +0200</pubDate>
+    <lastBuildDate>Sun, 18 Oct 2015 17:11:46 +0200</lastBuildDate>
 
+    <item>
+      <title>Streaming MySQL results using Java 8 streams and Spring Data JPA</title>
+      <link>http://knes1.github.io//blog/2015/2015-10-19-streaming-mysql-results-using-java8-streams-and-spring-data.html</link>
+      <pubDate>Mon, 19 Oct 2015 00:00:00 +0200</pubDate>
+      <guid isPermaLink="false">blog/2015/2015-10-19-streaming-mysql-results-using-java8-streams-and-spring-data.html</guid>
+      	<description>
+	&lt;p&gt;Since version 1.8, Spring data project includes an interesting feature - through a simple API call developer can request database query results to be returned as Java 8 stream. Where technically possible and supported by underlying database technology, results are being streamed one by one and are available for processing using stream operations. This technique can be particularly useful when processing large datasets (for example, exporting larger amounts of database data in a specific format) because, among other things, it can limit memory consumption in the processing layer of the application. In this article I will discuss some of the benefits (and gotchas!) when Spring Data streaming is used with MySQL database.&lt;/p&gt;
+&lt;!-- more --&gt;&lt;p&gt;Naive approaches to fetching and processing a larger amount of data (by larger, I mean datasets that do not fit into the memory of the running application) from the database will often result with running out of memory. This is especially true when using ORMs / abstraction layers such as JPA where you don&apos;t have access to lower level facilities that would allow you to manually manage how data is fetched from the database. Typically, at least with the stack that I&apos;m usually using - MySQL, Hibernate/JPA and Spring Data - the whole resultset of a large query will be fetched entirely either by MySQL&apos;s JDBC driver or one of the aforementioned frameworks that come after it. This will lead to OutOfMemory exceptions if the resultset is sufficiently large.&lt;/p&gt;&lt;h2&gt;Solution Using Paging&lt;/h2&gt;&lt;p&gt;Let&apos;s focus on a single example - exporting results of a large query as a CSV file. When presented with this problem and when I want to stay in Spring Data/JPA world, I usually settle for a paging solution. The query is broken down to smaller queries that each return one page of results, each with a limited size. Spring Data offers nice paging/slicing feature that makes this approach easy to implement. Spring Data&apos;s PageRequests get translated to limit/offset queries in MySQL. There are caveats though. When using JPA, entities get cached in EntityManager&apos;s cache. This cache needs to be cleared to enable garbage collector to remove the old result objects from the memory.&lt;/p&gt;&lt;p&gt;Let&apos;s take look how an actual implementation of paging strategy behaves in practice. For testing purposes I will use a small &lt;a href=&quot;https://github.com/knes1/todo/tree/mysql-streaming-test&quot;&gt;application based on Spring Boot, Spring Data, Hibernate/JPA and MySQL&lt;/a&gt;. It&apos;s a todo list management webapp and it has a feature to download all todos as a CSV files. Todos are stored in a single MySQL table. The table has been filled with 1 million entries. Here&apos;s the code for the paging/slicing export function:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;java&quot;&gt;@RequestMapping(value = &amp;quot;/todos2.csv&amp;quot;, method = RequestMethod.GET)
+public void exportTodosCSVSlicing(HttpServletResponse response) {
+	final int PAGE_SIZE = 1000;
+	response.addHeader(&amp;quot;Content-Type&amp;quot;, &amp;quot;application/csv&amp;quot;);
+	response.addHeader(&amp;quot;Content-Disposition&amp;quot;, &amp;quot;attachment; filename=todos.csv&amp;quot;);
+	response.setCharacterEncoding(&amp;quot;UTF-8&amp;quot;);
+	try {
+		PrintWriter out = response.getWriter();
+		int page = 0;
+		Slice&amp;lt;Todo&amp;gt; todoPage;
+		do {
+			todoPage = todoRepository.findAllBy(new PageRequest(page, PAGE_SIZE));
+			for (Todo todo : todoPage) {
+				String line = todoToCSV(todo);
+				out.write(line);
+				out.write(&amp;quot;\n&amp;quot;);
+			}
+			entityManager.clear();
+			page++;
+		} while (todoPage.hasNext());
+		out.flush();
+	} catch (IOException e) {
+		log.info(&amp;quot;Exception occurred &amp;quot; + e.getMessage(), e);
+		throw new RuntimeException(&amp;quot;Exception occurred while exporting results&amp;quot;, e);
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This how memory usage looks like while export operation is in progress:&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;/images/mem-paging-slicing.png&quot; alt=&quot;Memory usage when exporting using paging strategy&quot; style=&quot;max-width: 100%&quot;&gt;&lt;/p&gt;&lt;p&gt;Memory usage graph has a shape of a saw-tooth: memory usage grows as entries are fetched from the database until GC kicks in and cleans up the entries that have already been outputted and cleared from EntityManager&apos;s cache. Paging approach works great but it definitely has room from improvement:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;p&gt;We&apos;re issuing 1000 database queries (number of entries / PAGE_SIZE) to complete the export. It would be better if we could avoid the overhead of executing those queries.&lt;/p&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;p&gt;Did you notice how the raising slope of the tooths on the graph is less and less steep as the export progresses and the distance between the peaks increases? It seems that the rate at which new entires are fetched from DB gets slower and slower. The reason for this is MySQL&apos;s limit/offset performance characteristic - as offset gets larger it takes more and more time to find and return the selected rows.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;Can we improve the above using new streaming functionality available in Spring Data 1.8? Let&apos;s try.&lt;/p&gt;&lt;h2&gt;Streaming Functionality in Spring Data 1.8&lt;/h2&gt;&lt;p&gt;Spring Data 1.8 introduced support for streaming resultsets. Repositories can now declare methods that return Java 8 streams of entity objects. For example, it&apos;s now possible to add a method with the following signature to a repository:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;java&quot;&gt;@Query(&amp;quot;select t from Todo t&amp;quot;)
+Stream&amp;lt;Todo&amp;gt; streamAll();
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Spring Data will use techniques specific to a particular JPA implementation (e.g. Hibernate&apos;s, EclipseLink&apos;s etc.) to stream the resultset. Let&apos;s re-implement the CSV exporting using this streaming capability:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;java&quot;&gt;@RequestMapping(value = &amp;quot;/todos.csv&amp;quot;, method = RequestMethod.GET)
+@Transactional(readOnly = true)
+public void exportTodosCSV(HttpServletResponse response) {
+	response.addHeader(&amp;quot;Content-Type&amp;quot;, &amp;quot;application/csv&amp;quot;);
+	response.addHeader(&amp;quot;Content-Disposition&amp;quot;, &amp;quot;attachment; filename=todos.csv&amp;quot;);
+	response.setCharacterEncoding(&amp;quot;UTF-8&amp;quot;);
+	try(Stream&amp;lt;Todo&amp;gt; todoStream = todoRepository.streamAll()) {
+		PrintWriter out = response.getWriter();
+		todoStream.forEach(rethrowConsumer(todo -&amp;gt; {
+			String line = todoToCSV(todo);
+			out.write(line);
+			out.write(&amp;quot;\n&amp;quot;);
+			entityManager.detach(todo);
+		}));
+		out.flush();
+	} catch (IOException e) {
+		log.info(&amp;quot;Exception occurred &amp;quot; + e.getMessage(), e);
+		throw new RuntimeException(&amp;quot;Exception occurred while exporting results&amp;quot;, e);
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;I started the export as usual, however the results are not showing up. What&apos;s happening?&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;/images/mem-streaming-outofmem.png&quot; alt=&quot;Streaming, out of memory because of preloading&quot; style=&quot;max-width: 100%&quot;&gt;&lt;/p&gt;&lt;p&gt;It seems that we have run out of memory. Additionally, no results were written to &lt;code&gt;HttpServletResponse&lt;/code&gt;. Why isn&apos;t this working? After digging into source code of &lt;code&gt;org.springframework.data.jpa.provider.PerisitenceProvider&lt;/code&gt; one can find out that Spring Data is using scrollable resultsets to implement resultset streams. Googling about scrollable resultsets and MySQL shows that there are gotchas when using them. For instance, here&apos;s a quote from &lt;a href=&quot;http://dev.mysql.com/doc/connector-j/en/connector-j-reference-implementation-notes.html&quot;&gt;MySQL&apos;s JDBC driver&apos;s documentation&lt;/a&gt;:&lt;/p&gt;
+&lt;blockquote&gt;&lt;p&gt;By default, ResultSets are completely retrieved and stored in memory. In most cases this is the most efficient way to operate and, due to the design of the MySQL network protocol, is easier to implement. If you are working with ResultSets that have a large number of rows or large values and cannot allocate heap space in your JVM for the memory required, you can tell the driver to stream the results back one row at a time. To enable this functionality, create a Statement instance in the following manner:&lt;/p&gt;
+  &lt;pre&gt;&lt;code&gt;stmt = conn.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY,java.sql.ResultSet.CONCUR_READ_ONLY);
+stmt.setFetchSize(Integer.MIN_VALUE);
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The combination of a forward-only, read-only result set, with a fetch size of Integer.MIN_VALUE serves as a signal to the driver to stream result sets row-by-row. After this, any result sets created with the statement will be retrieved row-by-row.&lt;/p&gt;&lt;p&gt;There are some caveats with this approach. You must read all of the rows in the result set (or close it) before you can issue any other queries on the connection, or an exception will be thrown.&lt;/p&gt;
+&lt;/blockquote&gt;&lt;p&gt;Ok, it seems that when using MySQL in order to really stream the results we need to satisfy three conditions:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Forward-only resultset&lt;/li&gt;
+  &lt;li&gt;Read-only statement&lt;/li&gt;
+  &lt;li&gt;Fetch-size set to Integer.MIN_VALUE&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;Forward-only seems to be set already by Spring Data so we don&apos;t have to do anything special about that. Our code sample already has &lt;code&gt;@Transactional(readOnly = true)&lt;/code&gt; annotation which is enough to satisfy the second criteria. What seems to be missing is the fetch-size. We can set it up using query hints on the repository method:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;java&quot;&gt;...
+import static org.hibernate.jpa.QueryHints.HINT_FETCH_SIZE;
+
+@Repository
+public interface TodoRepository extends JpaRepository&amp;lt;Todo, Long&amp;gt; {
+
+	@QueryHints(value = @QueryHint(name = HINT_FETCH_SIZE, value = &amp;quot;&amp;quot; + Integer.MIN_VALUE))
+	@Query(value = &amp;quot;select t from Todo t&amp;quot;)
+	Stream&amp;lt;Todo&amp;gt; streamAll();
+	
+	...
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;With query hints in place, let&apos;s run export again:&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;/images/mem-streaming.png&quot; alt=&quot;Streaming, memory usage&quot; style=&quot;max-width: 100%&quot;&gt;&lt;/p&gt;&lt;p&gt;Everything is working now, and it seems it&apos;s much more efficient than the paging approach:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;When streaming, export is finished in about &lt;strong&gt;9 seconds&lt;/strong&gt; vs about &lt;strong&gt;137 seconds&lt;/strong&gt; when using paging&lt;/li&gt;
+  &lt;li&gt;It seems offset performance, query overhead and result preloading can really hurt paging approach when dataset is sufficiently large&lt;/li&gt;
+&lt;/ul&gt;&lt;h2&gt;Conclusions&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;We&apos;ve seen significant performance improvements when using streaming (via scrollable resultsets) vs paging, admittedly in a very specific task of exporting data.&lt;/li&gt;
+  &lt;li&gt;Spring Data&apos;s new features give really convenient access to scrollable resultsets via streams.&lt;/li&gt;
+  &lt;li&gt;There are gotchas to get it working with MySQL, but they are manageable.&lt;/li&gt;
+  &lt;li&gt;There are further restrictions when reading scrollable result sets in MySQL - no statement may be issued through the same database connection until the resultset is fully read.&lt;/li&gt;
+  &lt;li&gt;The export works fine because we are writing results directly to &lt;code&gt;HttpServletResponse&lt;/code&gt;. If we were using default Spring&apos;s message converters (e.g. returning stream from the controller method ) then there&apos;s a good chance this would not work as expected. Here&apos;s an interesting &lt;a href=&quot;https://www.airpair.com/java/posts/spring-streams-memory-efficiency&quot;&gt;article on this subject&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;I would love to try the tests with other database and explore possibilities of streaming results via Spring message converters as hinted in article linked above. If you&apos;d like to experiment yourself, the test application is &lt;a href=&quot;https://github.com/knes1/todo/tree/mysql-streaming-test&quot;&gt;available on github&lt;/a&gt;. I hope you found the article interesting and I welcome your comments in the comment section below.&lt;/p&gt;
+	</description>
+    </item>
     <item>
       <title>Manage Spring Boot Logs with Elasticsearch, Logstash and Kibana</title>
       <link>http://knes1.github.io//blog/2015/2015-08-16-manage-spring-boot-logs-with-elasticsearch-kibana-and-logstash.html</link>
@@ -66,7 +165,7 @@ bin/kibana
 unzip logstash-1.5.3.zip
 &lt;/code&gt;&lt;/pre&gt;&lt;h3&gt;Step 4) Configure Spring Boot&apos;s Log File&lt;/h3&gt;&lt;p&gt;In order to have Logstash ship log files to Elasticsearch, we must first configure Spring Boot to store log entries into a file. We will establish the following pipeline: Spring Boot App → Log File → Logstash → Elasticsearch. There are other ways of accomplishing the same thing, such as configuring logback to use TCP appender to send logs to a remote Logstash instance via TCP, and many other configurations. I prefer the file approach because it&apos;s simple, unobtrusive (you can easily add it to existing systems) and nothing will be lost/broken if for some reason Logstash stops working or if Elasticsearch dies.&lt;/p&gt;&lt;p&gt;Anyhow, let&apos;s configure Spring Boot&apos;s log file. The simplest way to do this is to configure log file name in &lt;code&gt;application.properties&lt;/code&gt;. It&apos;s enough to add the following line:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;yaml&quot;&gt;logging.file=application.log
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Spring Boot will now log ERROR, WARN and INFO level messages and the &lt;code&gt;application.log&lt;/code&gt; log file will rotate as it reaches 10 Mb.&lt;/p&gt;&lt;h3&gt;Step 5) Configure Logstash to Understand Spring Boot&apos;s Log File Format&lt;/h3&gt;&lt;p&gt;Now comes the tricky part. We need to create Logstash config file. Typical Logstash config file consists of three main sections: input, filter and output. Each section contains plugins that do relevant part of the processing (such as file input plugin that reads log events from a file or elasticsearch output plugin which sends log events to Elasticsearch).&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;/images/logstash-conf.svg&quot; onerror=&quot;this.src=&apos;/images/logstash-conf.svg&apos;&quot; alt=&quot;Logstash config pipeline&quot;&gt;&lt;/p&gt;&lt;p&gt;Input section defines from where Logstash will read input data - in our case it will be a file hence we will use a &lt;code&gt;file&lt;/code&gt; plugin with &lt;code&gt;multiline&lt;/code&gt; &lt;code&gt;codec&lt;/code&gt;, which basically means that our input file may have multiple lines per log entry.&lt;/p&gt;&lt;h4&gt;Input Section&lt;/h4&gt;&lt;p&gt;Here&apos;s the input section:&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Spring Boot will now log ERROR, WARN and INFO level messages in the &lt;code&gt;application.log&lt;/code&gt; log file and will also rotate it as it reaches 10 Mb.&lt;/p&gt;&lt;h3&gt;Step 5) Configure Logstash to Understand Spring Boot&apos;s Log File Format&lt;/h3&gt;&lt;p&gt;Now comes the tricky part. We need to create Logstash config file. Typical Logstash config file consists of three main sections: input, filter and output. Each section contains plugins that do relevant part of the processing (such as file input plugin that reads log events from a file or elasticsearch output plugin which sends log events to Elasticsearch).&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;/images/logstash-conf.svg&quot; onerror=&quot;this.src=&apos;/images/logstash-conf.svg&apos;&quot; alt=&quot;Logstash config pipeline&quot;&gt;&lt;/p&gt;&lt;p&gt;Input section defines from where Logstash will read input data - in our case it will be a file hence we will use a &lt;code&gt;file&lt;/code&gt; plugin with &lt;code&gt;multiline&lt;/code&gt; &lt;code&gt;codec&lt;/code&gt;, which basically means that our input file may have multiple lines per log entry.&lt;/p&gt;&lt;h4&gt;Input Section&lt;/h4&gt;&lt;p&gt;Here&apos;s the input section:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;ruby&quot;&gt;input {
   file {
     type =&amp;gt; &amp;quot;java&amp;quot;
@@ -170,7 +269,7 @@ unzip logstash-1.5.3.zip
   &lt;li&gt;Index pattern interval: Daily&lt;/li&gt;
   &lt;li&gt;Index name or pattern: [logstash-]YYYY.MM.DD&lt;/li&gt;
   &lt;li&gt;Click on &quot;Create Index&quot;&lt;/li&gt;
-&lt;/ul&gt;&lt;p&gt;Now click on &quot;Discover&quot; tab. In my opinion, &quot;Discover&quot; tab is really named incorrectly in Kibana - it should be labeled as &quot;Search&quot; instead of &quot;Discover&quot; because it allows you to perform new searches and also to save/manage them. Log events should be showing up now in the main window. If they&apos;re not, than double check the time period filter in to right corner of the screen. Default table will have 2 columns by default: Time and _source. In order to make the listing more useful, we can configure the displayed columns. From the menu on the left select level, class and logmessage.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;/images/discover-kibana4.png&quot; alt=&quot;Kibana 4 Discover Tab&quot; style=&quot;max-width: 100%&quot;&gt;&lt;/p&gt;&lt;p&gt;Alright! You&apos;re now ready to take control of your logs using ELK stack and start customizing and tweaking your log management configuration. You can download the sample application used when writing this article from here: &lt;a href=&quot;https://github.com/knes1/todo&quot;&gt;https://github.com/knes1/todo&lt;/a&gt;. It&apos;s already configured to write logs in a file and has the Logstash config as described above (although absolute paths will need to be tweaked in &lt;code&gt;logstash.conf&lt;/code&gt;).&lt;/p&gt;&lt;p&gt;As always, let me know if you have any question/comments or ideas in the comments section below.&lt;/p&gt;
+&lt;/ul&gt;&lt;p&gt;Now click on &quot;Discover&quot; tab. In my opinion, &quot;Discover&quot; tab is really named incorrectly in Kibana - it should be labeled as &quot;Search&quot; instead of &quot;Discover&quot; because it allows you to perform new searches and also to save/manage them. Log events should be showing up now in the main window. If they&apos;re not, then double check the time period filter in to right corner of the screen. Default table will have 2 columns by default: Time and _source. In order to make the listing more useful, we can configure the displayed columns. From the menu on the left select level, class and logmessage.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;/images/discover-kibana4.png&quot; alt=&quot;Kibana 4 Discover Tab&quot; style=&quot;max-width: 100%&quot;&gt;&lt;/p&gt;&lt;p&gt;Alright! You&apos;re now ready to take control of your logs using ELK stack and start customizing and tweaking your log management configuration. You can download the sample application used when writing this article from here: &lt;a href=&quot;https://github.com/knes1/todo&quot;&gt;https://github.com/knes1/todo&lt;/a&gt;. It&apos;s already configured to write logs in a file and has the Logstash config as described above (although absolute paths will need to be tweaked in &lt;code&gt;logstash.conf&lt;/code&gt;).&lt;/p&gt;&lt;p&gt;As always, let me know if you have any question/comments or ideas in the comments section below.&lt;/p&gt;
 	</description>
     </item>
     <item>
