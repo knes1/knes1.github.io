@@ -60,6 +60,10 @@ ul {
 	padding-left: 2rem;
 }
 
+li p {
+	display: inline;
+}
+
 /* NAVBAR */
 .navbar-container {
 	background-color: #1EAEDB; 
