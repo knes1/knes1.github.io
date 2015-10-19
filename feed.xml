@@ -6,8 +6,8 @@
     <atom:link href="http://knes1.github.io//feed.xml" rel="self" type="application/rss+xml" />
     <description>Teh Artikli - tech and software development blog by Krešimir Nesek</description>
     <language>en-gb</language>
-    <pubDate>Sun, 18 Oct 2015 21:11:15 +0200</pubDate>
-    <lastBuildDate>Sun, 18 Oct 2015 21:11:15 +0200</lastBuildDate>
+    <pubDate>Mon, 19 Oct 2015 21:17:57 +0200</pubDate>
+    <lastBuildDate>Mon, 19 Oct 2015 21:17:57 +0200</lastBuildDate>
 
     <item>
       <title>Streaming MySQL Results Using Java 8 Streams and Spring Data JPA</title>
