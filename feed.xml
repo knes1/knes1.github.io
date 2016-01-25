@@ -6,8 +6,8 @@
     <atom:link href="http://knes1.github.io//feed.xml" rel="self" type="application/rss+xml" />
     <description>Teh Artikli - tech and software development blog by Krešimir Nesek</description>
     <language>en-gb</language>
-    <pubDate>Mon, 19 Oct 2015 21:17:57 +0200</pubDate>
-    <lastBuildDate>Mon, 19 Oct 2015 21:17:57 +0200</lastBuildDate>
+    <pubDate>Mon, 25 Jan 2016 09:47:09 +0100</pubDate>
+    <lastBuildDate>Mon, 25 Jan 2016 09:47:09 +0100</lastBuildDate>
 
     <item>
       <title>Streaming MySQL Results Using Java 8 Streams and Spring Data JPA</title>
@@ -71,7 +71,7 @@ public void exportTodosCSV(HttpServletResponse response) {
 		throw new RuntimeException(&amp;quot;Exception occurred while exporting results&amp;quot;, e);
 	}
 }
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;I started the export as usual, however the results are not showing up. What&apos;s happening?&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;/images/mem-streaming-outofmem.png&quot; alt=&quot;Streaming, out of memory because of preloading&quot; style=&quot;max-width: 100%&quot;&gt;&lt;/p&gt;&lt;p&gt;It seems that we have run out of memory. Additionally, no results were written to &lt;code&gt;HttpServletResponse&lt;/code&gt;. Why isn&apos;t this working? After digging into source code of &lt;code&gt;org.springframework.data.jpa.provider.PerisitenceProvider&lt;/code&gt; one can find out that Spring Data is using scrollable resultsets to implement resultset streams. Googling about scrollable resultsets and MySQL shows that there are gotchas when using them. For instance, here&apos;s a quote from &lt;a href=&quot;http://dev.mysql.com/doc/connector-j/en/connector-j-reference-implementation-notes.html&quot;&gt;MySQL&apos;s JDBC driver&apos;s documentation&lt;/a&gt;:&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;I started the export as usual, however the results are not showing up. What&apos;s happening?&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;/images/mem-streaming-outofmem.png&quot; alt=&quot;Streaming, out of memory because of preloading&quot; style=&quot;max-width: 100%&quot;&gt;&lt;/p&gt;&lt;p&gt;It seems that we have run out of memory. Additionally, no results were written to &lt;code&gt;HttpServletResponse&lt;/code&gt;. Why isn&apos;t this working? After digging into source code of &lt;code&gt;org.springframework.data.jpa.provider.PersistenceProvider&lt;/code&gt; one can find out that Spring Data is using scrollable resultsets to implement resultset streams. Googling about scrollable resultsets and MySQL shows that there are gotchas when using them. For instance, here&apos;s a quote from &lt;a href=&quot;http://dev.mysql.com/doc/connector-j/en/connector-j-reference-implementation-notes.html&quot;&gt;MySQL&apos;s JDBC driver&apos;s documentation&lt;/a&gt;:&lt;/p&gt;
 &lt;blockquote&gt;&lt;p&gt;By default, ResultSets are completely retrieved and stored in memory. In most cases this is the most efficient way to operate and, due to the design of the MySQL network protocol, is easier to implement. If you are working with ResultSets that have a large number of rows or large values and cannot allocate heap space in your JVM for the memory required, you can tell the driver to stream the results back one row at a time. To enable this functionality, create a Statement instance in the following manner:&lt;/p&gt;
   &lt;pre&gt;&lt;code&gt;stmt = conn.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY,java.sql.ResultSet.CONCUR_READ_ONLY);
 stmt.setFetchSize(Integer.MIN_VALUE);
