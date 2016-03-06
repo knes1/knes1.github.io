@@ -6,9 +6,55 @@
     <atom:link href="http://knes1.github.io//feed.xml" rel="self" type="application/rss+xml" />
     <description>Teh Artikli - tech and software development blog by Krešimir Nesek</description>
     <language>en-gb</language>
-    <pubDate>Fri, 4 Mar 2016 14:34:07 +0100</pubDate>
-    <lastBuildDate>Fri, 4 Mar 2016 14:34:07 +0100</lastBuildDate>
+    <pubDate>Sun, 6 Mar 2016 15:44:20 +0100</pubDate>
+    <lastBuildDate>Sun, 6 Mar 2016 15:44:20 +0100</lastBuildDate>
 
+    <item>
+      <title>Elktail - command line tool for tailing and querying ELK logs</title>
+      <link>http://knes1.github.io//blog/2016/2016-03-06-elktail-command-line-tool-for-tailing-and-querying-ELK-logs.html</link>
+      <pubDate>Sun, 6 Mar 2016 00:00:00 +0100</pubDate>
+      <guid isPermaLink="false">blog/2016/2016-03-06-elktail-command-line-tool-for-tailing-and-querying-ELK-logs.html</guid>
+      	<description>
+	&lt;p&gt;I&apos;ve started using ELK stack (Elasticsearch, Logstash, Kibana) as a default go-to option whenever I require a log management solution in a project that I work on. Analysing and searching through the logs is much nicer when done through Kibana&apos;s web UI then grepping through the log files as you would do if you had no log management. However, from time to time, there still comes a moment where I wish I could just tail -f the log file to see what&apos;s happening right now in this moment. After googling around and not finding what I wanted, I ended up building &lt;a href=&quot;https://github.com/knes1/elktail&quot;&gt;Elktail&lt;/a&gt;, a command line utility that allows you to search and tail your logs stored in Elasticsearch.&lt;/p&gt;
+&lt;!-- more --&gt;&lt;p&gt;Using &lt;a href=&quot;https://github.com/knes1/elktail&quot;&gt;Elktail&lt;/a&gt;, you can connect to the Elasticsearch instance that hosts your logstash logs and tail them. The experience is similar to good old tail -f. You can also add search terms (just like you would in the search bar in Kibana), which will yield results similar to grepping the log file.&lt;/p&gt;&lt;p&gt;Here&apos;s how you would connect to Elasticsearch instance running on &lt;code&gt;elastic.example.com&lt;/code&gt; in order to tail logstash logs:&lt;/p&gt;&lt;p&gt;&lt;code&gt;elktail --url http://elastic.example.com&lt;/code&gt;&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/knes1/elktail&quot;&gt;Elktail&lt;/a&gt; also supports basic authentication and ssh tunneling in case your Elasticsearch cluster is not publicly availabe over internet but you do have ssh access to it.&lt;/p&gt;&lt;p&gt;Once you can list your logs on the command line, several addtional workflows open up. For example, I often need to exctract and e-mail part of the log file to my fellow developers or attach it together with a bug report in the issue tracker. I just want to copy paste 100 relevant lines, but it&apos;s often hard to do that in Kibana, at least with satisfying results. Copy-pasting picks up html formatting and Kibana&apos;s pagination will get in the way. While I could share the link to the search, it&apos;s often not easy to setup the search in a way that isolates the crux of the issue. &lt;/p&gt;&lt;h2&gt;Elktail Usage Examples&lt;/h2&gt;&lt;p&gt;Here are some examples of how you could use &lt;a href=&quot;https://github.com/knes1/elktail&quot;&gt;Elktail&lt;/a&gt;. Examples are based on the log format for Spring Boot applications, and ELK setup is explained in &lt;a href=&quot;http://knes1.github.io/blog/2015/2015-08-16-manage-spring-boot-logs-with-elasticsearch-kibana-and-logstash.html&quot;&gt;one of the previous posts&lt;/a&gt;.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;p&gt;Tail only messages with info level&lt;br/&gt;&lt;code&gt;elktail level:INFO&lt;/code&gt; (you need to specify --url only once, elktail will remember it for subsequent invocations)&lt;/p&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;p&gt;Just do a search for a string&lt;br/&gt;&lt;code&gt;elktail DispatcherServlet&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;p&gt;List last 2 execeptions and their stacktraces&lt;br/&gt;&lt;code&gt;elktail -l -n 2 tags:stacktrace&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;p&gt;Change the display format to only show timestamp, level and log message fields:&lt;br/&gt;&lt;code&gt;elktail -f &amp;quot;%@timestamp %level %logmessage&amp;quot;&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&quot;terminal&quot; style=&quot;display: table; width: 100%; margin-bottom: 30px&quot;&gt;&lt;/div&gt;&lt;h2&gt;Download&lt;/h2&gt;&lt;p&gt;If you would like to try it out yourself, head over the to &lt;a href=&quot;https://github.com/knes1/elktail&quot;&gt;Elktail github page&lt;/a&gt; and download it.&lt;/p&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;../../js/term.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;../../js/jbinary.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;../../js/pako.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;../../js/ttyplay.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+function startTerminal() {	
+	$(function() {
+       
+        var term = new Terminal({
+            cols: 160,
+            rows: 40,
+            screenKeys: true
+        });
+
+        term.open(document.getElementById(&quot;terminal&quot;));
+        
+        var player = new TTYPlay(term,
+                {
+                    url: &apos;../../tty/elktail.gz&apos;,
+                    speed: 1.5,
+                    max_frame: 2500,
+                    onFinished: function() {
+                        player.reset(0);
+                        player.play();
+                    }
+                });
+    });
+}
+&lt;/script&gt;
+	</description>
+    </item>
     <item>
       <title>Streaming MySQL Results Using Java 8 Streams and Spring Data JPA</title>
       <link>http://knes1.github.io//blog/2015/2015-10-19-streaming-mysql-results-using-java8-streams-and-spring-data.html</link>

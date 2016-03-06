@@ -64,6 +64,16 @@ li p {
 	display: inline;
 }
 
+/* tty play terminal */
+.terminal {
+	float: left;
+	border: #000 solid 5px;
+	font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
+	font-size: 8px;
+	color: #f0f0f0;
+	background: #000;
+}
+
 /* NAVBAR */
 .navbar-container {
 	background-color: #1EAEDB; 

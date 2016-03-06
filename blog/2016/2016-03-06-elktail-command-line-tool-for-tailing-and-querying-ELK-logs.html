@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="utf-8">
+  <title>Elktail - command line tool for tailing and querying ELK logs</title>
+  <meta name="description" content="Elktail - command line tool for tailing and querying ELK (elasticsearch, logstash, kibana) logs">
+  <meta name="author" content="Krešimir Nesek">
+  <meta name="keywords" content="Elktail,Kibana,Elasticsearch,Logstash,logs,tail,command line">
+  <meta name="generator" content="JBake">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link herf="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,600,700,800,300&subset=latin,cyrillic-ext">
+  
+  <link rel="stylesheet" href="../../elusive-icons/css/elusive-icons.min.css">
+  
+  <link rel="stylesheet" href="../../css/normalize.css">
+  <link rel="stylesheet" href="../../css/skeleton.css">
+  <link rel="stylesheet" href="../../css/main.css">
+
+  <link href="../../css/highlight_default.min.css" rel="stylesheet">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
+
+  <link rel="shortcut icon" href="../../favicon.ico">
+  <link rel="icon" type="image/png" href="../../favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="../../favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="../../favicon-16x16.png" sizes="16x16">
+</head>
+<body> <!-- BODY NAV -->
+<div class="navbar-container">
+    <div class="container" style="padding-bottom: 6px">
+        <div class="navtitle">
+             <a href="../../">Teh Artikli</a>
+        </div>
+        <!-- Nav -->
+        <div class="navbar">
+            <ul>
+<li>
+  <a id="nav-archive" href="../../archive.html">
+    <i class="el el-calendar"></i>
+ <span class="link-label">Archive</span>
+  </a>
+</li>
+<li>
+  <a id="nav-subscribe" href="../../feed.xml">
+    <i class="el el-rss"></i>
+ <span class="link-label">Subscribe</span>
+  </a>
+</li>
+<li>
+  <a id="nav-follow" href="https://twitter.com/intent/follow?screen_name=knes1">
+    <i class="el el-twitter"></i>
+ <span class="link-label">Follow</span>
+  </a>
+</li>
+<li>
+  <a id="nav-knes1" href="https://github.com/knes1">
+    <i class="el el-github"></i>
+ <span class="link-label">knes1</span>
+  </a>
+</li>
+            </ul>
+        </div>
+    </div>
+</div>  <div class="container">
+    <div class="row">
+      <div class="twelve columns" style="margin-top: 100px">
+	
+	<div class="page-header">
+		<h1>Elktail - command line tool for tailing and querying ELK logs</h1>
+	</div>
+	
+	<div class="post-info underline bottom-pad">
+		<i class="el el-calendar"></i>
+ 06 March 2016
+		| <i class="el el-user"></i>
+ Krešimir Nesek
+	</div>
+	
+	<div><p>I've started using ELK stack (Elasticsearch, Logstash, Kibana) as a default go-to option whenever I require a log management solution in a project that I work on. Analysing and searching through the logs is much nicer when done through Kibana's web UI then grepping through the log files as you would do if you had no log management. However, from time to time, there still comes a moment where I wish I could just tail -f the log file to see what's happening right now in this moment. After googling around and not finding what I wanted, I ended up building <a href="https://github.com/knes1/elktail">Elktail</a>, a command line utility that allows you to search and tail your logs stored in Elasticsearch.</p>
+<!-- more --><p>Using <a href="https://github.com/knes1/elktail">Elktail</a>, you can connect to the Elasticsearch instance that hosts your logstash logs and tail them. The experience is similar to good old tail -f. You can also add search terms (just like you would in the search bar in Kibana), which will yield results similar to grepping the log file.</p><p>Here's how you would connect to Elasticsearch instance running on <code>elastic.example.com</code> in order to tail logstash logs:</p><p><code>elktail --url http://elastic.example.com</code></p><p><a href="https://github.com/knes1/elktail">Elktail</a> also supports basic authentication and ssh tunneling in case your Elasticsearch cluster is not publicly availabe over internet but you do have ssh access to it.</p><p>Once you can list your logs on the command line, several addtional workflows open up. For example, I often need to exctract and e-mail part of the log file to my fellow developers or attach it together with a bug report in the issue tracker. I just want to copy paste 100 relevant lines, but it's often hard to do that in Kibana, at least with satisfying results. Copy-pasting picks up html formatting and Kibana's pagination will get in the way. While I could share the link to the search, it's often not easy to setup the search in a way that isolates the crux of the issue. </p><h2>Elktail Usage Examples</h2><p>Here are some examples of how you could use <a href="https://github.com/knes1/elktail">Elktail</a>. Examples are based on the log format for Spring Boot applications, and ELK setup is explained in <a href="http://knes1.github.io/blog/2015/2015-08-16-manage-spring-boot-logs-with-elasticsearch-kibana-and-logstash.html">one of the previous posts</a>.</p>
+<ul>
+  <li><p>Tail only messages with info level<br/><code>elktail level:INFO</code> (you need to specify --url only once, elktail will remember it for subsequent invocations)</p></li>
+  <li><p>Just do a search for a string<br/><code>elktail DispatcherServlet</code></p></li>
+  <li><p>List last 2 execeptions and their stacktraces<br/><code>elktail -l -n 2 tags:stacktrace</code></p></li>
+  <li><p>Change the display format to only show timestamp, level and log message fields:<br/><code>elktail -f &quot;%@timestamp %level %logmessage&quot;</code></p></li>
+</ul>
+<div id="terminal" style="display: table; width: 100%; margin-bottom: 30px"></div><h2>Download</h2><p>If you would like to try it out yourself, head over the to <a href="https://github.com/knes1/elktail">Elktail github page</a> and download it.</p>
+<script type="text/javascript" src="../../js/term.js"></script>
+<script type="text/javascript" src="../../js/jbinary.js"></script>
+<script type="text/javascript" src="../../js/pako.js"></script>
+<script type="text/javascript" src="../../js/ttyplay.js"></script>
+<script type="text/javascript">
+function startTerminal() {	
+	$(function() {
+       
+        var term = new Terminal({
+            cols: 160,
+            rows: 40,
+            screenKeys: true
+        });
+
+        term.open(document.getElementById("terminal"));
+        
+        var player = new TTYPlay(term,
+                {
+                    url: '../../tty/elktail.gz',
+                    speed: 1.5,
+                    max_frame: 2500,
+                    onFinished: function() {
+                        player.reset(0);
+                        player.play();
+                    }
+                });
+    });
+}
+</script></div>
+
+	<hr />
+
+	<div id="disqus_thread"></div>
+	<script type="text/javascript">
+	    /* * * CONFIGURATION VARIABLES * * */
+	    var disqus_shortname = 'teh-artikli';
+		var disqus_identifier = 'blog/2016/2016-03-06-elktail-command-line-tool-for-tailing-and-querying-ELK-logs.html';
+	    var disqus_url = 'http://knes1.github.io/blog/2016/2016-03-06-elktail-command-line-tool-for-tailing-and-querying-ELK-logs.html';
+       
+	    /* * * DON'T EDIT BELOW THIS LINE * * */
+	    (function() {
+	        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	    })();
+	</script>
+	<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+	<script>hljs.initHighlightingOnLoad();</script>	
+      </div>
+    </div>
+  </div>
+    <script src="../../js/jquery-1.11.1.min.js"></script>
+<script src="//static.getclicky.com/js" type="text/javascript"></script>
+<script type="text/javascript">try{ clicky.init(100763555); }catch(e){}</script>
+<noscript><p><img alt="Clicky" width="1" height="1" src="//in.getclicky.com/100763555ns.gif" /></p></noscript>    <script src="https://platform.twitter.com/widgets.js"></script>
+    <script type="text/javascript">
+        startTerminal();
+    </script>
+  </body>
+</html>
