@@ -86,7 +86,10 @@
   <li><p>List last 2 execeptions and their stacktraces<br/><code>elktail -l -n 2 tags:stacktrace</code></p></li>
   <li><p>Change the display format to only show timestamp, level and log message fields:<br/><code>elktail -f &quot;%@timestamp %level %logmessage&quot;</code></p></li>
 </ul>
-<div id="terminal" style="display: table; width: 100%; margin-bottom: 30px"></div><h2>Download</h2><p>If you would like to try it out yourself, head over the to <a href="https://github.com/knes1/elktail">Elktail github page</a> and download it.</p>
+<div id="terminalwrap" style="display: table; width: 100%; margin-bottom: 30px;">
+	<div id="loadingTerminal" class="terminal" style="display: table-cell;">Loading Terminal...</div>
+	<div id="terminal" style="display: none;"></div>
+</div><h2>Download</h2><p>If you would like to try it out yourself, head over the to <a href="https://github.com/knes1/elktail">Elktail github page</a> and download it.</p>
 <script type="text/javascript" src="../../js/term.js"></script>
 <script type="text/javascript" src="../../js/jbinary.js"></script>
 <script type="text/javascript" src="../../js/pako.js"></script>
@@ -98,7 +101,8 @@ function startTerminal() {
         var term = new Terminal({
             cols: 160,
             rows: 40,
-            screenKeys: true
+            screenKeys: true,
+            useFocuse: false
         });
 
         term.open(document.getElementById("terminal"));
@@ -111,8 +115,19 @@ function startTerminal() {
                     onFinished: function() {
                         player.reset(0);
                         player.play();
+                    },
+                    onFrame: function(idx) {
+                    	if (idx == 2) {
+                    		$('#loadingTerminal').hide();
+                    		$('#terminal').show();
+                    	}
                     }
                 });
+        //terminal seems to scroll down on start for some reason :(
+        //window.scrollTo(0, 0);
+        //$('#terminalwrap').show();
+        //$('#terminal').show();
+
     });
 }
 </script></div>

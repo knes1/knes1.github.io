@@ -6,8 +6,8 @@
     <atom:link href="http://knes1.github.io//feed.xml" rel="self" type="application/rss+xml" />
     <description>Teh Artikli - tech and software development blog by Krešimir Nesek</description>
     <language>en-gb</language>
-    <pubDate>Sun, 6 Mar 2016 15:44:20 +0100</pubDate>
-    <lastBuildDate>Sun, 6 Mar 2016 15:44:20 +0100</lastBuildDate>
+    <pubDate>Sun, 6 Mar 2016 16:12:59 +0100</pubDate>
+    <lastBuildDate>Sun, 6 Mar 2016 16:12:59 +0100</lastBuildDate>
 
     <item>
       <title>Elktail - command line tool for tailing and querying ELK logs</title>
@@ -23,7 +23,10 @@
   &lt;li&gt;&lt;p&gt;List last 2 execeptions and their stacktraces&lt;br/&gt;&lt;code&gt;elktail -l -n 2 tags:stacktrace&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
   &lt;li&gt;&lt;p&gt;Change the display format to only show timestamp, level and log message fields:&lt;br/&gt;&lt;code&gt;elktail -f &amp;quot;%@timestamp %level %logmessage&amp;quot;&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;div id=&quot;terminal&quot; style=&quot;display: table; width: 100%; margin-bottom: 30px&quot;&gt;&lt;/div&gt;&lt;h2&gt;Download&lt;/h2&gt;&lt;p&gt;If you would like to try it out yourself, head over the to &lt;a href=&quot;https://github.com/knes1/elktail&quot;&gt;Elktail github page&lt;/a&gt; and download it.&lt;/p&gt;
+&lt;div id=&quot;terminalwrap&quot; style=&quot;display: table; width: 100%; margin-bottom: 30px;&quot;&gt;
+	&lt;div id=&quot;loadingTerminal&quot; class=&quot;terminal&quot; style=&quot;display: table-cell;&quot;&gt;Loading Terminal...&lt;/div&gt;
+	&lt;div id=&quot;terminal&quot; style=&quot;display: none;&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;h2&gt;Download&lt;/h2&gt;&lt;p&gt;If you would like to try it out yourself, head over the to &lt;a href=&quot;https://github.com/knes1/elktail&quot;&gt;Elktail github page&lt;/a&gt; and download it.&lt;/p&gt;
 &lt;script type=&quot;text/javascript&quot; src=&quot;../../js/term.js&quot;&gt;&lt;/script&gt;
 &lt;script type=&quot;text/javascript&quot; src=&quot;../../js/jbinary.js&quot;&gt;&lt;/script&gt;
 &lt;script type=&quot;text/javascript&quot; src=&quot;../../js/pako.js&quot;&gt;&lt;/script&gt;
@@ -35,7 +38,8 @@ function startTerminal() {
         var term = new Terminal({
             cols: 160,
             rows: 40,
-            screenKeys: true
+            screenKeys: true,
+            useFocuse: false
         });
 
         term.open(document.getElementById(&quot;terminal&quot;));
@@ -48,8 +52,19 @@ function startTerminal() {
                     onFinished: function() {
                         player.reset(0);
                         player.play();
+                    },
+                    onFrame: function(idx) {
+                    	if (idx == 2) {
+                    		$(&apos;#loadingTerminal&apos;).hide();
+                    		$(&apos;#terminal&apos;).show();
+                    	}
                     }
                 });
+        //terminal seems to scroll down on start for some reason :(
+        //window.scrollTo(0, 0);
+        //$(&apos;#terminalwrap&apos;).show();
+        //$(&apos;#terminal&apos;).show();
+
     });
 }
 &lt;/script&gt;
