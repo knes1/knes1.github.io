@@ -79,7 +79,7 @@
 	</div>
 	
 	<div><p>I've started using ELK stack (Elasticsearch, Logstash, Kibana) as a default go-to option whenever I require a log management solution in a project that I work on. Analysing and searching through the logs is much nicer when done through Kibana's web UI then grepping through the log files as you would do if you had no log management. However, from time to time, there still comes a moment where I wish I could just tail -f the log file to see what's happening right now in this moment. After googling around and not finding what I wanted, I ended up building <a href="https://github.com/knes1/elktail">Elktail</a>, a command line utility that allows you to search and tail your logs stored in Elasticsearch.</p>
-<!-- more --><p>Using <a href="https://github.com/knes1/elktail">Elktail</a>, you can connect to the Elasticsearch instance that hosts your logstash logs and tail them. The experience is similar to good old tail -f. You can also add search terms (just like you would in the search bar in Kibana), which will yield results similar to grepping the log file.</p><p>Here's how you would connect to Elasticsearch instance running on <code>elastic.example.com</code> in order to tail logstash logs:</p><p><code>elktail --url http://elastic.example.com</code></p><p><a href="https://github.com/knes1/elktail">Elktail</a> also supports basic authentication and ssh tunneling in case your Elasticsearch cluster is not publicly availabe over internet but you do have ssh access to it.</p><p>Once you can list your logs on the command line, several addtional workflows open up. For example, I often need to exctract and e-mail part of the log file to my fellow developers or attach it together with a bug report in the issue tracker. I just want to copy paste 100 relevant lines, but it's often hard to do that in Kibana, at least with satisfying results. Copy-pasting picks up html formatting and Kibana's pagination will get in the way. While I could share the link to the search, it's often not easy to setup the search in a way that isolates the crux of the issue. </p><h2>Elktail Usage Examples</h2><p>Here are some examples of how you could use <a href="https://github.com/knes1/elktail">Elktail</a>. Examples are based on the log format for Spring Boot applications, and ELK setup is explained in <a href="http://knes1.github.io/blog/2015/2015-08-16-manage-spring-boot-logs-with-elasticsearch-kibana-and-logstash.html">one of the previous posts</a>.</p>
+<!-- more --><p>Using <a href="https://github.com/knes1/elktail">Elktail</a>, you can connect to the Elasticsearch instance that hosts your logstash logs and tail them. The experience is similar to good old tail -f. You can also add search terms (just like you would in the search bar in Kibana), which will yield results similar to grepping the log file.</p><p>Here's how you would connect to Elasticsearch instance running on <code>elastic.example.com</code> in order to tail logstash logs:</p><p><code>elktail --url http://elastic.example.com</code></p><p><a href="https://github.com/knes1/elktail">Elktail</a> also supports basic authentication and ssh tunneling in case your Elasticsearch cluster is not publicly available over the internet but you do have ssh access to it.</p><p>Once you can list your logs on the command line, several additional workflows open up. For example, I often need to extract and e-mail part of the log file to my fellow developers or attach it together with a bug report in the issue tracker. I just want to copy paste 100 relevant lines, but it's often hard to do that in Kibana, at least with satisfying results. Copy-pasting picks up html formatting and Kibana's pagination will get in the way. While I could share the link to the search, it's often not easy to setup the search in a way that isolates the crux of the issue. </p><h2>Elktail Usage Examples</h2><p>Here are some examples of how you could use <a href="https://github.com/knes1/elktail">Elktail</a>. Examples are based on the log format for Spring Boot applications, and ELK setup is explained in <a href="http://knes1.github.io/blog/2015/2015-08-16-manage-spring-boot-logs-with-elasticsearch-kibana-and-logstash.html">one of the previous posts</a>.</p>
 <ul>
   <li><p>Tail only messages with info level<br/><code>elktail level:INFO</code> (you need to specify --url only once, elktail will remember it for subsequent invocations)</p></li>
   <li><p>Just do a search for a string<br/><code>elktail DispatcherServlet</code></p></li>
@@ -89,7 +89,7 @@
 <div id="terminalwrap" style="display: table; width: 100%; margin-bottom: 30px;">
 	<div id="loadingTerminal" class="terminal" style="display: table-cell;">Loading Terminal...</div>
 	<div id="terminal" style="display: none;"></div>
-</div><h2>Download</h2><p>If you would like to try it out yourself, head over the to <a href="https://github.com/knes1/elktail">Elktail github page</a> and download it.</p>
+</div><h2>Download</h2><p>If you would like to try it out yourself, head over to the <a href="https://github.com/knes1/elktail">Elktail github page</a> and download it.</p>
 <script type="text/javascript" src="../../js/term.js"></script>
 <script type="text/javascript" src="../../js/jbinary.js"></script>
 <script type="text/javascript" src="../../js/pako.js"></script>
@@ -123,11 +123,6 @@ function startTerminal() {
                     	}
                     }
                 });
-        //terminal seems to scroll down on start for some reason :(
-        //window.scrollTo(0, 0);
-        //$('#terminalwrap').show();
-        //$('#terminal').show();
-
     });
 }
 </script></div>
