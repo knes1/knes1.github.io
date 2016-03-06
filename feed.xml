@@ -6,11 +6,11 @@
     <atom:link href="http://knes1.github.io//feed.xml" rel="self" type="application/rss+xml" />
     <description>Teh Artikli - tech and software development blog by Krešimir Nesek</description>
     <language>en-gb</language>
-    <pubDate>Sun, 6 Mar 2016 17:06:01 +0100</pubDate>
-    <lastBuildDate>Sun, 6 Mar 2016 17:06:01 +0100</lastBuildDate>
+    <pubDate>Sun, 6 Mar 2016 17:10:23 +0100</pubDate>
+    <lastBuildDate>Sun, 6 Mar 2016 17:10:23 +0100</lastBuildDate>
 
     <item>
-      <title>Elktail - command line tool for tailing and querying ELK logs</title>
+      <title>Elktail - Command Line Tool for Tailing and Querying ELK Logs</title>
       <link>http://knes1.github.io//blog/2016/2016-03-06-elktail-command-line-tool-for-tailing-and-querying-ELK-logs.html</link>
       <pubDate>Sun, 6 Mar 2016 00:00:00 +0100</pubDate>
       <guid isPermaLink="false">blog/2016/2016-03-06-elktail-command-line-tool-for-tailing-and-querying-ELK-logs.html</guid>
