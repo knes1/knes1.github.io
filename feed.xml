@@ -6,8 +6,8 @@
     <atom:link href="http://knes1.github.io//feed.xml" rel="self" type="application/rss+xml" />
     <description>Teh Artikli - tech and software development blog by Krešimir Nesek</description>
     <language>en-gb</language>
-    <pubDate>Tue, 8 Mar 2016 16:59:26 +0100</pubDate>
-    <lastBuildDate>Tue, 8 Mar 2016 16:59:26 +0100</lastBuildDate>
+    <pubDate>Mon, 9 May 2016 23:04:09 +0200</pubDate>
+    <lastBuildDate>Mon, 9 May 2016 23:04:09 +0200</lastBuildDate>
 
     <item>
       <title>Elktail - Command Line Tool for Tailing and Querying ELK Logs</title>
@@ -316,7 +316,13 @@ unzip logstash-1.5.3.zip
   &lt;ul&gt;
     &lt;li&gt;&lt;code&gt;host =&amp;gt; &amp;quot;127.0.0.1&amp;quot;&lt;/code&gt; → Hostname where Elasticsearch is located - in our case, localhost.&lt;/li&gt;
   &lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;h4&gt;Putting it all together&lt;/h4&gt;&lt;p&gt;Finally, the three parts - input, filter and output - need to be copy pasted together and saved into &lt;code&gt;logstash.conf&lt;/code&gt; config file. Once the config file is in place and Elasticsearch is running, we can run Logstash:&lt;/p&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;&lt;p&gt;&lt;strong&gt;Update 5/9/2016:&lt;/strong&gt; At the time of writing this update, the latest versions of Logstash&apos;s elasticsearch output plugin uses &lt;code&gt;hosts&lt;/code&gt; configuration parameter instead of &lt;code&gt;host&lt;/code&gt; which is shown in example above. New parameter takes an array of hosts (e.g. elasticsearch cluster) as value. In other words, if you are using the latest Logstash version, configure elasticsearch output plugin as follows:&lt;/p&gt;
+  &lt;pre&gt;&lt;code class=&quot;ruby&quot;&gt;elasticsearch {
+   hosts =&amp;gt; [&amp;quot;127.0.0.1&amp;quot;]
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;&lt;h4&gt;Putting it all together&lt;/h4&gt;&lt;p&gt;Finally, the three parts - input, filter and output - need to be copy pasted together and saved into &lt;code&gt;logstash.conf&lt;/code&gt; config file. Once the config file is in place and Elasticsearch is running, we can run Logstash:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;/path/to/logstash/bin/logstash -f logstash.conf
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If everything went well, Logstash is now shipping log events to Elasticsearch.&lt;/p&gt;&lt;h3&gt;Step 6) Configure Kibana&lt;/h3&gt;&lt;p&gt;Ok, now it&apos;s time to visit the Kibana web UI again. We have started it in step 2 and it should be running at &lt;a href=&quot;http://localhost:5601&quot;&gt;http://localhost:5601&lt;/a&gt;. &lt;/p&gt;&lt;p&gt;First, you need to point Kibana to Elasticsearch index(s) of your choice. Logstash creates indices with the name pattern of logstash-YYYY.MM.DD. In Kibana Settings → Indices configure the indices:&lt;/p&gt;
 &lt;ul&gt;

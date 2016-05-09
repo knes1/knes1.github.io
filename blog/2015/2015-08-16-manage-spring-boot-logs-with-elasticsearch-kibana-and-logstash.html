@@ -224,7 +224,13 @@ unzip logstash-1.5.3.zip
   <ul>
     <li><code>host =&gt; &quot;127.0.0.1&quot;</code> → Hostname where Elasticsearch is located - in our case, localhost.</li>
   </ul></li>
-</ul><h4>Putting it all together</h4><p>Finally, the three parts - input, filter and output - need to be copy pasted together and saved into <code>logstash.conf</code> config file. Once the config file is in place and Elasticsearch is running, we can run Logstash:</p>
+</ul>
+<blockquote><p><strong>Update 5/9/2016:</strong> At the time of writing this update, the latest versions of Logstash's elasticsearch output plugin uses <code>hosts</code> configuration parameter instead of <code>host</code> which is shown in example above. New parameter takes an array of hosts (e.g. elasticsearch cluster) as value. In other words, if you are using the latest Logstash version, configure elasticsearch output plugin as follows:</p>
+  <pre><code class="ruby">elasticsearch {
+   hosts =&gt; [&quot;127.0.0.1&quot;]
+}
+</code></pre>
+</blockquote><h4>Putting it all together</h4><p>Finally, the three parts - input, filter and output - need to be copy pasted together and saved into <code>logstash.conf</code> config file. Once the config file is in place and Elasticsearch is running, we can run Logstash:</p>
 <pre><code class="bash">/path/to/logstash/bin/logstash -f logstash.conf
 </code></pre><p>If everything went well, Logstash is now shipping log events to Elasticsearch.</p><h3>Step 6) Configure Kibana</h3><p>Ok, now it's time to visit the Kibana web UI again. We have started it in step 2 and it should be running at <a href="http://localhost:5601">http://localhost:5601</a>. </p><p>First, you need to point Kibana to Elasticsearch index(s) of your choice. Logstash creates indices with the name pattern of logstash-YYYY.MM.DD. In Kibana Settings → Indices configure the indices:</p>
 <ul>
