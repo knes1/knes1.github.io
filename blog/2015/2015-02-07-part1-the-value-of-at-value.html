@@ -77,13 +77,31 @@
 		| <i class="el el-user"></i>
  Krešimir Nesek
 	</div>
+<div style="padding: 5px; background-color: #fff6dc; margin-bottom: 20px">
+    ⭐️⭐⭐ <a href="https://grnh.se/cc20bfe52us">VIOOH</a>, the company I'm working at is hiring Java Engineers. Take a look the following open positions:
+    🚀<a href="https://grnh.se/3cbd36f32us">Java Software Engineer</a> and 🚀🚀<a href="https://grnh.se/43cab8a32us">Java Tech Lead</a>. We're located in London and accepting
+    applications from 🇬🇧UK (or elsewhere if you're willing to relocate). Join us!
+</div>
 	
-	<div><p>Did it ever happen to you that after spending some time and gaining experience with a framework or a programming language, you learn things that would have made your programmer's life much easier if you had known them right from the start? You would have done things differently, more quickly, in a simpler, cleaner and more maintainable way?</p><p>I decided to write a series of posts about features and aspects of Spring Framework (the framework in which I spend most of my professional software development time) that I found useful (usually far later than I'd like to admit :) ), but which are often not covered in entry level guides and tutorials.</p><p>In this first post I would like to discuss the <code>@Value</code> annotation.<br/><!-- more --></p><p>I started working with Spring framework since the 2.5 version. Later on, when 3.0 was released, JavaConfig became the part of the core framework along with the <code>@Value</code> that was part of it. I unfortunately didn't notice that improvement for quite some time, mostly because the projects I worked on relied on XML based config.</p><p>Here's what <a href="http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/beans/factory/annotation/Value.html">Spring javadocs</a> say about <code>@Value</code>:</p>
-<blockquote><p>Annotation at the field or method/constructor parameter level that indicates a default value expression for the affected argument.</p><p>Typically used for expression-driven dependency injection. Also supported for dynamic resolution of handler method parameters, e.g. in Spring MVC.</p><p>A common use case is to assign default field values using "#{systemProperties.myProp}" style expressions.</p>
-</blockquote><p>Let's see how we can make use of it.</p><h4>Assigning values from property files</h4><p>This is likely the most common use case for <code>@Value</code> annotation. <code>@Value</code> allows us to easily inject a value from a property file to, for example, a bean's field or a constructor argument.</p><p>If we had a property file that looks like this:</p>
+	<div><p>Did it ever happen to you that after spending some time and gaining experience with a framework or a programming language, you learn things that would have made your programmer's life much easier if you had known them right from the start? You would have done things differently, more quickly, in a simpler, cleaner and more maintainable way?</p>
+<p>I decided to write a series of posts about features and aspects of Spring Framework (the framework in which I spend most of my professional software development time) that I found useful (usually far later than I'd like to admit :) ), but which are often not covered in entry level guides and tutorials.</p>
+<p>In this first post I would like to discuss the <code>@Value</code> annotation.</p>
+<!-- more -->
+<p>I started working with Spring framework since the 2.5 version. Later on, when 3.0 was released, JavaConfig became the part of the core framework along with the <code>@Value</code> that was part of it. I unfortunately didn't notice that improvement for quite some time, mostly because the projects I worked on relied on XML based config.</p>
+<p>Here's what <a href="http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/beans/factory/annotation/Value.html">Spring javadocs</a> say about <code>@Value</code>:</p>
+<blockquote>
+<p>Annotation at the field or method/constructor parameter level that indicates a default value expression for the affected argument.</p>
+<p>Typically used for expression-driven dependency injection. Also supported for dynamic resolution of handler method parameters, e.g. in Spring MVC.</p>
+<p>A common use case is to assign default field values using &quot;#{systemProperties.myProp}&quot; style expressions.</p>
+</blockquote>
+<p>Let's see how we can make use of it.</p>
+<h4>Assigning values from property files</h4>
+<p>This is likely the most common use case for <code>@Value</code> annotation. <code>@Value</code> allows us to easily inject a value from a property file to, for example, a bean's field or a constructor argument.</p>
+<p>If we had a property file that looks like this:</p>
 <pre><code>app.name = My Excellent Application
-</code></pre><p>Then we could use that property definition in, say, a controller using<code>@Value(&quot;${propertyName}&quot;)</code> syntax:</p>
-<pre><code class="java">@Controller
+</code></pre>
+<p>Then we could use that property definition in, say, a controller using<code>@Value(&quot;${propertyName}&quot;)</code> syntax:</p>
+<pre><code class="language-java">@Controller
 public class HelloController {
 	
 	@Value(&quot;${app.name}&quot;)
@@ -96,8 +114,9 @@ public class HelloController {
 	}
 
 }
-</code></pre><p>The code in the example will read the property app.name from property file and inject it into <code>appName</code> field. The <code>${...}</code> syntax is Spring's property placeholder syntax used in property placeholder replacement mechanism. If <code>app.name</code> is not defined, then an exception will be thrown. Which brings us to a less known fact about property placeholders - it's possible to set a default value for a property that Spring would use if the property is not defined. The syntax for default values in property placeholders is <code>${property:defaultValue}</code>. You can read about it the javadocs for <a href="http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/beans/factory/config/PlaceholderConfigurerSupport.html">PlaceholderConfigurerSupport</a> class. I find default values quite useful, especially in situations where a particular property of a bean is not likely to be changed in different environments and as such you don't want to introduce it needlessly into a property file, but still want to give yourself an option to change your mind later. If we were to modify our example to use a default value, it would look like this:</p>
-<pre><code class="java">@Controller
+</code></pre>
+<p>The code in the example will read the property app.name from property file and inject it into <code>appName</code> field. The <code>${...}</code> syntax is Spring's property placeholder syntax used in property placeholder replacement mechanism. If <code>app.name</code> is not defined, then an exception will be thrown. Which brings us to a less known fact about property placeholders - it's possible to set a default value for a property that Spring would use if the property is not defined. The syntax for default values in property placeholders is <code>${property:defaultValue}</code>. You can read about it the javadocs for <a href="http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/beans/factory/config/PlaceholderConfigurerSupport.html">PlaceholderConfigurerSupport</a> class. I find default values quite useful, especially in situations where a particular property of a bean is not likely to be changed in different environments and as such you don't want to introduce it needlessly into a property file, but still want to give yourself an option to change your mind later. If we were to modify our example to use a default value, it would look like this:</p>
+<pre><code class="language-java">@Controller
 public class HelloController {
 	
 	@Value(&quot;${app.name:My Excellent Application}&quot;)
@@ -110,14 +129,22 @@ public class HelloController {
 	}
 
 }
-</code></pre><h4>Injecting a SpringEL dynamically evaluated value</h4><p>Do you remember <code>@Value</code>'s javadoc that was shown previously? It described a <code>#{...}</code> syntax rather than property replacement <code>${...}</code> syntax that we used in our example. What's the difference? The <code>#{...}</code> syntax invokes Spring Expression Language (SpringEL) and evaluates the expression dynamically. For example we could obtain a value from the system settings:</p>
-<pre><code class="java">@Value(&quot;#{systemSettings[&#39;user.region&#39;]}&quot;)
+</code></pre>
+<h4>Injecting a SpringEL dynamically evaluated value</h4>
+<p>Do you remember <code>@Value</code>'s javadoc that was shown previously? It described a <code>#{...}</code> syntax rather than property replacement <code>${...}</code> syntax that we used in our example. What's the difference? The <code>#{...}</code> syntax invokes Spring Expression Language (SpringEL) and evaluates the expression dynamically. For example we could obtain a value from the system settings:</p>
+<pre><code class="language-java">@Value(&quot;#{systemSettings['user.region']}&quot;)
 private String locale; 
-</code></pre><p>The above expression works because systemSettings is a variable that's always available to SpringEL when it's invoked in this context (e.g. when configuring beans).</p><p>We may even inject a return value of a method of another bean:</p>
-<pre><code class="java">@Value(&quot;#{&#39;V1.0S&#39; + migrationService.version}&quot;)
+</code></pre>
+<p>The above expression works because systemSettings is a variable that's always available to SpringEL when it's invoked in this context (e.g. when configuring beans).</p>
+<p>We may even inject a return value of a method of another bean:</p>
+<pre><code class="language-java">@Value(&quot;#{'V1.0S' + migrationService.version}&quot;)
 private String version;
-</code></pre><p>In this example Spring will inject string "V1.0S" prepended to the return value of method <code>getVersion()</code> of a bean with name <code>migrationService</code> (all beans in Spring's context are available as variables in SpringEL).</p><p>To conclude,<code>@Value</code> annotation is indispensable asset when configuring your beans. When pursing convention-over-configuration style, default values for property placeholders used in<code>@Value</code> configs may come in handy. And finally, always keep on your mind that you can invoke SpringEL to help you to simplify scenarios that may otherwise require complex config or workarounds. </p>
-<hr><p>Did you find this article helpful? What is your favorite Spring feature? Do you have a related blog post? Feel welcome to leave feedback or comments below :)</p></div>
+</code></pre>
+<p>In this example Spring will inject string &quot;V1.0S&quot; prepended to the return value of method <code>getVersion()</code> of a bean with name <code>migrationService</code> (all beans in Spring's context are available as variables in SpringEL).</p>
+<p>To conclude,<code>@Value</code> annotation is indispensable asset when configuring your beans. When pursing convention-over-configuration style, default values for property placeholders used in<code>@Value</code> configs may come in handy. And finally, always keep on your mind that you can invoke SpringEL to help you to simplify scenarios that may otherwise require complex config or workarounds.</p>
+<hr>
+Did you find this article helpful? What is your favorite Spring feature? Do you have a related blog post? Feel welcome to leave feedback or comments below :)
+</div>
 
 	<hr />
 

@@ -6,8 +6,8 @@
     <atom:link href="http://knes1.github.io//feed.xml" rel="self" type="application/rss+xml" />
     <description>Teh Artikli - tech and software development blog by Krešimir Nesek</description>
     <language>en-gb</language>
-    <pubDate>Mon, 9 May 2016 23:04:09 +0200</pubDate>
-    <lastBuildDate>Mon, 9 May 2016 23:04:09 +0200</lastBuildDate>
+    <pubDate>Tue, 9 Jun 2020 23:31:56 +0200</pubDate>
+    <lastBuildDate>Tue, 9 Jun 2020 23:31:56 +0200</lastBuildDate>
 
     <item>
       <title>Elktail - Command Line Tool for Tailing and Querying ELK Logs</title>
@@ -16,17 +16,38 @@
       <guid isPermaLink="false">blog/2016/2016-03-06-elktail-command-line-tool-for-tailing-and-querying-ELK-logs.html</guid>
       	<description>
 	&lt;p&gt;I&apos;ve started using ELK stack (Elasticsearch, Logstash, Kibana) as a default go-to option whenever I require a log management solution in a project that I work on. Analysing and searching through the logs is much nicer when done through Kibana&apos;s web UI then grepping through the log files as you would do if you had no log management. However, from time to time, there still comes a moment where I wish I could just tail -f the log file to see what&apos;s happening right now in this moment. After googling around and not finding what I wanted, I ended up building &lt;a href=&quot;https://github.com/knes1/elktail&quot;&gt;Elktail&lt;/a&gt;, a command line utility that allows you to search and tail your logs stored in Elasticsearch.&lt;/p&gt;
-&lt;!-- more --&gt;&lt;p&gt;Using &lt;a href=&quot;https://github.com/knes1/elktail&quot;&gt;Elktail&lt;/a&gt;, you can connect to the Elasticsearch instance that hosts your logstash logs and tail them. The experience is similar to good old tail -f. You can also add search terms (just like you would in the search bar in Kibana), which will yield results similar to grepping the log file.&lt;/p&gt;&lt;p&gt;Here&apos;s how you would connect to Elasticsearch instance running on &lt;code&gt;elastic.example.com&lt;/code&gt; in order to tail logstash logs:&lt;/p&gt;&lt;p&gt;&lt;code&gt;elktail --url http://elastic.example.com&lt;/code&gt;&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/knes1/elktail&quot;&gt;Elktail&lt;/a&gt; also supports basic authentication and ssh tunneling in case your Elasticsearch cluster is not publicly available over the internet but you do have ssh access to it.&lt;/p&gt;&lt;p&gt;Once you can list your logs on the command line, several additional workflows open up. For example, I often need to extract and e-mail part of the log file to my fellow developers or attach it together with a bug report in the issue tracker. I just want to copy paste 100 relevant lines, but it&apos;s often hard to do that in Kibana, at least with satisfying results. Copy-pasting picks up html formatting and Kibana&apos;s pagination will get in the way. While I could share the link to the search, it&apos;s often not easy to setup the search in a way that isolates the crux of the issue. &lt;/p&gt;&lt;h2&gt;Elktail Usage Examples&lt;/h2&gt;&lt;p&gt;Here are some examples of how you could use &lt;a href=&quot;https://github.com/knes1/elktail&quot;&gt;Elktail&lt;/a&gt;. Examples are based on the log format for Spring Boot applications, and ELK setup is explained in &lt;a href=&quot;http://knes1.github.io/blog/2015/2015-08-16-manage-spring-boot-logs-with-elasticsearch-kibana-and-logstash.html&quot;&gt;one of the previous posts&lt;/a&gt;.&lt;/p&gt;
+&lt;!-- more --&gt;
+&lt;p&gt;Using &lt;a href=&quot;https://github.com/knes1/elktail&quot;&gt;Elktail&lt;/a&gt;, you can connect to the Elasticsearch instance that hosts your logstash logs and tail them. The experience is similar to good old tail -f. You can also add search terms (just like you would in the search bar in Kibana), which will yield results similar to grepping the log file.&lt;/p&gt;
+&lt;p&gt;Here&apos;s how you would connect to Elasticsearch instance running on &lt;code&gt;elastic.example.com&lt;/code&gt; in order to tail logstash logs:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;elktail --url http://elastic.example.com&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/knes1/elktail&quot;&gt;Elktail&lt;/a&gt; also supports basic authentication and ssh tunneling in case your Elasticsearch cluster is not publicly available over the internet but you do have ssh access to it.&lt;/p&gt;
+&lt;p&gt;Once you can list your logs on the command line, several additional workflows open up. For example, I often need to extract and e-mail part of the log file to my fellow developers or attach it together with a bug report in the issue tracker. I just want to copy paste 100 relevant lines, but it&apos;s often hard to do that in Kibana, at least with satisfying results. Copy-pasting picks up html formatting and Kibana&apos;s pagination will get in the way. While I could share the link to the search, it&apos;s often not easy to setup the search in a way that isolates the crux of the issue.&lt;/p&gt;
+&lt;h2&gt;Elktail Usage Examples&lt;/h2&gt;
+&lt;p&gt;Here are some examples of how you could use &lt;a href=&quot;https://github.com/knes1/elktail&quot;&gt;Elktail&lt;/a&gt;. Examples are based on the log format for Spring Boot applications, and ELK setup is explained in &lt;a href=&quot;http://knes1.github.io/blog/2015/2015-08-16-manage-spring-boot-logs-with-elasticsearch-kibana-and-logstash.html&quot;&gt;one of the previous posts&lt;/a&gt;.&lt;/p&gt;
 &lt;ul&gt;
-  &lt;li&gt;&lt;p&gt;Tail only messages with info level&lt;br/&gt;&lt;code&gt;elktail level:INFO&lt;/code&gt; (you need to specify --url only once, elktail will remember it for subsequent invocations)&lt;/p&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;p&gt;Just do a search for a string&lt;br/&gt;&lt;code&gt;elktail DispatcherServlet&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;p&gt;List last 2 execeptions and their stacktraces&lt;br/&gt;&lt;code&gt;elktail -l -n 2 tags:stacktrace&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;p&gt;Change the display format to only show timestamp, level and log message fields:&lt;br/&gt;&lt;code&gt;elktail -f &amp;quot;%@timestamp %level %logmessage&amp;quot;&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Tail only messages with info level&lt;br /&gt;
+&lt;code&gt;elktail level:INFO&lt;/code&gt; (you need to specify --url only once, elktail will remember it for subsequent invocations)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Just do a search for a string&lt;br /&gt;
+&lt;code&gt;elktail DispatcherServlet&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;List last 2 execeptions and their stacktraces&lt;br /&gt;
+&lt;code&gt;elktail -l -n 2 tags:stacktrace&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Change the display format to only show timestamp, level and log message fields:&lt;br /&gt;
+&lt;code&gt;elktail -f &amp;quot;%@timestamp %level %logmessage&amp;quot;&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div id=&quot;terminalwrap&quot; style=&quot;display: table; width: 100%; margin-bottom: 30px;&quot;&gt;
 	&lt;div id=&quot;loadingTerminal&quot; class=&quot;terminal&quot; style=&quot;display: table-cell;&quot;&gt;Loading Terminal...&lt;/div&gt;
 	&lt;div id=&quot;terminal&quot; style=&quot;display: none;&quot;&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;h2&gt;Download&lt;/h2&gt;&lt;p&gt;If you would like to try it out yourself, head over to the &lt;a href=&quot;https://github.com/knes1/elktail&quot;&gt;Elktail github page&lt;/a&gt; and download it.&lt;/p&gt;
+&lt;/div&gt;
+&lt;h2&gt;Download&lt;/h2&gt;
+&lt;p&gt;If you would like to try it out yourself, head over to the &lt;a href=&quot;https://github.com/knes1/elktail&quot;&gt;Elktail github page&lt;/a&gt; and download it.&lt;/p&gt;
 &lt;script type=&quot;text/javascript&quot; src=&quot;../../js/term.js&quot;&gt;&lt;/script&gt;
 &lt;script type=&quot;text/javascript&quot; src=&quot;../../js/jbinary.js&quot;&gt;&lt;/script&gt;
 &lt;script type=&quot;text/javascript&quot; src=&quot;../../js/pako.js&quot;&gt;&lt;/script&gt;
@@ -63,6 +84,7 @@ function startTerminal() {
     });
 }
 &lt;/script&gt;
+
 	</description>
     </item>
     <item>
@@ -72,8 +94,12 @@ function startTerminal() {
       <guid isPermaLink="false">blog/2015/2015-10-19-streaming-mysql-results-using-java8-streams-and-spring-data.html</guid>
       	<description>
 	&lt;p&gt;Since version 1.8, Spring data project includes an interesting feature - through a simple API call developer can request database query results to be returned as Java 8 stream. Where technically possible and supported by underlying database technology, results are being streamed one by one and are available for processing using stream operations. This technique can be particularly useful when processing large datasets (for example, exporting larger amounts of database data in a specific format) because, among other things, it can limit memory consumption in the processing layer of the application. In this article I will discuss some of the benefits (and gotchas!) when Spring Data streaming is used with MySQL database.&lt;/p&gt;
-&lt;!-- more --&gt;&lt;p&gt;Naive approaches to fetching and processing a larger amount of data (by larger, I mean datasets that do not fit into the memory of the running application) from the database will often result with running out of memory. This is especially true when using ORMs / abstraction layers such as JPA where you don&apos;t have access to lower level facilities that would allow you to manually manage how data is fetched from the database. Typically, at least with the stack that I&apos;m usually using - MySQL, Hibernate/JPA and Spring Data - the whole resultset of a large query will be fetched entirely either by MySQL&apos;s JDBC driver or one of the aforementioned frameworks that come after it. This will lead to OutOfMemory exceptions if the resultset is sufficiently large.&lt;/p&gt;&lt;h2&gt;Solution Using Paging&lt;/h2&gt;&lt;p&gt;Let&apos;s focus on a single example - exporting results of a large query as a CSV file. When presented with this problem and when I want to stay in Spring Data/JPA world, I usually settle for a paging solution. The query is broken down to smaller queries that each return one page of results, each with a limited size. Spring Data offers nice paging/slicing feature that makes this approach easy to implement. Spring Data&apos;s PageRequests get translated to limit/offset queries in MySQL. There are caveats though. When using JPA, entities get cached in EntityManager&apos;s cache. This cache needs to be cleared to enable garbage collector to remove the old result objects from the memory.&lt;/p&gt;&lt;p&gt;Let&apos;s take look how an actual implementation of paging strategy behaves in practice. For testing purposes I will use a small &lt;a href=&quot;https://github.com/knes1/todo/tree/mysql-streaming-test&quot;&gt;application based on Spring Boot, Spring Data, Hibernate/JPA and MySQL&lt;/a&gt;. It&apos;s a todo list management webapp and it has a feature to download all todos as a CSV file. Todos are stored in a single MySQL table. The table has been filled with 1 million entries. Here&apos;s the code for the paging/slicing export function:&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;java&quot;&gt;@RequestMapping(value = &amp;quot;/todos2.csv&amp;quot;, method = RequestMethod.GET)
+&lt;!-- more --&gt;
+&lt;p&gt;Naive approaches to fetching and processing a larger amount of data (by larger, I mean datasets that do not fit into the memory of the running application) from the database will often result with running out of memory. This is especially true when using ORMs / abstraction layers such as JPA where you don&apos;t have access to lower level facilities that would allow you to manually manage how data is fetched from the database. Typically, at least with the stack that I&apos;m usually using - MySQL, Hibernate/JPA and Spring Data - the whole resultset of a large query will be fetched entirely either by MySQL&apos;s JDBC driver or one of the aforementioned frameworks that come after it. This will lead to OutOfMemory exceptions if the resultset is sufficiently large.&lt;/p&gt;
+&lt;h2&gt;Solution Using Paging&lt;/h2&gt;
+&lt;p&gt;Let&apos;s focus on a single example - exporting results of a large query as a CSV file. When presented with this problem and when I want to stay in Spring Data/JPA world, I usually settle for a paging solution. The query is broken down to smaller queries that each return one page of results, each with a limited size. Spring Data offers nice paging/slicing feature that makes this approach easy to implement. Spring Data&apos;s PageRequests get translated to limit/offset queries in MySQL. There are caveats though. When using JPA, entities get cached in EntityManager&apos;s cache. This cache needs to be cleared to enable garbage collector to remove the old result objects from the memory.&lt;/p&gt;
+&lt;p&gt;Let&apos;s take look how an actual implementation of paging strategy behaves in practice. For testing purposes I will use a small &lt;a href=&quot;https://github.com/knes1/todo/tree/mysql-streaming-test&quot;&gt;application based on Spring Boot, Spring Data, Hibernate/JPA and MySQL&lt;/a&gt;. It&apos;s a todo list management webapp and it has a feature to download all todos as a CSV file. Todos are stored in a single MySQL table. The table has been filled with 1 million entries. Here&apos;s the code for the paging/slicing export function:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-java&quot;&gt;@RequestMapping(value = &amp;quot;/todos2.csv&amp;quot;, method = RequestMethod.GET)
 public void exportTodosCSVSlicing(HttpServletResponse response) {
 	final int PAGE_SIZE = 1000;
 	response.addHeader(&amp;quot;Content-Type&amp;quot;, &amp;quot;application/csv&amp;quot;);
@@ -99,15 +125,26 @@ public void exportTodosCSVSlicing(HttpServletResponse response) {
 		throw new RuntimeException(&amp;quot;Exception occurred while exporting results&amp;quot;, e);
 	}
 }
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This how memory usage looks like while export operation is in progress:&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;/images/mem-paging-slicing.png&quot; alt=&quot;Memory usage when exporting using paging strategy&quot; style=&quot;max-width: 100%&quot;&gt;&lt;/p&gt;&lt;p&gt;Memory usage graph has a shape of a saw-tooth: memory usage grows as entries are fetched from the database until GC kicks in and cleans up the entries that have already been outputted and cleared from EntityManager&apos;s cache. Paging approach works great but it definitely has room from improvement:&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This how memory usage looks like while export operation is in progress:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/mem-paging-slicing.png&quot; alt=&quot;Memory usage when exporting using paging strategy&quot; style=&quot;max-width: 100%&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Memory usage graph has a shape of a saw-tooth: memory usage grows as entries are fetched from the database until GC kicks in and cleans up the entries that have already been outputted and cleared from EntityManager&apos;s cache. Paging approach works great but it definitely has room from improvement:&lt;/p&gt;
 &lt;ul&gt;
-  &lt;li&gt;&lt;p&gt;We&apos;re issuing 1000 database queries (number of entries / PAGE_SIZE) to complete the export. It would be better if we could avoid the overhead of executing those queries.&lt;/p&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;p&gt;Did you notice how the raising slope of the tooths on the graph is less and less steep as the export progresses and the distance between the peaks increases? It seems that the rate at which new entires are fetched from DB gets slower and slower. The reason for this is MySQL&apos;s limit/offset performance characteristic - as offset gets larger it takes more and more time to find and return the selected rows.&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;p&gt;Can we improve the above using new streaming functionality available in Spring Data 1.8? Let&apos;s try.&lt;/p&gt;&lt;h2&gt;Streaming Functionality in Spring Data 1.8&lt;/h2&gt;&lt;p&gt;Spring Data 1.8 introduced support for streaming resultsets. Repositories can now declare methods that return Java 8 streams of entity objects. For example, it&apos;s now possible to add a method with the following signature to a repository:&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;java&quot;&gt;@Query(&amp;quot;select t from Todo t&amp;quot;)
+&lt;li&gt;
+&lt;p&gt;We&apos;re issuing 1000 database queries (number of entries / PAGE_SIZE) to complete the export. It would be better if we could avoid the overhead of executing those queries.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Did you notice how the raising slope of the tooths on the graph is less and less steep as the export progresses and the distance between the peaks increases? It seems that the rate at which new entires are fetched from DB gets slower and slower. The reason for this is MySQL&apos;s limit/offset performance characteristic - as offset gets larger it takes more and more time to find and return the selected rows.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Can we improve the above using new streaming functionality available in Spring Data 1.8? Let&apos;s try.&lt;/p&gt;
+&lt;h2&gt;Streaming Functionality in Spring Data 1.8&lt;/h2&gt;
+&lt;p&gt;Spring Data 1.8 introduced support for streaming resultsets. Repositories can now declare methods that return Java 8 streams of entity objects. For example, it&apos;s now possible to add a method with the following signature to a repository:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-java&quot;&gt;@Query(&amp;quot;select t from Todo t&amp;quot;)
 Stream&amp;lt;Todo&amp;gt; streamAll();
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Spring Data will use techniques specific to a particular JPA implementation (e.g. Hibernate&apos;s, EclipseLink&apos;s etc.) to stream the resultset. Let&apos;s re-implement the CSV exporting using this streaming capability:&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;java&quot;&gt;@RequestMapping(value = &amp;quot;/todos.csv&amp;quot;, method = RequestMethod.GET)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Spring Data will use techniques specific to a particular JPA implementation (e.g. Hibernate&apos;s, EclipseLink&apos;s etc.) to stream the resultset. Let&apos;s re-implement the CSV exporting using this streaming capability:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-java&quot;&gt;@RequestMapping(value = &amp;quot;/todos.csv&amp;quot;, method = RequestMethod.GET)
 @Transactional(readOnly = true)
 public void exportTodosCSV(HttpServletResponse response) {
 	response.addHeader(&amp;quot;Content-Type&amp;quot;, &amp;quot;application/csv&amp;quot;);
@@ -127,18 +164,26 @@ public void exportTodosCSV(HttpServletResponse response) {
 		throw new RuntimeException(&amp;quot;Exception occurred while exporting results&amp;quot;, e);
 	}
 }
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;I started the export as usual, however the results are not showing up. What&apos;s happening?&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;/images/mem-streaming-outofmem.png&quot; alt=&quot;Streaming, out of memory because of preloading&quot; style=&quot;max-width: 100%&quot;&gt;&lt;/p&gt;&lt;p&gt;It seems that we have run out of memory. Additionally, no results were written to &lt;code&gt;HttpServletResponse&lt;/code&gt;. Why isn&apos;t this working? After digging into source code of &lt;code&gt;org.springframework.data.jpa.provider.PersistenceProvider&lt;/code&gt; one can find out that Spring Data is using scrollable resultsets to implement resultset streams. Googling about scrollable resultsets and MySQL shows that there are gotchas when using them. For instance, here&apos;s a quote from &lt;a href=&quot;http://dev.mysql.com/doc/connector-j/en/connector-j-reference-implementation-notes.html&quot;&gt;MySQL&apos;s JDBC driver&apos;s documentation&lt;/a&gt;:&lt;/p&gt;
-&lt;blockquote&gt;&lt;p&gt;By default, ResultSets are completely retrieved and stored in memory. In most cases this is the most efficient way to operate and, due to the design of the MySQL network protocol, is easier to implement. If you are working with ResultSets that have a large number of rows or large values and cannot allocate heap space in your JVM for the memory required, you can tell the driver to stream the results back one row at a time. To enable this functionality, create a Statement instance in the following manner:&lt;/p&gt;
-  &lt;pre&gt;&lt;code&gt;stmt = conn.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY,java.sql.ResultSet.CONCUR_READ_ONLY);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;I started the export as usual, however the results are not showing up. What&apos;s happening?&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/mem-streaming-outofmem.png&quot; alt=&quot;Streaming, out of memory because of preloading&quot; style=&quot;max-width: 100%&quot;&gt;&lt;/p&gt;
+&lt;p&gt;It seems that we have run out of memory. Additionally, no results were written to &lt;code&gt;HttpServletResponse&lt;/code&gt;. Why isn&apos;t this working? After digging into source code of &lt;code&gt;org.springframework.data.jpa.provider.PersistenceProvider&lt;/code&gt; one can find out that Spring Data is using scrollable resultsets to implement resultset streams. Googling about scrollable resultsets and MySQL shows that there are gotchas when using them. For instance, here&apos;s a quote from &lt;a href=&quot;http://dev.mysql.com/doc/connector-j/en/connector-j-reference-implementation-notes.html&quot;&gt;MySQL&apos;s JDBC driver&apos;s documentation&lt;/a&gt;:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;By default, ResultSets are completely retrieved and stored in memory. In most cases this is the most efficient way to operate and, due to the design of the MySQL network protocol, is easier to implement. If you are working with ResultSets that have a large number of rows or large values and cannot allocate heap space in your JVM for the memory required, you can tell the driver to stream the results back one row at a time. To enable this functionality, create a Statement instance in the following manner:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;stmt = conn.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY,java.sql.ResultSet.CONCUR_READ_ONLY);
 stmt.setFetchSize(Integer.MIN_VALUE);
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The combination of a forward-only, read-only result set, with a fetch size of Integer.MIN_VALUE serves as a signal to the driver to stream result sets row-by-row. After this, any result sets created with the statement will be retrieved row-by-row.&lt;/p&gt;&lt;p&gt;There are some caveats with this approach. You must read all of the rows in the result set (or close it) before you can issue any other queries on the connection, or an exception will be thrown.&lt;/p&gt;
-&lt;/blockquote&gt;&lt;p&gt;Ok, it seems that when using MySQL in order to really stream the results we need to satisfy three conditions:&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The combination of a forward-only, read-only result set, with a fetch size of Integer.MIN_VALUE serves as a signal to the driver to stream result sets row-by-row. After this, any result sets created with the statement will be retrieved row-by-row.&lt;/p&gt;
+&lt;p&gt;There are some caveats with this approach. You must read all of the rows in the result set (or close it) before you can issue any other queries on the connection, or an exception will be thrown.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Ok, it seems that when using MySQL in order to really stream the results we need to satisfy three conditions:&lt;/p&gt;
 &lt;ul&gt;
-  &lt;li&gt;Forward-only resultset&lt;/li&gt;
-  &lt;li&gt;Read-only statement&lt;/li&gt;
-  &lt;li&gt;Fetch-size set to Integer.MIN_VALUE&lt;/li&gt;
-&lt;/ul&gt;&lt;p&gt;Forward-only seems to be set already by Spring Data so we don&apos;t have to do anything special about that. Our code sample already has &lt;code&gt;@Transactional(readOnly = true)&lt;/code&gt; annotation which is enough to satisfy the second criteria. What seems to be missing is the fetch-size. We can set it up using query hints on the repository method:&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;java&quot;&gt;...
+&lt;li&gt;Forward-only resultset&lt;/li&gt;
+&lt;li&gt;Read-only statement&lt;/li&gt;
+&lt;li&gt;Fetch-size set to Integer.MIN_VALUE&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Forward-only seems to be set already by Spring Data so we don&apos;t have to do anything special about that. Our code sample already has &lt;code&gt;@Transactional(readOnly = true)&lt;/code&gt; annotation which is enough to satisfy the second criteria. What seems to be missing is the fetch-size. We can set it up using query hints on the repository method:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-java&quot;&gt;...
 import static org.hibernate.jpa.QueryHints.HINT_FETCH_SIZE;
 
 @Repository
@@ -150,18 +195,24 @@ public interface TodoRepository extends JpaRepository&amp;lt;Todo, Long&amp;gt; 
 	
 	...
 }
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;With query hints in place, let&apos;s run export again:&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;/images/mem-streaming.png&quot; alt=&quot;Streaming, memory usage&quot; style=&quot;max-width: 100%&quot;&gt;&lt;/p&gt;&lt;p&gt;Everything is working now, and it seems it&apos;s much more efficient than the paging approach:&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;With query hints in place, let&apos;s run export again:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/mem-streaming.png&quot; alt=&quot;Streaming, memory usage&quot; style=&quot;max-width: 100%&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Everything is working now, and it seems it&apos;s much more efficient than the paging approach:&lt;/p&gt;
 &lt;ul&gt;
-  &lt;li&gt;When streaming, export is finished in about &lt;strong&gt;9 seconds&lt;/strong&gt; vs about &lt;strong&gt;137 seconds&lt;/strong&gt; when using paging&lt;/li&gt;
-  &lt;li&gt;It seems offset performance, query overhead and result preloading can really hurt paging approach when dataset is sufficiently large&lt;/li&gt;
-&lt;/ul&gt;&lt;h2&gt;Conclusions&lt;/h2&gt;
+&lt;li&gt;When streaming, export is finished in about &lt;strong&gt;9 seconds&lt;/strong&gt; vs about &lt;strong&gt;137 seconds&lt;/strong&gt; when using paging&lt;/li&gt;
+&lt;li&gt;It seems offset performance, query overhead and result preloading can really hurt paging approach when dataset is sufficiently large&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Conclusions&lt;/h2&gt;
 &lt;ul&gt;
-  &lt;li&gt;We&apos;ve seen significant performance improvements when using streaming (via scrollable resultsets) vs paging, admittedly in a very specific task of exporting data.&lt;/li&gt;
-  &lt;li&gt;Spring Data&apos;s new features give really convenient access to scrollable resultsets via streams.&lt;/li&gt;
-  &lt;li&gt;There are gotchas to get it working with MySQL, but they are manageable.&lt;/li&gt;
-  &lt;li&gt;There are further restrictions when reading scrollable result sets in MySQL - no statement may be issued through the same database connection until the resultset is fully read.&lt;/li&gt;
-  &lt;li&gt;The export works fine because we are writing results directly to &lt;code&gt;HttpServletResponse&lt;/code&gt;. If we were using default Spring&apos;s message converters (e.g. returning stream from the controller method ) then there&apos;s a good chance this would not work as expected. Here&apos;s an interesting &lt;a href=&quot;https://www.airpair.com/java/posts/spring-streams-memory-efficiency&quot;&gt;article on this subject&lt;/a&gt;.&lt;/li&gt;
-&lt;/ul&gt;&lt;p&gt;I would love to try the tests with other database and explore possibilities of streaming results via Spring message converters as hinted in article linked above. If you&apos;d like to experiment yourself, the test application is &lt;a href=&quot;https://github.com/knes1/todo/tree/mysql-streaming-test&quot;&gt;available on github&lt;/a&gt;. I hope you found the article interesting and I welcome your comments in the comment section below.&lt;/p&gt;
+&lt;li&gt;We&apos;ve seen significant performance improvements when using streaming (via scrollable resultsets) vs paging, admittedly in a very specific task of exporting data.&lt;/li&gt;
+&lt;li&gt;Spring Data&apos;s new features give really convenient access to scrollable resultsets via streams.&lt;/li&gt;
+&lt;li&gt;There are gotchas to get it working with MySQL, but they are manageable.&lt;/li&gt;
+&lt;li&gt;There are further restrictions when reading scrollable result sets in MySQL - no statement may be issued through the same database connection until the resultset is fully read.&lt;/li&gt;
+&lt;li&gt;The export works fine because we are writing results directly to &lt;code&gt;HttpServletResponse&lt;/code&gt;. If we were using default Spring&apos;s message converters (e.g. returning stream from the controller method ) then there&apos;s a good chance this would not work as expected. Here&apos;s an interesting &lt;a href=&quot;https://www.airpair.com/java/posts/spring-streams-memory-efficiency&quot;&gt;article on this subject&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I would love to try the tests with other database and explore possibilities of streaming results via Spring message converters as hinted in article linked above. If you&apos;d like to experiment yourself, the test application is &lt;a href=&quot;https://github.com/knes1/todo/tree/mysql-streaming-test&quot;&gt;available on github&lt;/a&gt;. I hope you found the article interesting and I welcome your comments in the comment section below.&lt;/p&gt;
+
 	</description>
     </item>
     <item>
@@ -170,22 +221,29 @@ public interface TodoRepository extends JpaRepository&amp;lt;Todo, Long&amp;gt; 
       <pubDate>Sun, 16 Aug 2015 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2015/2015-08-16-manage-spring-boot-logs-with-elasticsearch-kibana-and-logstash.html</guid>
       	<description>
-	&lt;p&gt;When time comes to deploy a new project, one often overlooked aspect is log management. ELK stack (Elasticsearch, Logstash, Kibana) is, among other things, a powerful and freely available log management solution. In this article I will show you how to install and setup ELK and use it with default log format of a Spring Boot application. &lt;/p&gt;
-&lt;!-- more --&gt;&lt;p&gt;For this guide, I&apos;ve setup a demo Spring Boot application with logging enabled and with Logstash configuration that will send log entries to Elasticsearch. Demo application is a simple &lt;a href=&quot;https://github.com/knes1/todo&quot;&gt;todo list&lt;/a&gt; available &lt;a href=&quot;https://github.com/knes1/todo&quot;&gt;here&lt;/a&gt;. &lt;/p&gt;&lt;p&gt;&lt;img src=&quot;/images/ELK.svg&quot; onerror=&quot;this.src=&apos;/images/ELK.png&apos;&quot; alt=&quot;ELK setup overview&quot;&gt;&lt;/p&gt;&lt;p&gt;Application will store logs into a log file. Logstash will read and parse the log file and ship log entries to an Elasticsearch instance. Finally, we will use Kibana 4 (Elasticsearch web frontend) to search and analyze the logs. &lt;/p&gt;&lt;h3&gt;Step 1) Install Elasticsearch&lt;/h3&gt;
+	&lt;p&gt;When time comes to deploy a new project, one often overlooked aspect is log management. ELK stack (Elasticsearch, Logstash, Kibana) is, among other things, a powerful and freely available log management solution. In this article I will show you how to install and setup ELK and use it with default log format of a Spring Boot application.&lt;/p&gt;
+&lt;!-- more --&gt;
+&lt;p&gt;For this guide, I&apos;ve setup a demo Spring Boot application with logging enabled and with Logstash configuration that will send log entries to Elasticsearch. Demo application is a simple &lt;a href=&quot;https://github.com/knes1/todo&quot;&gt;todo list&lt;/a&gt; available &lt;a href=&quot;https://github.com/knes1/todo&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/ELK.svg&quot; onerror=&quot;this.src=&apos;/images/ELK.png&apos;&quot; alt=&quot;ELK setup overview&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Application will store logs into a log file. Logstash will read and parse the log file and ship log entries to an Elasticsearch instance. Finally, we will use Kibana 4 (Elasticsearch web frontend) to search and analyze the logs.&lt;/p&gt;
+&lt;h3&gt;Step 1) Install Elasticsearch&lt;/h3&gt;
 &lt;ul&gt;
-  &lt;li&gt;Download elasticsearch zip file from &lt;a href=&quot;https://www.elastic.co/downloads/elasticsearch&quot;&gt;https://www.elastic.co/downloads/elasticsearch&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;Extract it to a directory (unzip it)&lt;/li&gt;
-  &lt;li&gt;Run it (&lt;code&gt;bin/elasticsearch&lt;/code&gt; or &lt;code&gt;bin/elasticsearch.bat&lt;/code&gt; on Windows)&lt;/li&gt;
-  &lt;li&gt;Check that it runs using &lt;code&gt;curl -XGET http://localhost:9200&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;p&gt;Here&apos;s how to do it (steps are written for OS X but should be similar on other systems):&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;wget https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.7.1.zip
+&lt;li&gt;Download elasticsearch zip file from &lt;a href=&quot;https://www.elastic.co/downloads/elasticsearch&quot;&gt;https://www.elastic.co/downloads/elasticsearch&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Extract it to a directory (unzip it)&lt;/li&gt;
+&lt;li&gt;Run it (&lt;code&gt;bin/elasticsearch&lt;/code&gt; or &lt;code&gt;bin/elasticsearch.bat&lt;/code&gt; on Windows)&lt;/li&gt;
+&lt;li&gt;Check that it runs using &lt;code&gt;curl -XGET http://localhost:9200&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Here&apos;s how to do it (steps are written for OS X but should be similar on other systems):&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-bash&quot;&gt;wget https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.7.1.zip
 unzip elasticsearch-1.7.1.zip
 cd elasticsearch-1.7.1
 bin/elasticsearch
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Elasticsearch should be running now. You can verify it&apos;s running using &lt;code&gt;curl&lt;/code&gt;. In a separate terminal window execute a GET request to Elasticsearch&apos;s status page:&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;curl -XGET http://localhost:9200
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If all is well, you should get the following result:&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;{
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Elasticsearch should be running now. You can verify it&apos;s running using &lt;code&gt;curl&lt;/code&gt;. In a separate terminal window execute a GET request to Elasticsearch&apos;s status page:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-bash&quot;&gt;curl -XGET http://localhost:9200
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If all is well, you should get the following result:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-bash&quot;&gt;{
   &amp;quot;status&amp;quot; : 200,
   &amp;quot;name&amp;quot; : &amp;quot;Tartarus&amp;quot;,
   &amp;quot;cluster_name&amp;quot; : &amp;quot;elasticsearch&amp;quot;,
@@ -198,31 +256,46 @@ bin/elasticsearch
   },
   &amp;quot;tagline&amp;quot; : &amp;quot;You Know, for Search&amp;quot;
 }
-&lt;/code&gt;&lt;/pre&gt;&lt;h3&gt;Step 2) Install Kibana 4&lt;/h3&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Step 2) Install Kibana 4&lt;/h3&gt;
 &lt;ul&gt;
-  &lt;li&gt;Download Kibana archive from &lt;a href=&quot;https://www.elastic.co/downloads/kibana&quot;&gt;https://www.elastic.co/downloads/kibana&lt;/a&gt;
-  &lt;ul&gt;
-    &lt;li&gt;Please note that you need to download appropriate distribution for your OS, URL given in examples below is for OS X&lt;/li&gt;
-  &lt;/ul&gt;&lt;/li&gt;
-  &lt;li&gt;Extract the archive&lt;/li&gt;
-  &lt;li&gt;Run it (&lt;code&gt;bin/kibana&lt;/code&gt;)&lt;/li&gt;
-  &lt;li&gt;Check that it runs by pointing the browser to the Kibana&apos;s WebUI&lt;/li&gt;
-&lt;/ul&gt;&lt;p&gt;Here&apos;s how to do it:&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;wget https://download.elastic.co/kibana/kibana/kibana-4.1.1-darwin-x64.tar.gz
+&lt;li&gt;Download Kibana archive from &lt;a href=&quot;https://www.elastic.co/downloads/kibana&quot;&gt;https://www.elastic.co/downloads/kibana&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;Please note that you need to download appropriate distribution for your OS, URL given in examples below is for OS X&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Extract the archive&lt;/li&gt;
+&lt;li&gt;Run it (&lt;code&gt;bin/kibana&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;Check that it runs by pointing the browser to the Kibana&apos;s WebUI&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Here&apos;s how to do it:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-bash&quot;&gt;wget https://download.elastic.co/kibana/kibana/kibana-4.1.1-darwin-x64.tar.gz
 tar xvzf kibana-4.1.1-darwin-x64.tar.gz
 cd kibana-4.1.1-darwin-x64
 bin/kibana
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Point your browser to &lt;a href=&quot;http://localhost:5601&quot;&gt;http://localhost:5601&lt;/a&gt; (if Kibana page shows up, we&apos;re good - we&apos;ll configure it later)&lt;/p&gt;&lt;h3&gt;Step 3) Install Logstash&lt;/h3&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Point your browser to &lt;a href=&quot;http://localhost:5601&quot;&gt;http://localhost:5601&lt;/a&gt; (if Kibana page shows up, we&apos;re good - we&apos;ll configure it later)&lt;/p&gt;
+&lt;h3&gt;Step 3) Install Logstash&lt;/h3&gt;
 &lt;ul&gt;
-  &lt;li&gt;Download Logstash zip from &lt;a href=&quot;https://www.elastic.co/downloads/logstash&quot;&gt;https://www.elastic.co/downloads/logstash&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;Extract it (unzip it)&lt;/li&gt;
+&lt;li&gt;Download Logstash zip from &lt;a href=&quot;https://www.elastic.co/downloads/logstash&quot;&gt;https://www.elastic.co/downloads/logstash&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Extract it (unzip it)&lt;/li&gt;
 &lt;/ul&gt;
-&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;wget https://download.elastic.co/logstash/logstash/logstash-1.5.3.zip
+&lt;pre&gt;&lt;code class=&quot;language-bash&quot;&gt;wget https://download.elastic.co/logstash/logstash/logstash-1.5.3.zip
 unzip logstash-1.5.3.zip
-&lt;/code&gt;&lt;/pre&gt;&lt;h3&gt;Step 4) Configure Spring Boot&apos;s Log File&lt;/h3&gt;&lt;p&gt;In order to have Logstash ship log files to Elasticsearch, we must first configure Spring Boot to store log entries into a file. We will establish the following pipeline: Spring Boot App → Log File → Logstash → Elasticsearch. There are other ways of accomplishing the same thing, such as configuring logback to use TCP appender to send logs to a remote Logstash instance via TCP, and many other configurations. I prefer the file approach because it&apos;s simple, unobtrusive (you can easily add it to existing systems) and nothing will be lost/broken if for some reason Logstash stops working or if Elasticsearch dies.&lt;/p&gt;&lt;p&gt;Anyhow, let&apos;s configure Spring Boot&apos;s log file. The simplest way to do this is to configure log file name in &lt;code&gt;application.properties&lt;/code&gt;. It&apos;s enough to add the following line:&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;yaml&quot;&gt;logging.file=application.log
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Spring Boot will now log ERROR, WARN and INFO level messages in the &lt;code&gt;application.log&lt;/code&gt; log file and will also rotate it as it reaches 10 Mb.&lt;/p&gt;&lt;h3&gt;Step 5) Configure Logstash to Understand Spring Boot&apos;s Log File Format&lt;/h3&gt;&lt;p&gt;Now comes the tricky part. We need to create Logstash config file. Typical Logstash config file consists of three main sections: input, filter and output. Each section contains plugins that do relevant part of the processing (such as file input plugin that reads log events from a file or elasticsearch output plugin which sends log events to Elasticsearch).&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;/images/logstash-conf.svg&quot; onerror=&quot;this.src=&apos;/images/logstash-conf.svg&apos;&quot; alt=&quot;Logstash config pipeline&quot;&gt;&lt;/p&gt;&lt;p&gt;Input section defines from where Logstash will read input data - in our case it will be a file hence we will use a &lt;code&gt;file&lt;/code&gt; plugin with &lt;code&gt;multiline&lt;/code&gt; &lt;code&gt;codec&lt;/code&gt;, which basically means that our input file may have multiple lines per log entry.&lt;/p&gt;&lt;h4&gt;Input Section&lt;/h4&gt;&lt;p&gt;Here&apos;s the input section:&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;ruby&quot;&gt;input {
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Step 4) Configure Spring Boot&apos;s Log File&lt;/h3&gt;
+&lt;p&gt;In order to have Logstash ship log files to Elasticsearch, we must first configure Spring Boot to store log entries into a file. We will establish the following pipeline: Spring Boot App → Log File → Logstash → Elasticsearch. There are other ways of accomplishing the same thing, such as configuring logback to use TCP appender to send logs to a remote Logstash instance via TCP, and many other configurations. I prefer the file approach because it&apos;s simple, unobtrusive (you can easily add it to existing systems) and nothing will be lost/broken if for some reason Logstash stops working or if Elasticsearch dies.&lt;/p&gt;
+&lt;p&gt;Anyhow, let&apos;s configure Spring Boot&apos;s log file. The simplest way to do this is to configure log file name in &lt;code&gt;application.properties&lt;/code&gt;. It&apos;s enough to add the following line:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-yaml&quot;&gt;logging.file=application.log
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Spring Boot will now log ERROR, WARN and INFO level messages in the &lt;code&gt;application.log&lt;/code&gt; log file and will also rotate it as it reaches 10 Mb.&lt;/p&gt;
+&lt;h3&gt;Step 5) Configure Logstash to Understand Spring Boot&apos;s Log File Format&lt;/h3&gt;
+&lt;p&gt;Now comes the tricky part. We need to create Logstash config file. Typical Logstash config file consists of three main sections: input, filter and output. Each section contains plugins that do relevant part of the processing (such as file input plugin that reads log events from a file or elasticsearch output plugin which sends log events to Elasticsearch).&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/logstash-conf.svg&quot; onerror=&quot;this.src=&apos;/images/logstash-conf.svg&apos;&quot; alt=&quot;Logstash config pipeline&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Input section defines from where Logstash will read input data - in our case it will be a file hence we will use a &lt;code&gt;file&lt;/code&gt; plugin with &lt;code&gt;multiline&lt;/code&gt; &lt;code&gt;codec&lt;/code&gt;, which basically means that our input file may have multiple lines per log entry.&lt;/p&gt;
+&lt;h4&gt;Input Section&lt;/h4&gt;
+&lt;p&gt;Here&apos;s the input section:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;input {
   file {
     type =&amp;gt; &amp;quot;java&amp;quot;
     path =&amp;gt; &amp;quot;/path/to/application.log&amp;quot;
@@ -235,24 +308,29 @@ unzip logstash-1.5.3.zip
 }
 &lt;/code&gt;&lt;/pre&gt;
 &lt;ul&gt;
-  &lt;li&gt;We&apos;re using &lt;code&gt;file&lt;/code&gt; plugin.&lt;/li&gt;
-  &lt;li&gt;&lt;code&gt;type&lt;/code&gt; is set to &lt;code&gt;java&lt;/code&gt; - it&apos;s just additional piece of metadata in case you will use multiple types of log files in the future.&lt;/li&gt;
-  &lt;li&gt;&lt;code&gt;path&lt;/code&gt; is the absolute path to the log file. It must be absolute - Logstash is picky about this.&lt;/li&gt;
-  &lt;li&gt;We&apos;re using &lt;code&gt;multiline&lt;/code&gt; &lt;code&gt;codec&lt;/code&gt; which means that multiple lines may correspond to a single log event,&lt;/li&gt;
-  &lt;li&gt;In order to detect lines that should logically be grouped with a previous line we use a detection pattern:
-  &lt;ul&gt;
-    &lt;li&gt;&lt;code&gt;pattern =&amp;gt; &amp;quot;^%{YEAR}-%{MONTHNUM}-%{MONTHDAY} %{TIME}.*&amp;quot;&lt;/code&gt; → Each new log event needs to start with date.&lt;/li&gt;
-    &lt;li&gt;&lt;code&gt;negate =&amp;gt; &amp;quot;true&amp;quot;&lt;/code&gt; → if it doesn&apos;t start with a date ...&lt;/li&gt;
-    &lt;li&gt;&lt;code&gt;what =&amp;gt; &amp;quot;previous&amp;quot;&lt;/code&gt; → ... then it should be grouped with a previous line.&lt;/li&gt;
-  &lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;p&gt;File input plugin, as configured, will tail the log file (e.g. only read new entries at the end of the file). Therefore, when testing, in order for Logstash to read something you will need to generate new log entries.&lt;/p&gt;&lt;h4&gt;Filter Section&lt;/h4&gt;&lt;p&gt;Filter section contains plugins that perform intermediary processing on an a log event. In our case, event will either be a single log line or multiline log event grouped according to the rules described above. In the filter section we will do several things:&lt;/p&gt;
+&lt;li&gt;We&apos;re using &lt;code&gt;file&lt;/code&gt; plugin.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;type&lt;/code&gt; is set to &lt;code&gt;java&lt;/code&gt; - it&apos;s just additional piece of metadata in case you will use multiple types of log files in the future.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;path&lt;/code&gt; is the absolute path to the log file. It must be absolute - Logstash is picky about this.&lt;/li&gt;
+&lt;li&gt;We&apos;re using &lt;code&gt;multiline&lt;/code&gt; &lt;code&gt;codec&lt;/code&gt; which means that multiple lines may correspond to a single log event,&lt;/li&gt;
+&lt;li&gt;In order to detect lines that should logically be grouped with a previous line we use a detection pattern:
 &lt;ul&gt;
-  &lt;li&gt;Tag a log event if it contains a stacktrace. This will be useful when searching for exceptions later on.&lt;/li&gt;
-  &lt;li&gt;Parse out (or grok, in logstash terminology) timestamp, log level, pid, thread, class name (logger actually) and log message.&lt;/li&gt;
-  &lt;li&gt;Specified timestamp field and format - Kibana will use that later for time based searches.&lt;/li&gt;
-&lt;/ul&gt;&lt;p&gt;Filter section for Spring Boot&apos;s log format that aforementioned things looks like this:&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;ruby&quot;&gt;filter {
-  #If log line contains tab character followed by &amp;#39;at&amp;#39; then we will tag that entry as stacktrace
+&lt;li&gt;&lt;code&gt;pattern =&amp;gt; &amp;quot;^%{YEAR}-%{MONTHNUM}-%{MONTHDAY} %{TIME}.*&amp;quot;&lt;/code&gt; → Each new log event needs to start with date.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;negate =&amp;gt; &amp;quot;true&amp;quot;&lt;/code&gt; → if it doesn&apos;t start with a date ...&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;what =&amp;gt; &amp;quot;previous&amp;quot;&lt;/code&gt; → ... then it should be grouped with a previous line.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;File input plugin, as configured, will tail the log file (e.g. only read new entries at the end of the file). Therefore, when testing, in order for Logstash to read something you will need to generate new log entries.&lt;/p&gt;
+&lt;h4&gt;Filter Section&lt;/h4&gt;
+&lt;p&gt;Filter section contains plugins that perform intermediary processing on an a log event. In our case, event will either be a single log line or multiline log event grouped according to the rules described above. In the filter section we will do several things:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Tag a log event if it contains a stacktrace. This will be useful when searching for exceptions later on.&lt;/li&gt;
+&lt;li&gt;Parse out (or grok, in logstash terminology) timestamp, log level, pid, thread, class name (logger actually) and log message.&lt;/li&gt;
+&lt;li&gt;Specified timestamp field and format - Kibana will use that later for time based searches.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Filter section for Spring Boot&apos;s log format that aforementioned things looks like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;filter {
+  #If log line contains tab character followed by &apos;at&apos; then we will tag that entry as stacktrace
   if [message] =~ &amp;quot;\tat&amp;quot; {
     grok {
       match =&amp;gt; [&amp;quot;message&amp;quot;, &amp;quot;^(\tat)&amp;quot;]
@@ -260,7 +338,7 @@ unzip logstash-1.5.3.zip
     }
   }
 
-  #Grokking Spring Boot&amp;#39;s default log format
+  #Grokking Spring Boot&apos;s default log format
   grok {
     match =&amp;gt; [ &amp;quot;message&amp;quot;, 
                &amp;quot;(?&amp;lt;timestamp&amp;gt;%{YEAR}-%{MONTHNUM}-%{MONTHDAY} %{TIME})  %{LOGLEVEL:level} %{NUMBER:pid} --- \[(?&amp;lt;thread&amp;gt;[A-Za-z0-9-]+)\] [A-Za-z0-9.]*\.(?&amp;lt;class&amp;gt;[A-Za-z0-9#_]+)\s*:\s+(?&amp;lt;logmessage&amp;gt;.*)&amp;quot;,
@@ -274,27 +352,34 @@ unzip logstash-1.5.3.zip
     match =&amp;gt; [ &amp;quot;timestamp&amp;quot; , &amp;quot;yyyy-MM-dd HH:mm:ss.SSS&amp;quot; ]
   }
 }
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Explanation: &lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Explanation:&lt;/p&gt;
 &lt;ul&gt;
-  &lt;li&gt;&lt;code&gt;if [message] =~ &amp;quot;\tat&amp;quot;&lt;/code&gt; → If message contains &lt;code&gt;tab&lt;/code&gt; character followed by &lt;code&gt;at&lt;/code&gt; (this is ruby syntax) then...&lt;/li&gt;
-  &lt;li&gt;... use the &lt;code&gt;grok&lt;/code&gt; plugin to tag stacktraces:
-  &lt;ul&gt;
-    &lt;li&gt;&lt;code&gt;match =&amp;gt; [&amp;quot;message&amp;quot;, &amp;quot;^(\tat)&amp;quot;]&lt;/code&gt; → when &lt;code&gt;message&lt;/code&gt; matches beginning of the line followed by &lt;code&gt;tab&lt;/code&gt; followed by &lt;code&gt;at&lt;/code&gt; then...&lt;/li&gt;
-    &lt;li&gt;&lt;code&gt;add_tag =&amp;gt; [&amp;quot;stacktrace&amp;quot;]&lt;/code&gt; → ... tag the event with &lt;code&gt;stacktrace&lt;/code&gt; tag.&lt;/li&gt;
-  &lt;/ul&gt;&lt;/li&gt;
-  &lt;li&gt;Use the &lt;code&gt;grok&lt;/code&gt; plugin for regular Spring Boot log message parsing:
-  &lt;ul&gt;
-    &lt;li&gt;First pattern extracts timestamp, level, pid, thread, class name (this is actually logger name) and the log message.&lt;/li&gt;
-    &lt;li&gt;Unfortunately, some log messages don&apos;t have logger name that resembles a class name (for example, Tomcat logs) hence the second pattern that will skip the logger/class field and parse out timestamp, level, pid, thread and the log message.&lt;/li&gt;
-  &lt;/ul&gt;&lt;/li&gt;
-  &lt;li&gt;Use &lt;code&gt;date&lt;/code&gt; plugin to parse and set the event date:
-  &lt;ul&gt;
-    &lt;li&gt;&lt;code&gt;match =&amp;gt; [ &amp;quot;timestamp&amp;quot; , &amp;quot;yyyy-MM-dd HH:mm:ss.SSS&amp;quot; ]&lt;/code&gt; → &lt;code&gt;timestamp&lt;/code&gt; field (grokked earlier) contains the timestamp in the specified format&lt;/li&gt;
-  &lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;h4&gt;Output Section&lt;/h4&gt;&lt;p&gt;Output section contains output plugins that send event data to a particular destination. Outputs are the final stage in the event pipeline. We will be sending our log events to stdout (console output, for debugging) and to Elasticsearch.&lt;/p&gt;&lt;p&gt;Compared to filter section, output section is rather straightforward:&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;ruby&quot;&gt;output {
+&lt;li&gt;&lt;code&gt;if [message] =~ &amp;quot;\tat&amp;quot;&lt;/code&gt; → If message contains &lt;code&gt;tab&lt;/code&gt; character followed by &lt;code&gt;at&lt;/code&gt; (this is ruby syntax) then...&lt;/li&gt;
+&lt;li&gt;... use the &lt;code&gt;grok&lt;/code&gt; plugin to tag stacktraces:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;match =&amp;gt; [&amp;quot;message&amp;quot;, &amp;quot;^(\tat)&amp;quot;]&lt;/code&gt; → when &lt;code&gt;message&lt;/code&gt; matches beginning of the line followed by &lt;code&gt;tab&lt;/code&gt; followed by &lt;code&gt;at&lt;/code&gt; then...&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;add_tag =&amp;gt; [&amp;quot;stacktrace&amp;quot;]&lt;/code&gt; → ... tag the event with &lt;code&gt;stacktrace&lt;/code&gt; tag.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Use the &lt;code&gt;grok&lt;/code&gt; plugin for regular Spring Boot log message parsing:
+&lt;ul&gt;
+&lt;li&gt;First pattern extracts timestamp, level, pid, thread, class name (this is actually logger name) and the log message.&lt;/li&gt;
+&lt;li&gt;Unfortunately, some log messages don&apos;t have logger name that resembles a class name (for example, Tomcat logs) hence the second pattern that will skip the logger/class field and parse out timestamp, level, pid, thread and the log message.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Use &lt;code&gt;date&lt;/code&gt; plugin to parse and set the event date:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;match =&amp;gt; [ &amp;quot;timestamp&amp;quot; , &amp;quot;yyyy-MM-dd HH:mm:ss.SSS&amp;quot; ]&lt;/code&gt; → &lt;code&gt;timestamp&lt;/code&gt; field (grokked earlier) contains the timestamp in the specified format&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;Output Section&lt;/h4&gt;
+&lt;p&gt;Output section contains output plugins that send event data to a particular destination. Outputs are the final stage in the event pipeline. We will be sending our log events to stdout (console output, for debugging) and to Elasticsearch.&lt;/p&gt;
+&lt;p&gt;Compared to filter section, output section is rather straightforward:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;output {
   # Print each event to stdout, useful for debugging. Should be commented out in production.
-  # Enabling &amp;#39;rubydebug&amp;#39; codec on the stdout output will make logstash
+  # Enabling &apos;rubydebug&apos; codec on the stdout output will make logstash
   # pretty-print the entire event as something similar to a JSON representation.
   stdout {
     codec =&amp;gt; rubydebug
@@ -305,33 +390,49 @@ unzip logstash-1.5.3.zip
     host =&amp;gt; &amp;quot;127.0.0.1&amp;quot;
   }
 }
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Explanation:&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Explanation:&lt;/p&gt;
 &lt;ul&gt;
-  &lt;li&gt;We are using multiple outputs: &lt;code&gt;stdout&lt;/code&gt; and &lt;code&gt;elasticsearch&lt;/code&gt;.&lt;/li&gt;
-  &lt;li&gt;&lt;code&gt;stdout { ... }&lt;/code&gt; → &lt;code&gt;stdout&lt;/code&gt; plugin prints log events to standard output (console).
-  &lt;ul&gt;
-    &lt;li&gt;&lt;code&gt;codec =&amp;gt; rubydebug&lt;/code&gt; → Pretty print events using JSON-like format&lt;/li&gt;
-  &lt;/ul&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;code&gt;elasticsearch { ... }&lt;/code&gt; → &lt;code&gt;elasticsearch&lt;/code&gt; plugin sends log events to Elasticsearch server.
-  &lt;ul&gt;
-    &lt;li&gt;&lt;code&gt;host =&amp;gt; &amp;quot;127.0.0.1&amp;quot;&lt;/code&gt; → Hostname where Elasticsearch is located - in our case, localhost.&lt;/li&gt;
-  &lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;We are using multiple outputs: &lt;code&gt;stdout&lt;/code&gt; and &lt;code&gt;elasticsearch&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;stdout { ... }&lt;/code&gt; → &lt;code&gt;stdout&lt;/code&gt; plugin prints log events to standard output (console).
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;codec =&amp;gt; rubydebug&lt;/code&gt; → Pretty print events using JSON-like format&lt;/li&gt;
 &lt;/ul&gt;
-&lt;blockquote&gt;&lt;p&gt;&lt;strong&gt;Update 5/9/2016:&lt;/strong&gt; At the time of writing this update, the latest versions of Logstash&apos;s elasticsearch output plugin uses &lt;code&gt;hosts&lt;/code&gt; configuration parameter instead of &lt;code&gt;host&lt;/code&gt; which is shown in example above. New parameter takes an array of hosts (e.g. elasticsearch cluster) as value. In other words, if you are using the latest Logstash version, configure elasticsearch output plugin as follows:&lt;/p&gt;
-  &lt;pre&gt;&lt;code class=&quot;ruby&quot;&gt;elasticsearch {
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;elasticsearch { ... }&lt;/code&gt; → &lt;code&gt;elasticsearch&lt;/code&gt; plugin sends log events to Elasticsearch server.
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;host =&amp;gt; &amp;quot;127.0.0.1&amp;quot;&lt;/code&gt; → Hostname where Elasticsearch is located - in our case, localhost.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Update 5/9/2016:&lt;/strong&gt; At the time of writing this update, the latest versions of Logstash&apos;s elasticsearch output plugin uses &lt;code&gt;hosts&lt;/code&gt; configuration parameter instead of &lt;code&gt;host&lt;/code&gt; which is shown in example above. New parameter takes an array of hosts (e.g. elasticsearch cluster) as value. In other words, if you are using the latest Logstash version, configure elasticsearch output plugin as follows:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-ruby&quot;&gt;elasticsearch {
    hosts =&amp;gt; [&amp;quot;127.0.0.1&amp;quot;]
 }
 &lt;/code&gt;&lt;/pre&gt;
-&lt;/blockquote&gt;&lt;h4&gt;Putting it all together&lt;/h4&gt;&lt;p&gt;Finally, the three parts - input, filter and output - need to be copy pasted together and saved into &lt;code&gt;logstash.conf&lt;/code&gt; config file. Once the config file is in place and Elasticsearch is running, we can run Logstash:&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;/path/to/logstash/bin/logstash -f logstash.conf
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If everything went well, Logstash is now shipping log events to Elasticsearch.&lt;/p&gt;&lt;h3&gt;Step 6) Configure Kibana&lt;/h3&gt;&lt;p&gt;Ok, now it&apos;s time to visit the Kibana web UI again. We have started it in step 2 and it should be running at &lt;a href=&quot;http://localhost:5601&quot;&gt;http://localhost:5601&lt;/a&gt;. &lt;/p&gt;&lt;p&gt;First, you need to point Kibana to Elasticsearch index(s) of your choice. Logstash creates indices with the name pattern of logstash-YYYY.MM.DD. In Kibana Settings → Indices configure the indices:&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4&gt;Putting it all together&lt;/h4&gt;
+&lt;p&gt;Finally, the three parts - input, filter and output - need to be copy pasted together and saved into &lt;code&gt;logstash.conf&lt;/code&gt; config file. Once the config file is in place and Elasticsearch is running, we can run Logstash:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-bash&quot;&gt;/path/to/logstash/bin/logstash -f logstash.conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If everything went well, Logstash is now shipping log events to Elasticsearch.&lt;/p&gt;
+&lt;h3&gt;Step 6) Configure Kibana&lt;/h3&gt;
+&lt;p&gt;Ok, now it&apos;s time to visit the Kibana web UI again. We have started it in step 2 and it should be running at &lt;a href=&quot;http://localhost:5601&quot;&gt;http://localhost:5601&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;First, you need to point Kibana to Elasticsearch index(s) of your choice. Logstash creates indices with the name pattern of logstash-YYYY.MM.DD. In Kibana Settings → Indices configure the indices:&lt;/p&gt;
 &lt;ul&gt;
-  &lt;li&gt;Index contains time-based events (select this option)&lt;/li&gt;
-  &lt;li&gt;Use event times to create index names (select this option)&lt;/li&gt;
-  &lt;li&gt;Index pattern interval: Daily&lt;/li&gt;
-  &lt;li&gt;Index name or pattern: [logstash-]YYYY.MM.DD&lt;/li&gt;
-  &lt;li&gt;Click on &quot;Create Index&quot;&lt;/li&gt;
-&lt;/ul&gt;&lt;p&gt;Now click on &quot;Discover&quot; tab. In my opinion, &quot;Discover&quot; tab is really named incorrectly in Kibana - it should be labeled as &quot;Search&quot; instead of &quot;Discover&quot; because it allows you to perform new searches and also to save/manage them. Log events should be showing up now in the main window. If they&apos;re not, then double check the time period filter in to right corner of the screen. Default table will have 2 columns by default: Time and _source. In order to make the listing more useful, we can configure the displayed columns. From the menu on the left select level, class and logmessage.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;/images/discover-kibana4.png&quot; alt=&quot;Kibana 4 Discover Tab&quot; style=&quot;max-width: 100%&quot;&gt;&lt;/p&gt;&lt;p&gt;Alright! You&apos;re now ready to take control of your logs using ELK stack and start customizing and tweaking your log management configuration. You can download the sample application used when writing this article from here: &lt;a href=&quot;https://github.com/knes1/todo&quot;&gt;https://github.com/knes1/todo&lt;/a&gt;. It&apos;s already configured to write logs in a file and has the Logstash config as described above (although absolute paths will need to be tweaked in &lt;code&gt;logstash.conf&lt;/code&gt;).&lt;/p&gt;&lt;p&gt;If you would like to search or follow your EL logs from command line, checkout &lt;a href=&quot;http://knes1.github.io/blog/2016/2016-03-06-elktail-command-line-tool-for-tailing-and-querying-ELK-logs.html&quot;&gt;Elktail&lt;/a&gt; - a command line utility I&apos;ve created for accessing and tailng logs stored in EL.&lt;/p&gt;&lt;p&gt;As always, let me know if you have any question/comments or ideas in the comments section below.&lt;/p&gt;
+&lt;li&gt;Index contains time-based events (select this option)&lt;/li&gt;
+&lt;li&gt;Use event times to create index names (select this option)&lt;/li&gt;
+&lt;li&gt;Index pattern interval: Daily&lt;/li&gt;
+&lt;li&gt;Index name or pattern: [logstash-]YYYY.MM.DD&lt;/li&gt;
+&lt;li&gt;Click on &amp;quot;Create Index&amp;quot;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Now click on &amp;quot;Discover&amp;quot; tab. In my opinion, &amp;quot;Discover&amp;quot; tab is really named incorrectly in Kibana - it should be labeled as &amp;quot;Search&amp;quot; instead of &amp;quot;Discover&amp;quot; because it allows you to perform new searches and also to save/manage them. Log events should be showing up now in the main window. If they&apos;re not, then double check the time period filter in to right corner of the screen. Default table will have 2 columns by default: Time and _source. In order to make the listing more useful, we can configure the displayed columns. From the menu on the left select level, class and logmessage.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/discover-kibana4.png&quot; alt=&quot;Kibana 4 Discover Tab&quot; style=&quot;max-width: 100%&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Alright! You&apos;re now ready to take control of your logs using ELK stack and start customizing and tweaking your log management configuration. You can download the sample application used when writing this article from here: &lt;a href=&quot;https://github.com/knes1/todo&quot;&gt;https://github.com/knes1/todo&lt;/a&gt;. It&apos;s already configured to write logs in a file and has the Logstash config as described above (although absolute paths will need to be tweaked in &lt;code&gt;logstash.conf&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;If you would like to search or follow your EL logs from command line, checkout &lt;a href=&quot;http://knes1.github.io/blog/2016/2016-03-06-elktail-command-line-tool-for-tailing-and-querying-ELK-logs.html&quot;&gt;Elktail&lt;/a&gt; - a command line utility I&apos;ve created for accessing and tailng logs stored in EL.&lt;/p&gt;
+&lt;p&gt;As always, let me know if you have any question/comments or ideas in the comments section below.&lt;/p&gt;
+
 	</description>
     </item>
     <item>
@@ -341,57 +442,66 @@ unzip logstash-1.5.3.zip
       <guid isPermaLink="false">blog/2015/2015-07-18-manually-installing-e2guardian-to-pfsense.html</guid>
       	<description>
 	&lt;p&gt;DansGuardian package that provides web filtering capabilities seems not to work on the latest pfSense firewall distribution. Thanks to the effort of the open source community, and specifically Marcello Coutinho, e2guardian package (a fork of DansGuardian) made it to FreeBSD repos, and Marcello created a package for pfSense. While pfSense team is working to integrate the package into the official distribution to make it available through standard package management system, many people (including myself) would like to have e2guardian running right now and install it manually. Here are the step by step instruction for the manual installation process that I used to install it to my pfSense (with help from Marcello, Phil and other folks from pfSense forums).&lt;/p&gt;
-&lt;!-- more --&gt;&lt;p&gt;I used VirtualBox VM while writing this guide. Steps 1 - 3 describe the process of setting up the VM and installing the prerequisites (Squid). If you have a running pfSense box with Squid where you&apos;d like to try this out, you can skip the first 3 steps.&lt;/p&gt;&lt;h3&gt;Step 1) Test environment:&lt;/h3&gt;
+&lt;!-- more --&gt;
+&lt;p&gt;I used VirtualBox VM while writing this guide. Steps 1 - 3 describe the process of setting up the VM and installing the prerequisites (Squid). If you have a running pfSense box with Squid where you&apos;d like to try this out, you can skip the first 3 steps.&lt;/p&gt;
+&lt;h3&gt;Step 1) Test environment:&lt;/h3&gt;
 &lt;ul&gt;
-  &lt;li&gt;I tested this procedure using VirtualBox on OS X. Here&apos;s my setup:&lt;/li&gt;
-  &lt;li&gt;Virtual Box (BSD / FreeBSD 64bit Machine)&lt;/li&gt;
-  &lt;li&gt;1GB RAM, 6GB HDD&lt;/li&gt;
-  &lt;li&gt;2 NICs&lt;/li&gt;
-  &lt;li&gt;.. 1st: Connected to NAT (this will be WAN in pfSense)&lt;/li&gt;
-  &lt;li&gt;.. 2nd: Bridged to my wireless device (this will be LAN in pfSense)&lt;/li&gt;
-  &lt;li&gt;CD-ROM with pfSense-LiveCD-2.2.3-RELEASE-amd64.iso for installation&lt;/li&gt;
-  &lt;li&gt;After the install I chose option 2) to assign static IP address to LAN interface, I chose IP address from my home network&apos;s range (in my case it was 192.168.5.249/24)&lt;/li&gt;
-  &lt;li&gt;I also disabled DHCP on LAN interface to prevent potential interference with home network&apos;s DHCP&lt;/li&gt;
-  &lt;li&gt;I browsed to the admin UI at the assigned LAN&apos;s IP and went through the installation wizard, leaving everything as it except for DHCP which I disabled&lt;/li&gt;
-&lt;/ul&gt;&lt;h3&gt;Step 2) Install squid3 package&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;Install Squid package using the package managed in admin UI&lt;/li&gt;
-  &lt;li&gt;Make Squid listen on LAN (so we can test it) and loopback (E2Guardian uses loopback to connect to squid by default)&lt;/li&gt;
-  &lt;li&gt;Verify that squid works (for example by setting a browser to use it as proxy on LAN&apos;s IP and port 3128)&lt;/li&gt;
-&lt;/ul&gt;&lt;h3&gt;Step 3) Enable SSH access&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;System -&amp;gt; Advanced: Enable Secure Shell&lt;/li&gt;
-&lt;/ul&gt;&lt;h3&gt;Step 4) SSH into console (alternatively use VirtualBox/VM console if using VM)&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;choose option &lt;strong&gt;8)&lt;/strong&gt; to enter the shell&lt;/li&gt;
-&lt;/ul&gt;&lt;h3&gt;Step 5) Install e2guardian package using pkg&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;In the shell, type in the following:&lt;/li&gt;
+&lt;li&gt;I tested this procedure using VirtualBox on OS X. Here&apos;s my setup:&lt;/li&gt;
+&lt;li&gt;Virtual Box (BSD / FreeBSD 64bit Machine)&lt;/li&gt;
+&lt;li&gt;1GB RAM, 6GB HDD&lt;/li&gt;
+&lt;li&gt;2 NICs&lt;/li&gt;
+&lt;li&gt;.. 1st: Connected to NAT (this will be WAN in pfSense)&lt;/li&gt;
+&lt;li&gt;.. 2nd: Bridged to my wireless device (this will be LAN in pfSense)&lt;/li&gt;
+&lt;li&gt;CD-ROM with pfSense-LiveCD-2.2.3-RELEASE-amd64.iso for installation&lt;/li&gt;
+&lt;li&gt;After the install I chose option 2) to assign static IP address to LAN interface, I chose IP address from my home network&apos;s range (in my case it was 192.168.5.249/24)&lt;/li&gt;
+&lt;li&gt;I also disabled DHCP on LAN interface to prevent potential interference with home network&apos;s DHCP&lt;/li&gt;
+&lt;li&gt;I browsed to the admin UI at the assigned LAN&apos;s IP and went through the installation wizard, leaving everything as it except for DHCP which I disabled&lt;/li&gt;
 &lt;/ul&gt;
-&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;	pkg #(choose yes to install package manager)
+&lt;h3&gt;Step 2) Install squid3 package&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Install Squid package using the package managed in admin UI&lt;/li&gt;
+&lt;li&gt;Make Squid listen on LAN (so we can test it) and loopback (E2Guardian uses loopback to connect to squid by default)&lt;/li&gt;
+&lt;li&gt;Verify that squid works (for example by setting a browser to use it as proxy on LAN&apos;s IP and port 3128)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Step 3) Enable SSH access&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;System -&amp;gt; Advanced: Enable Secure Shell&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Step 4) SSH into console (alternatively use VirtualBox/VM console if using VM)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;choose option &lt;strong&gt;8)&lt;/strong&gt; to enter the shell&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Step 5) Install e2guardian package using pkg&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;In the shell, type in the following:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code class=&quot;language-bash&quot;&gt;	pkg #(choose yes to install package manager)
 	pkg update
 	pkg install e2guardian
-&lt;/code&gt;&lt;/pre&gt;&lt;h3&gt;Step 6) Download Marcello&apos;s pull request for pfSense e2guardian package&lt;/h3&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Step 6) Download Marcello&apos;s pull request for pfSense e2guardian package&lt;/h3&gt;
 &lt;ul&gt;
-  &lt;li&gt;You can download pull request&apos;s file from: &lt;a href=&quot;https://github.com/marcelloc/pfsense-packages/archive/be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff.zip&quot;&gt;https://github.com/marcelloc/pfsense-packages/archive/be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff.zip&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;In this walk-through I&apos;ll download the zip directly to pfSense box (zip has 6Mb, once unpacked it will be 22Mb). Alternative method would be to download the zip file on your computer, unzip it, only transfer e2guardian directory from the zip file to pfSense&lt;/li&gt;
-  &lt;li&gt;To download the zip file to pfSense directly, we will first change directory to &lt;code&gt;/root&lt;/code&gt;, and then download the file there. While in SSH shell, type the following:&lt;/li&gt;
+&lt;li&gt;You can download pull request&apos;s file from: &lt;a href=&quot;https://github.com/marcelloc/pfsense-packages/archive/be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff.zip&quot;&gt;https://github.com/marcelloc/pfsense-packages/archive/be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff.zip&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;In this walk-through I&apos;ll download the zip directly to pfSense box (zip has 6Mb, once unpacked it will be 22Mb). Alternative method would be to download the zip file on your computer, unzip it, only transfer e2guardian directory from the zip file to pfSense&lt;/li&gt;
+&lt;li&gt;To download the zip file to pfSense directly, we will first change directory to &lt;code&gt;/root&lt;/code&gt;, and then download the file there. While in SSH shell, type the following:&lt;/li&gt;
 &lt;/ul&gt;
-&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;	  cd /root
+&lt;pre&gt;&lt;code class=&quot;language-bash&quot;&gt;	  cd /root
 	  fetch https://github.com/marcelloc/pfsense-packages/archive/be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff.zip
-&lt;/code&gt;&lt;/pre&gt;&lt;h3&gt;Step 7) Unzip the package and enter e2guardian directory&lt;/h3&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Step 7) Unzip the package and enter e2guardian directory&lt;/h3&gt;
 &lt;ul&gt;
-  &lt;li&gt;Type in the following (you should still be in &lt;code&gt;/root&lt;/code&gt; directory in the SSH from the previous step)&lt;/li&gt;
+&lt;li&gt;Type in the following (you should still be in &lt;code&gt;/root&lt;/code&gt; directory in the SSH from the previous step)&lt;/li&gt;
 &lt;/ul&gt;
-&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;	unzip be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff.zip
-	rm be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff.zip #(we&amp;#39;re deleting the archive since we don&amp;#39;t need it anymore)
+&lt;pre&gt;&lt;code class=&quot;language-bash&quot;&gt;	unzip be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff.zip
+	rm be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff.zip #(we&apos;re deleting the archive since we don&apos;t need it anymore)
 	cd pfsense-packages-be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff/config/e2guardian/
-&lt;/code&gt;&lt;/pre&gt;&lt;h3&gt;Step 8) Copy the files to proper locations and adjust permissions&lt;/h3&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Step 8) Copy the files to proper locations and adjust permissions&lt;/h3&gt;
 &lt;ul&gt;
-  &lt;li&gt;&lt;code&gt;e2guardian.xml&lt;/code&gt; file contains the locations where to put each file from the e2guardian directory (and which permissions to use)&lt;/li&gt;
-  &lt;li&gt;I&apos;ve created a script to parse the XML and generate appropriate copy and chmod commands. Here&apos;s the result (which you need to execute in SSH):&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;e2guardian.xml&lt;/code&gt; file contains the locations where to put each file from the e2guardian directory (and which permissions to use)&lt;/li&gt;
+&lt;li&gt;I&apos;ve created a script to parse the XML and generate appropriate copy and chmod commands. Here&apos;s the result (which you need to execute in SSH):&lt;/li&gt;
 &lt;/ul&gt;
-&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;cp e2guardian.inc /usr/local/pkg/e2guardian.inc
+&lt;pre&gt;&lt;code class=&quot;language-bash&quot;&gt;cp e2guardian.inc /usr/local/pkg/e2guardian.inc
 chmod 0755 /usr/local/pkg/e2guardian.inc
 
 cp e2guardian.php /usr/local/www/e2guardian.php
@@ -473,34 +583,35 @@ cp pkg_e2guardian.inc /usr/local/www/shortcuts/pkg_e2guardian.inc
 chmod 0755 /usr/local/www/shortcuts/pkg_e2guardian.inc
 
 cp e2guardian.xml  /usr/local/pkg/e2guardian.xml
-&lt;/code&gt;&lt;/pre&gt;&lt;h2&gt;Step 9) Modify config.xml to add e2guardian menu items to pfSense web UI menus&lt;/h2&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;Step 9) Modify config.xml to add e2guardian menu items to pfSense web UI menus&lt;/h2&gt;
 &lt;ul&gt;
-  &lt;li&gt;There are two ways to accomplish this. You can back up your existing &lt;code&gt;config.xml&lt;/code&gt; file through web UI, edit the downloaded backup file in a text editor and then upload it back to pfSense (restore backup). Other way to do it is to edit it directly in pfSense using a console editor. I did it using the console editor and that&apos;s what I&apos;ll describe here.&lt;/li&gt;
-  &lt;li&gt;Firstly, which ever method you intend to use, since we&apos;ll be editing the configuration file it&apos;s smart to back it up:&lt;/li&gt;
-  &lt;li&gt;Diagnostics -&amp;gt; Back/Restore: Back Configuration: Download Configuration&lt;/li&gt;
-  &lt;li&gt;Install &lt;code&gt;nano&lt;/code&gt; editor (just because I&apos;m not very familiar with &lt;code&gt;vi&lt;/code&gt;, if you&apos;re comfortable with &lt;code&gt;vi&lt;/code&gt;, you can use that and skip this step):&lt;/li&gt;
+&lt;li&gt;There are two ways to accomplish this. You can back up your existing &lt;code&gt;config.xml&lt;/code&gt; file through web UI, edit the downloaded backup file in a text editor and then upload it back to pfSense (restore backup). Other way to do it is to edit it directly in pfSense using a console editor. I did it using the console editor and that&apos;s what I&apos;ll describe here.&lt;/li&gt;
+&lt;li&gt;Firstly, which ever method you intend to use, since we&apos;ll be editing the configuration file it&apos;s smart to back it up:&lt;/li&gt;
+&lt;li&gt;Diagnostics -&amp;gt; Back/Restore: Back Configuration: Download Configuration&lt;/li&gt;
+&lt;li&gt;Install &lt;code&gt;nano&lt;/code&gt; editor (just because I&apos;m not very familiar with &lt;code&gt;vi&lt;/code&gt;, if you&apos;re comfortable with &lt;code&gt;vi&lt;/code&gt;, you can use that and skip this step):&lt;/li&gt;
 &lt;/ul&gt;
-&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;pkg install nano
+&lt;pre&gt;&lt;code class=&quot;language-bash&quot;&gt;pkg install nano
 &lt;/code&gt;&lt;/pre&gt;
 &lt;ul&gt;
-  &lt;li&gt;Edit the &lt;code&gt;config.xml&lt;/code&gt; file:&lt;/li&gt;
+&lt;li&gt;Edit the &lt;code&gt;config.xml&lt;/code&gt; file:&lt;/li&gt;
 &lt;/ul&gt;
-&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;nano /cf/conf/config.xml
+&lt;pre&gt;&lt;code class=&quot;language-bash&quot;&gt;nano /cf/conf/config.xml
 &lt;/code&gt;&lt;/pre&gt;
 &lt;ul&gt;
-  &lt;li&gt;Press and hold the down arrow until you scroll down to an area which contains &lt;code&gt;&amp;lt;menu&amp;gt;&lt;/code&gt; entries - you should locate the entries for squid proxy which should look something like this:&lt;/li&gt;
+&lt;li&gt;Press and hold the down arrow until you scroll down to an area which contains &lt;code&gt;&amp;lt;menu&amp;gt;&lt;/code&gt; entries - you should locate the entries for squid proxy which should look something like this:&lt;/li&gt;
 &lt;/ul&gt;
-&lt;pre&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;menu&amp;gt;
+&lt;pre&gt;&lt;code class=&quot;language-xml&quot;&gt;&amp;lt;menu&amp;gt;
 	&amp;lt;name&amp;gt;Proxy server&amp;lt;/name&amp;gt;
-	&amp;lt;tooltiptext&amp;gt;Modify the proxy server&amp;#39;s settings&amp;lt;/tooltiptext&amp;gt;
+	&amp;lt;tooltiptext&amp;gt;Modify the proxy server&apos;s settings&amp;lt;/tooltiptext&amp;gt;
 	&amp;lt;section&amp;gt;Services&amp;lt;/section&amp;gt;
 	&amp;lt;url&amp;gt;/pkg_edit.php?xml=squid.xml&amp;amp;amp;id=0&amp;lt;/url&amp;gt;
 &amp;lt;/menu&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;ul&gt;
-  &lt;li&gt;Underneath those, you should add a menu entry for e2guardian. Position the cursor behind proxy server&apos;s closing &lt;code&gt;&amp;lt;/menu&amp;gt;&lt;/code&gt; tag, press enter to add new line, and copy paste the e2guardian menu xml fragment into the editor. Here&apos;s the fragment:&lt;/li&gt;
+&lt;li&gt;Underneath those, you should add a menu entry for e2guardian. Position the cursor behind proxy server&apos;s closing &lt;code&gt;&amp;lt;/menu&amp;gt;&lt;/code&gt; tag, press enter to add new line, and copy paste the e2guardian menu xml fragment into the editor. Here&apos;s the fragment:&lt;/li&gt;
 &lt;/ul&gt;
-&lt;pre&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;menu&amp;gt;
+&lt;pre&gt;&lt;code class=&quot;language-xml&quot;&gt;&amp;lt;menu&amp;gt;
 	&amp;lt;name&amp;gt;E2guradian&amp;lt;/name&amp;gt;
 	&amp;lt;tooltiptext&amp;gt;E2guradian&amp;lt;/tooltiptext&amp;gt;
 	&amp;lt;section&amp;gt;Services&amp;lt;/section&amp;gt;
@@ -508,9 +619,9 @@ cp e2guardian.xml  /usr/local/pkg/e2guardian.xml
 &amp;lt;/menu&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;ul&gt;
-  &lt;li&gt;Next, similarly like you did for &lt;code&gt;&amp;lt;menu&amp;gt;&lt;/code&gt; entries, you should locate the &lt;code&gt;&amp;lt;service&amp;gt;&lt;/code&gt; entries. For example, &lt;code&gt;&amp;lt;service&amp;gt;&lt;/code&gt; for Squid looks like this:&lt;/li&gt;
+&lt;li&gt;Next, similarly like you did for &lt;code&gt;&amp;lt;menu&amp;gt;&lt;/code&gt; entries, you should locate the &lt;code&gt;&amp;lt;service&amp;gt;&lt;/code&gt; entries. For example, &lt;code&gt;&amp;lt;service&amp;gt;&lt;/code&gt; for Squid looks like this:&lt;/li&gt;
 &lt;/ul&gt;
-&lt;pre&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;service&amp;gt;
+&lt;pre&gt;&lt;code class=&quot;language-xml&quot;&gt;&amp;lt;service&amp;gt;
 	&amp;lt;name&amp;gt;squid&amp;lt;/name&amp;gt;
 	&amp;lt;rcfile&amp;gt;squid.sh&amp;lt;/rcfile&amp;gt;
 	&amp;lt;executable&amp;gt;squid&amp;lt;/executable&amp;gt;
@@ -518,9 +629,9 @@ cp e2guardian.xml  /usr/local/pkg/e2guardian.xml
 &amp;lt;/service&amp;gt; 
 &lt;/code&gt;&lt;/pre&gt;
 &lt;ul&gt;
-  &lt;li&gt;Again, position your editor&apos;s cursor behind squid&apos;s closing &lt;code&gt;&amp;lt;/service&amp;gt;&lt;/code&gt; tag, press enter to add a new line, and copy paste the e2guardian service xml fragment into the editor. Here&apos;s the fragment:&lt;/li&gt;
+&lt;li&gt;Again, position your editor&apos;s cursor behind squid&apos;s closing &lt;code&gt;&amp;lt;/service&amp;gt;&lt;/code&gt; tag, press enter to add a new line, and copy paste the e2guardian service xml fragment into the editor. Here&apos;s the fragment:&lt;/li&gt;
 &lt;/ul&gt;
-&lt;pre&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;service&amp;gt;
+&lt;pre&gt;&lt;code class=&quot;language-xml&quot;&gt;&amp;lt;service&amp;gt;
 	&amp;lt;name&amp;gt;e2guardian&amp;lt;/name&amp;gt;
 	&amp;lt;rcfile&amp;gt;e2guardian.sh&amp;lt;/rcfile&amp;gt;
 	&amp;lt;executable&amp;gt;e2guardian&amp;lt;/executable&amp;gt;
@@ -528,36 +639,41 @@ cp e2guardian.xml  /usr/local/pkg/e2guardian.xml
 &amp;lt;/service&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;ul&gt;
-  &lt;li&gt;Press &lt;strong&gt;Ctrl-X&lt;/strong&gt; (&lt;code&gt;nano&lt;/code&gt; editor&apos;s command to save and close the file), &lt;strong&gt;y&lt;/strong&gt; (to confirm) and press enter&lt;/li&gt;
-  &lt;li&gt;You can find complete listing of &lt;code&gt;&amp;lt;menu&amp;gt;&lt;/code&gt; and &lt;code&gt;&amp;lt;service&amp;gt;&lt;/code&gt; part of the configuration file at the bottom of the page to check how the config file should look like after the editing has been completed.&lt;/li&gt;
-&lt;/ul&gt;&lt;h3&gt;Step 10) Reboot (and keep your fingers crossed :) )&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;We need to reboot pfSense in order to apply the changes in the config&lt;/li&gt;
-  &lt;li&gt;Type exit in the SSH console, and choose option &lt;strong&gt;5)&lt;/strong&gt; from the console menu&lt;/li&gt;
-&lt;/ul&gt;&lt;h3&gt;Step 11) E2Guardian should now be ready for use!&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;Go to Services -&amp;gt; E2Guardian&lt;/li&gt;
-  &lt;li&gt;Demon tab seems to be broken on first load, but just click on it (even though it is selected) and it will show up&lt;/li&gt;
-  &lt;li&gt;Enable E2Guardian and make it listen on LAN interface (or just go and follow any DansGuardian guide, settings seem to be the same)&lt;/li&gt;
-  &lt;li&gt;Configure the blacklist (for example, from &lt;a href=&quot;http://www.shallalist.de/&quot;&gt;http://www.shallalist.de/&lt;/a&gt;)&lt;/li&gt;
-  &lt;li&gt;Configure categories in ACLs&lt;/li&gt;
-  &lt;li&gt;Set your browser&apos;s proxy to LAN IP and port 8080&lt;/li&gt;
-  &lt;li&gt;Verify everything works and that sites are being blocked (on the first try, it didn&apos;t work for me because Squid was not listening on loopback, so double check that)&lt;/li&gt;
-&lt;/ul&gt;&lt;h3&gt;Step 12) Clean up&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;We can delete the file we downloaded initially&lt;/li&gt;
-  &lt;li&gt;Using SSH console, type in:&lt;/li&gt;
+&lt;li&gt;Press &lt;strong&gt;Ctrl-X&lt;/strong&gt; (&lt;code&gt;nano&lt;/code&gt; editor&apos;s command to save and close the file), &lt;strong&gt;y&lt;/strong&gt; (to confirm) and press enter&lt;/li&gt;
+&lt;li&gt;You can find complete listing of &lt;code&gt;&amp;lt;menu&amp;gt;&lt;/code&gt; and &lt;code&gt;&amp;lt;service&amp;gt;&lt;/code&gt; part of the configuration file at the bottom of the page to check how the config file should look like after the editing has been completed.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;	cd /root
+&lt;h3&gt;Step 10) Reboot (and keep your fingers crossed :) )&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;We need to reboot pfSense in order to apply the changes in the config&lt;/li&gt;
+&lt;li&gt;Type exit in the SSH console, and choose option &lt;strong&gt;5)&lt;/strong&gt; from the console menu&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Step 11) E2Guardian should now be ready for use!&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Go to Services -&amp;gt; E2Guardian&lt;/li&gt;
+&lt;li&gt;Demon tab seems to be broken on first load, but just click on it (even though it is selected) and it will show up&lt;/li&gt;
+&lt;li&gt;Enable E2Guardian and make it listen on LAN interface (or just go and follow any DansGuardian guide, settings seem to be the same)&lt;/li&gt;
+&lt;li&gt;Configure the blacklist (for example, from &lt;a href=&quot;http://www.shallalist.de/&quot;&gt;http://www.shallalist.de/&lt;/a&gt;)&lt;/li&gt;
+&lt;li&gt;Configure categories in ACLs&lt;/li&gt;
+&lt;li&gt;Set your browser&apos;s proxy to LAN IP and port 8080&lt;/li&gt;
+&lt;li&gt;Verify everything works and that sites are being blocked (on the first try, it didn&apos;t work for me because Squid was not listening on loopback, so double check that)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Step 12) Clean up&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;We can delete the file we downloaded initially&lt;/li&gt;
+&lt;li&gt;Using SSH console, type in:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code class=&quot;language-bash&quot;&gt;	cd /root
 	rm -rf pfsense-packages-be599ee41b2567459b1eaf55fff4ecb2ad3fa4ff
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;That&apos;s it!&lt;/p&gt;&lt;h3&gt;Reference: Relevant parts of config.xml file&lt;/h3&gt;
-&lt;pre&gt;&lt;code class=&quot;xml&quot;&gt;...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;That&apos;s it!&lt;/p&gt;
+&lt;h3&gt;Reference: Relevant parts of config.xml file&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;language-xml&quot;&gt;...
 	&amp;lt;installedpackages&amp;gt;
 		&amp;lt;tab/&amp;gt;
 		&amp;lt;menu/&amp;gt;
 		&amp;lt;menu&amp;gt;
 			&amp;lt;name&amp;gt;Proxy server&amp;lt;/name&amp;gt;
-			&amp;lt;tooltiptext&amp;gt;Modify the proxy server&amp;#39;s settings&amp;lt;/tooltiptext&amp;gt;
+			&amp;lt;tooltiptext&amp;gt;Modify the proxy server&apos;s settings&amp;lt;/tooltiptext&amp;gt;
 			&amp;lt;section&amp;gt;Services&amp;lt;/section&amp;gt;
 			&amp;lt;url&amp;gt;/pkg_edit.php?xml=squid.xml&amp;amp;amp;id=0&amp;lt;/url&amp;gt;
 		&amp;lt;/menu&amp;gt;
@@ -569,7 +685,7 @@ cp e2guardian.xml  /usr/local/pkg/e2guardian.xml
 		&amp;lt;/menu&amp;gt;
 		&amp;lt;menu&amp;gt;
 			&amp;lt;name&amp;gt;Reverse Proxy&amp;lt;/name&amp;gt;
-			&amp;lt;tooltiptext&amp;gt;Modify the proxy reverse server&amp;#39;s settings&amp;lt;/tooltiptext&amp;gt;
+			&amp;lt;tooltiptext&amp;gt;Modify the proxy reverse server&apos;s settings&amp;lt;/tooltiptext&amp;gt;
 			&amp;lt;section&amp;gt;Services&amp;lt;/section&amp;gt;
 			&amp;lt;url&amp;gt;/pkg_edit.php?xml=squid_reverse_general.xml&amp;amp;amp;id=0&amp;lt;/url&amp;gt;
 		&amp;lt;/menu&amp;gt;
@@ -600,6 +716,7 @@ cp e2guardian.xml  /usr/local/pkg/e2guardian.xml
 		&amp;lt;/service&amp;gt;
 ...
 &lt;/code&gt;&lt;/pre&gt;
+
 	</description>
     </item>
     <item>
@@ -608,8 +725,11 @@ cp e2guardian.xml  /usr/local/pkg/e2guardian.xml
       <pubDate>Wed, 8 Jul 2015 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2015/2015-07-08-counting-queries-per-request-with-hibernate-and-spring.html</guid>
       	<description>
-	&lt;p&gt;Hibernate is a powerful ORM tool, no doubt about it. In projects using Hibernate, it can sometimes become easy to forget that underneath it there are actual SQL queries being executed, sometimes many of them, and sometimes, well, too many. As you navigate the object graphs of your entities and admire collections being populated automagically, beware that if Hibernate&apos;s query generation is left unchecked, you can easily end up executing gazzilions of unnecessary SQL queries unknowingly (I&apos;ve actually seen thousands(!!) of queries executed per page render). Fortunately, these situations can usually be easily avoided once they are detected. I&apos;m going to present one idea how to keep query generation in check. &lt;/p&gt;
-&lt;!-- more --&gt;&lt;p&gt;While there are many tools that can use JVM instrumentation to profile your app and likely tell you when, which and how many JPA/Hibernate/JDBC queries are being executed (&lt;a href=&quot;https://www.ej-technologies.com/products/jprofiler/overview.html&quot;&gt;JProfiler&lt;/a&gt; is my favorite), they need to hook up to JVM and are usually not &quot;always on&quot; as you develop. And you have to learn how to use them. To detect the common problem with excessive query generation though, a simple log line with the number of executed queries would suffice. Unfortunately, it seems that Spring MVC and Hibernate do not offer such a function out of the box (you could turn on query logging, but that will log each and every query and will soon become too verbose to follow). &lt;/p&gt;&lt;p&gt;In this article I will show you how to use a thing called Hibernate Interceptor to count executed queries per each web request in Spring MVC &lt;a href=&quot;https://github.com/knes1/todo&quot;&gt;application&lt;/a&gt; that uses JPA and Hibernate as the persistence implementation.&lt;/p&gt;&lt;p&gt;We will start by creating a HandlerInterceptor implementation (Spring MVC&apos;s equivalent of a filter) that will intercept incoming requests and initialze the statistics counters. HandlerInterceptors allow us to execute logic before the request processing is passed to controllers, after controller handler finishes execution (but before the view is rendered) and after the request is processed. We will use the HandlerInterceptor to gather statistics about a request so let&apos;s call it &lt;code&gt;RequestStatistcsInterceptor&lt;/code&gt;. Before action is handled over to the controllers, in the &lt;code&gt;preHandle(...)&lt;/code&gt; method of the &lt;code&gt;RequestStatistcsInterceptor&lt;/code&gt; we will initialize a query counter in the other important component - Hibernate Interceptor. Hibernate Interceptor allows us to intercept some of the Hibernate functions and the one that we&apos;re interested in is &lt;code&gt;onPrepareStatement()&lt;/code&gt; - it will be called each time Hibernate prepares an SQL statement to be sent to the database. We will do our counting there. Since each request is executed in its own thread, we&apos;ll need to have a counter per thread rather than a global counter so our interceptor&apos;s (let&apos;s call it &lt;code&gt;HibernateStatisticsInterceptor&lt;/code&gt; from now on) will have to be ThreadLocal. Since an ascii picture is worth a thousand of words, hereby I present the diagram of our intended setup: &lt;/p&gt;
+	&lt;p&gt;Hibernate is a powerful ORM tool, no doubt about it. In projects using Hibernate, it can sometimes become easy to forget that underneath it there are actual SQL queries being executed, sometimes many of them, and sometimes, well, too many. As you navigate the object graphs of your entities and admire collections being populated automagically, beware that if Hibernate&apos;s query generation is left unchecked, you can easily end up executing gazzilions of unnecessary SQL queries unknowingly (I&apos;ve actually seen thousands(!!) of queries executed per page render). Fortunately, these situations can usually be easily avoided once they are detected. I&apos;m going to present one idea how to keep query generation in check.&lt;/p&gt;
+&lt;!-- more --&gt;
+&lt;p&gt;While there are many tools that can use JVM instrumentation to profile your app and likely tell you when, which and how many JPA/Hibernate/JDBC queries are being executed (&lt;a href=&quot;https://www.ej-technologies.com/products/jprofiler/overview.html&quot;&gt;JProfiler&lt;/a&gt; is my favorite), they need to hook up to JVM and are usually not &amp;quot;always on&amp;quot; as you develop. And you have to learn how to use them. To detect the common problem with excessive query generation though, a simple log line with the number of executed queries would suffice. Unfortunately, it seems that Spring MVC and Hibernate do not offer such a function out of the box (you could turn on query logging, but that will log each and every query and will soon become too verbose to follow).&lt;/p&gt;
+&lt;p&gt;In this article I will show you how to use a thing called Hibernate Interceptor to count executed queries per each web request in Spring MVC &lt;a href=&quot;https://github.com/knes1/todo&quot;&gt;application&lt;/a&gt; that uses JPA and Hibernate as the persistence implementation.&lt;/p&gt;
+&lt;p&gt;We will start by creating a HandlerInterceptor implementation (Spring MVC&apos;s equivalent of a filter) that will intercept incoming requests and initialze the statistics counters. HandlerInterceptors allow us to execute logic before the request processing is passed to controllers, after controller handler finishes execution (but before the view is rendered) and after the request is processed. We will use the HandlerInterceptor to gather statistics about a request so let&apos;s call it &lt;code&gt;RequestStatistcsInterceptor&lt;/code&gt;. Before action is handled over to the controllers, in the &lt;code&gt;preHandle(...)&lt;/code&gt; method of the &lt;code&gt;RequestStatistcsInterceptor&lt;/code&gt; we will initialize a query counter in the other important component - Hibernate Interceptor. Hibernate Interceptor allows us to intercept some of the Hibernate functions and the one that we&apos;re interested in is &lt;code&gt;onPrepareStatement()&lt;/code&gt; - it will be called each time Hibernate prepares an SQL statement to be sent to the database. We will do our counting there. Since each request is executed in its own thread, we&apos;ll need to have a counter per thread rather than a global counter so our interceptor&apos;s (let&apos;s call it &lt;code&gt;HibernateStatisticsInterceptor&lt;/code&gt; from now on) will have to be ThreadLocal. Since an ascii picture is worth a thousand of words, hereby I present the diagram of our intended setup:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;    			Request
     			|
     			v
@@ -635,8 +755,9 @@ cp e2guardian.xml  /usr/local/pkg/e2guardian.xml
     			|
     			V
     			Response
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Ok, now that everthing is clear let&apos;s take a look at the code.&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;java&quot;&gt;public class RequestStatisticsInterceptor implements AsyncHandlerInterceptor {
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Ok, now that everthing is clear let&apos;s take a look at the code.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-java&quot;&gt;public class RequestStatisticsInterceptor implements AsyncHandlerInterceptor {
 
 	private ThreadLocal&amp;lt;Long&amp;gt; time = new ThreadLocal&amp;lt;&amp;gt;();
 
@@ -675,13 +796,14 @@ cp e2guardian.xml  /usr/local/pkg/e2guardian.xml
 	}
 }
 
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;As you may have noticed there are some additional things in here:&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;As you may have noticed there are some additional things in here:&lt;/p&gt;
 &lt;ul&gt;
-  &lt;li&gt;We&apos;re also recording time (since we already have a stats interceptor, why not also record the execution time of each request - it&apos;s a useful stat).&lt;/li&gt;
-  &lt;li&gt;In postHandle we&apos;re adding query count to the model - while it&apos;s not stricly necessary, it allows us to print query counts on the actual page we&apos;re rendering while we&apos;re developing the application.&lt;/li&gt;
-  &lt;li&gt;We&apos;re implementing &lt;code&gt;AsyncHandlerInterceptor&lt;/code&gt; and basically ignoring async requests as we cannot use the above approach for async requests because request execution may happen in a different thread than the one that triggers the interceptor and hence we can&apos;t really use &lt;code&gt;ThreadLocal&lt;/code&gt; to store the counters.&lt;/li&gt;
+&lt;li&gt;We&apos;re also recording time (since we already have a stats interceptor, why not also record the execution time of each request - it&apos;s a useful stat).&lt;/li&gt;
+&lt;li&gt;In postHandle we&apos;re adding query count to the model - while it&apos;s not stricly necessary, it allows us to print query counts on the actual page we&apos;re rendering while we&apos;re developing the application.&lt;/li&gt;
+&lt;li&gt;We&apos;re implementing &lt;code&gt;AsyncHandlerInterceptor&lt;/code&gt; and basically ignoring async requests as we cannot use the above approach for async requests because request execution may happen in a different thread than the one that triggers the interceptor and hence we can&apos;t really use &lt;code&gt;ThreadLocal&lt;/code&gt; to store the counters.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;pre&gt;&lt;code class=&quot;java&quot;&gt;public class HibernateStatisticsInterceptor extends EmptyInterceptor {
+&lt;pre&gt;&lt;code class=&quot;language-java&quot;&gt;public class HibernateStatisticsInterceptor extends EmptyInterceptor {
 
 	private static final Logger log = LoggerFactory.getLogger(HibernateStatisticsInterceptor.class);
 
@@ -709,8 +831,12 @@ cp e2guardian.xml  /usr/local/pkg/e2guardian.xml
 		return super.onPrepareStatement(sql);
 	}
 }
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Nothing too unusual here. It&apos;s worth noting that it&apos;s a good idea to ensure that clearCounter is called for each time startCounter is called (and in the same thread). We need to make sure to clear &lt;code&gt;ThreadLocal&lt;/code&gt;s to avoid counters leaking to another thread or to possibly cause memory leaks.&lt;/p&gt;&lt;p&gt;The last tricky part to solve is the fact that we need to reference &lt;code&gt;HibernateStatisticsInterceptor&lt;/code&gt; from the &lt;code&gt;RequestStatisticsInterceptor&lt;/code&gt; which means that &lt;code&gt;HibernateStatisticsInterceptor&lt;/code&gt; needs to be Spring managed bean. Luckily, the answer for Spring Boot) can be found on StackOverflow: &lt;a href=&quot;http://stackoverflow.com/questions/25283767/how-to-use-spring-managed-hibernate-interceptors-in-spring-boot&quot;&gt;How to use Spring managed Hibernate interceptors in Spring Boot?&lt;/a&gt;&lt;/p&gt;&lt;p&gt;It is necessary to provide a custom &lt;code&gt;LocalContainerEntityManagerFactoryBean&lt;/code&gt; (I love this short and concise name!) in order to inject our &lt;code&gt;HibernateStatisticsInterceptor&lt;/code&gt; to JPA property &lt;code&gt;hibernate.ejb.interceptor&lt;/code&gt;. We also need to register &lt;code&gt;RequestStatisticsInterceptor&lt;/code&gt; and configure it to intercept all requests.&lt;/p&gt;&lt;p&gt;Here is the complete Spring Boot configuration for a simple application:&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;java&quot;&gt;@Configuration
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Nothing too unusual here. It&apos;s worth noting that it&apos;s a good idea to ensure that clearCounter is called for each time startCounter is called (and in the same thread). We need to make sure to clear &lt;code&gt;ThreadLocal&lt;/code&gt;s to avoid counters leaking to another thread or to possibly cause memory leaks.&lt;/p&gt;
+&lt;p&gt;The last tricky part to solve is the fact that we need to reference &lt;code&gt;HibernateStatisticsInterceptor&lt;/code&gt; from the &lt;code&gt;RequestStatisticsInterceptor&lt;/code&gt; which means that &lt;code&gt;HibernateStatisticsInterceptor&lt;/code&gt; needs to be Spring managed bean. Luckily, the answer for Spring Boot) can be found on StackOverflow: &lt;a href=&quot;http://stackoverflow.com/questions/25283767/how-to-use-spring-managed-hibernate-interceptors-in-spring-boot&quot;&gt;How to use Spring managed Hibernate interceptors in Spring Boot?&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;It is necessary to provide a custom &lt;code&gt;LocalContainerEntityManagerFactoryBean&lt;/code&gt; (I love this short and concise name!) in order to inject our &lt;code&gt;HibernateStatisticsInterceptor&lt;/code&gt; to JPA property &lt;code&gt;hibernate.ejb.interceptor&lt;/code&gt;. We also need to register &lt;code&gt;RequestStatisticsInterceptor&lt;/code&gt; and configure it to intercept all requests.&lt;/p&gt;
+&lt;p&gt;Here is the complete Spring Boot configuration for a simple application:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-java&quot;&gt;@Configuration
 @EnableAutoConfiguration
 @ComponentScan
 public class Application {
@@ -758,7 +884,10 @@ public class Application {
 	}
 
 }
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If the above config doesn&apos;t work for you because you use older Spring versions, take a look at this blog post for an alternative configuration: &lt;a href=&quot;http://blog.krecan.net/2009/01/24/spring-managed-hibernate-interceptor-in-jpa/comment-page-1/&quot;&gt;Spring managed Hibernate interceptor in JPA&lt;/a&gt;&lt;/p&gt;&lt;p&gt;To demonstrate what we achieved, I&apos;ve built a small todo list application. Source code is available on &lt;a href=&quot;https://github.com/knes1/todo&quot;&gt;GitHub&lt;/a&gt;.&lt;br/&gt;After running the application and creating a few todo items, here&apos;s what shows up in the log:&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If the above config doesn&apos;t work for you because you use older Spring versions, take a look at this blog post for an alternative configuration: &lt;a href=&quot;http://blog.krecan.net/2009/01/24/spring-managed-hibernate-interceptor-in-jpa/comment-page-1/&quot;&gt;Spring managed Hibernate interceptor in JPA&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;To demonstrate what we achieved, I&apos;ve built a small todo list application. Source code is available on &lt;a href=&quot;https://github.com/knes1/todo&quot;&gt;GitHub&lt;/a&gt;.&lt;br /&gt;
+After running the application and creating a few todo items, here&apos;s what shows up in the log:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;2015-07-10 11:26:55.707  INFO 85977 --- [qtp545373187-17] i.g.k.t.u.RequestStatisticsInterceptor   : [Time: 251 ms] [Queries: 1] GET /
 2015-07-10 11:26:59.347  INFO 85977 --- [qtp545373187-19] i.g.k.t.u.RequestStatisticsInterceptor   : [Time: 166 ms] [Queries: 2] GET /todos/1/delete
 2015-07-10 11:26:59.361  INFO 85977 --- [qtp545373187-16] i.g.k.t.u.RequestStatisticsInterceptor   : [Time: 7 ms] [Queries: 1] GET /
@@ -770,12 +899,17 @@ public class Application {
 2015-07-10 11:27:30.304  INFO 85977 --- [qtp545373187-15] i.g.k.t.u.RequestStatisticsInterceptor   : [Time: 8 ms] [Queries: 1] GET /
 2015-07-10 11:27:32.135  INFO 85977 --- [qtp545373187-19] i.g.k.t.u.RequestStatisticsInterceptor   : [Time: 24 ms] [Queries: 2] GET /todos/4/completed
 2015-07-10 11:27:32.143  INFO 85977 --- [qtp545373187-16] i.g.k.t.u.RequestStatisticsInterceptor   : [Time: 4 ms] [Queries: 1] GET /
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;We have timings and query counts for each request - now we can easily detect early if something went wrong because we&apos;ll see query counts suddenly increase (if we for example hit the so called N+1 problems, or if we carelessly navigate through collections). As a bonus, since we included query counts in the model, we can even print them out on the page while we do development (notice the query count for current page in the screenshot below). Here&apos;s a screenshot form the sample application:&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;/images/todolist.png&quot; width=&quot;600px&quot;&gt;&lt;/p&gt;&lt;p&gt;And that&apos;s all I have for this post - I hope I&apos;ve helped in keeping query generation under control!&lt;/p&gt;&lt;h2&gt;References&lt;/h2&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We have timings and query counts for each request - now we can easily detect early if something went wrong because we&apos;ll see query counts suddenly increase (if we for example hit the so called N+1 problems, or if we carelessly navigate through collections). As a bonus, since we included query counts in the model, we can even print them out on the page while we do development (notice the query count for current page in the screenshot below). Here&apos;s a screenshot form the sample application:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/todolist.png&quot; width=&quot;600px&quot;&gt;&lt;/p&gt;
+&lt;p&gt;And that&apos;s all I have for this post - I hope I&apos;ve helped in keeping query generation under control!&lt;/p&gt;
+&lt;h2&gt;References&lt;/h2&gt;
 &lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/knes1/todo&quot;&gt;Sample application: Todo List&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://stackoverflow.com/questions/25283767/how-to-use-spring-managed-hibernate-interceptors-in-spring-boot&quot;&gt;How to use Spring managed Hibernate interceptors in Spring Boot?&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.krecan.net/2009/01/24/spring-managed-hibernate-interceptor-in-jpa/comment-page-1/&quot;&gt;Spring managed Hibernate interceptor in JPA&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/knes1/todo&quot;&gt;Sample application: Todo List&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://stackoverflow.com/questions/25283767/how-to-use-spring-managed-hibernate-interceptors-in-spring-boot&quot;&gt;How to use Spring managed Hibernate interceptors in Spring Boot?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://blog.krecan.net/2009/01/24/spring-managed-hibernate-interceptor-in-jpa/comment-page-1/&quot;&gt;Spring managed Hibernate interceptor in JPA&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
+
 	</description>
     </item>
     <item>
@@ -784,13 +918,17 @@ public class Application {
       <pubDate>Thu, 4 Jun 2015 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2015/2015-06-04-i-discovered-jbake.html</guid>
       	<description>
-	&lt;p&gt;When I was starting this blog and was researching what options are out there in terms of blogging systems, I was looking for a simple developer focused blogging solution that I could use for publishing posts hosted on github pages. I found &lt;a href=&quot;http://octopress.org/&quot;&gt;Octopress&lt;/a&gt; and decided to use it, mostly because it popped up often in Google search results and had a tag line that I liked: A blogging framework designed for hackers. And it was fine.&lt;/p&gt;&lt;p&gt;Recently though, I stumbled upon &lt;a href=&quot;http://jbake.org/&quot;&gt;JBake&lt;/a&gt;. I liked it so much that I&apos;m switching my blog away from Octopress.&lt;!-- more --&gt; JBake is something that I often thought about creating myself. Here&apos;s what I like about it:&lt;/p&gt;
+	&lt;p&gt;When I was starting this blog and was researching what options are out there in terms of blogging systems, I was looking for a simple developer focused blogging solution that I could use for publishing posts hosted on github pages. I found &lt;a href=&quot;http://octopress.org/&quot;&gt;Octopress&lt;/a&gt; and decided to use it, mostly because it popped up often in Google search results and had a tag line that I liked: A blogging framework designed for hackers. And it was fine.&lt;/p&gt;
+&lt;p&gt;Recently though, I stumbled upon &lt;a href=&quot;http://jbake.org/&quot;&gt;JBake&lt;/a&gt;. I liked it so much that I&apos;m switching my blog away from Octopress.&lt;!-- more --&gt; JBake is something that I often thought about creating myself. Here&apos;s what I like about it:&lt;/p&gt;
 &lt;ul&gt;
-  &lt;li&gt;It&apos;s written in Java and uses Java related templating technologies that I&apos;m familiar with. While I&apos;m no stranger to Ruby, I am primarily Java developer and I&apos;m happy that I can now use Freemarker as a template engine for my blog pages.&lt;/li&gt;
-  &lt;li&gt;It&apos;s simple. It has templates and content folders where you put, well, templates and content and that&apos;s about it. It took me about 10 minutes to understand the structure and start customizing. When I&apos;m publishing a post with Octopress, I have to go through a tutorial every time to refresh my memory on how to do it (admittedly, the reason for this is in part because I don&apos;t publish very often)&lt;/li&gt;
-  &lt;li&gt;I find it easy to customize (for my simple needs). I don&apos;t even have to read the docs about how to do it - it&apos;s logical and self-explanatory.&lt;/li&gt;
-  &lt;li&gt;Managing Octopress through git (as recommended on Octopress web site) is too confusing for me. For JBake based blog, I have one git repository in which I keep the sources (templates/content/assets etc.) and another one for generated output folder in order to push it to github pages.&lt;/li&gt;
-&lt;/ul&gt;&lt;p&gt;There&apos;s one thing I miss in JBake - I wish it had &quot;watch for changes&quot; mode that would automatically build the pages once a change in content or templates is detected.&lt;/p&gt;&lt;p&gt;Finally, to be fair, in retrospect I probably shouldn&apos;t have chosen Octopress. It&apos;s not what I&apos;ve been looking for in the first place. Without knowing JBake existed, I probably should have used &lt;a href=&quot;http://jekyllrb.com/&quot;&gt;Jekyll&lt;/a&gt; - the engine that Octopress is built on top of. JBake is in fact inspired by Jekyll and Jekyll provides the simplicity that I was actually looking for.&lt;/p&gt;
+&lt;li&gt;It&apos;s written in Java and uses Java related templating technologies that I&apos;m familiar with. While I&apos;m no stranger to Ruby, I am primarily Java developer and I&apos;m happy that I can now use Freemarker as a template engine for my blog pages.&lt;/li&gt;
+&lt;li&gt;It&apos;s simple. It has templates and content folders where you put, well, templates and content and that&apos;s about it. It took me about 10 minutes to understand the structure and start customizing. When I&apos;m publishing a post with Octopress, I have to go through a tutorial every time to refresh my memory on how to do it (admittedly, the reason for this is in part because I don&apos;t publish very often)&lt;/li&gt;
+&lt;li&gt;I find it easy to customize (for my simple needs). I don&apos;t even have to read the docs about how to do it - it&apos;s logical and self-explanatory.&lt;/li&gt;
+&lt;li&gt;Managing Octopress through git (as recommended on Octopress web site) is too confusing for me. For JBake based blog, I have one git repository in which I keep the sources (templates/content/assets etc.) and another one for generated output folder in order to push it to github pages.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;There&apos;s one thing I miss in JBake - I wish it had &amp;quot;watch for changes&amp;quot; mode that would automatically build the pages once a change in content or templates is detected.&lt;/p&gt;
+&lt;p&gt;Finally, to be fair, in retrospect I probably shouldn&apos;t have chosen Octopress. It&apos;s not what I&apos;ve been looking for in the first place. Without knowing JBake existed, I probably should have used &lt;a href=&quot;http://jekyllrb.com/&quot;&gt;Jekyll&lt;/a&gt; - the engine that Octopress is built on top of. JBake is in fact inspired by Jekyll and Jekyll provides the simplicity that I was actually looking for.&lt;/p&gt;
+
 	</description>
     </item>
     <item>
@@ -799,12 +937,25 @@ public class Application {
       <pubDate>Sat, 7 Feb 2015 00:00:00 +0100</pubDate>
       <guid isPermaLink="false">blog/2015/2015-02-07-part1-the-value-of-at-value.html</guid>
       	<description>
-	&lt;p&gt;Did it ever happen to you that after spending some time and gaining experience with a framework or a programming language, you learn things that would have made your programmer&apos;s life much easier if you had known them right from the start? You would have done things differently, more quickly, in a simpler, cleaner and more maintainable way?&lt;/p&gt;&lt;p&gt;I decided to write a series of posts about features and aspects of Spring Framework (the framework in which I spend most of my professional software development time) that I found useful (usually far later than I&apos;d like to admit :) ), but which are often not covered in entry level guides and tutorials.&lt;/p&gt;&lt;p&gt;In this first post I would like to discuss the &lt;code&gt;@Value&lt;/code&gt; annotation.&lt;br/&gt;&lt;!-- more --&gt;&lt;/p&gt;&lt;p&gt;I started working with Spring framework since the 2.5 version. Later on, when 3.0 was released, JavaConfig became the part of the core framework along with the &lt;code&gt;@Value&lt;/code&gt; that was part of it. I unfortunately didn&apos;t notice that improvement for quite some time, mostly because the projects I worked on relied on XML based config.&lt;/p&gt;&lt;p&gt;Here&apos;s what &lt;a href=&quot;http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/beans/factory/annotation/Value.html&quot;&gt;Spring javadocs&lt;/a&gt; say about &lt;code&gt;@Value&lt;/code&gt;:&lt;/p&gt;
-&lt;blockquote&gt;&lt;p&gt;Annotation at the field or method/constructor parameter level that indicates a default value expression for the affected argument.&lt;/p&gt;&lt;p&gt;Typically used for expression-driven dependency injection. Also supported for dynamic resolution of handler method parameters, e.g. in Spring MVC.&lt;/p&gt;&lt;p&gt;A common use case is to assign default field values using &quot;#{systemProperties.myProp}&quot; style expressions.&lt;/p&gt;
-&lt;/blockquote&gt;&lt;p&gt;Let&apos;s see how we can make use of it.&lt;/p&gt;&lt;h4&gt;Assigning values from property files&lt;/h4&gt;&lt;p&gt;This is likely the most common use case for &lt;code&gt;@Value&lt;/code&gt; annotation. &lt;code&gt;@Value&lt;/code&gt; allows us to easily inject a value from a property file to, for example, a bean&apos;s field or a constructor argument.&lt;/p&gt;&lt;p&gt;If we had a property file that looks like this:&lt;/p&gt;
+	&lt;p&gt;Did it ever happen to you that after spending some time and gaining experience with a framework or a programming language, you learn things that would have made your programmer&apos;s life much easier if you had known them right from the start? You would have done things differently, more quickly, in a simpler, cleaner and more maintainable way?&lt;/p&gt;
+&lt;p&gt;I decided to write a series of posts about features and aspects of Spring Framework (the framework in which I spend most of my professional software development time) that I found useful (usually far later than I&apos;d like to admit :) ), but which are often not covered in entry level guides and tutorials.&lt;/p&gt;
+&lt;p&gt;In this first post I would like to discuss the &lt;code&gt;@Value&lt;/code&gt; annotation.&lt;/p&gt;
+&lt;!-- more --&gt;
+&lt;p&gt;I started working with Spring framework since the 2.5 version. Later on, when 3.0 was released, JavaConfig became the part of the core framework along with the &lt;code&gt;@Value&lt;/code&gt; that was part of it. I unfortunately didn&apos;t notice that improvement for quite some time, mostly because the projects I worked on relied on XML based config.&lt;/p&gt;
+&lt;p&gt;Here&apos;s what &lt;a href=&quot;http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/beans/factory/annotation/Value.html&quot;&gt;Spring javadocs&lt;/a&gt; say about &lt;code&gt;@Value&lt;/code&gt;:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Annotation at the field or method/constructor parameter level that indicates a default value expression for the affected argument.&lt;/p&gt;
+&lt;p&gt;Typically used for expression-driven dependency injection. Also supported for dynamic resolution of handler method parameters, e.g. in Spring MVC.&lt;/p&gt;
+&lt;p&gt;A common use case is to assign default field values using &amp;quot;#{systemProperties.myProp}&amp;quot; style expressions.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Let&apos;s see how we can make use of it.&lt;/p&gt;
+&lt;h4&gt;Assigning values from property files&lt;/h4&gt;
+&lt;p&gt;This is likely the most common use case for &lt;code&gt;@Value&lt;/code&gt; annotation. &lt;code&gt;@Value&lt;/code&gt; allows us to easily inject a value from a property file to, for example, a bean&apos;s field or a constructor argument.&lt;/p&gt;
+&lt;p&gt;If we had a property file that looks like this:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;app.name = My Excellent Application
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Then we could use that property definition in, say, a controller using&lt;code&gt;@Value(&amp;quot;${propertyName}&amp;quot;)&lt;/code&gt; syntax:&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;java&quot;&gt;@Controller
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Then we could use that property definition in, say, a controller using&lt;code&gt;@Value(&amp;quot;${propertyName}&amp;quot;)&lt;/code&gt; syntax:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-java&quot;&gt;@Controller
 public class HelloController {
 	
 	@Value(&amp;quot;${app.name}&amp;quot;)
@@ -817,8 +968,9 @@ public class HelloController {
 	}
 
 }
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The code in the example will read the property app.name from property file and inject it into &lt;code&gt;appName&lt;/code&gt; field. The &lt;code&gt;${...}&lt;/code&gt; syntax is Spring&apos;s property placeholder syntax used in property placeholder replacement mechanism. If &lt;code&gt;app.name&lt;/code&gt; is not defined, then an exception will be thrown. Which brings us to a less known fact about property placeholders - it&apos;s possible to set a default value for a property that Spring would use if the property is not defined. The syntax for default values in property placeholders is &lt;code&gt;${property:defaultValue}&lt;/code&gt;. You can read about it the javadocs for &lt;a href=&quot;http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/beans/factory/config/PlaceholderConfigurerSupport.html&quot;&gt;PlaceholderConfigurerSupport&lt;/a&gt; class. I find default values quite useful, especially in situations where a particular property of a bean is not likely to be changed in different environments and as such you don&apos;t want to introduce it needlessly into a property file, but still want to give yourself an option to change your mind later. If we were to modify our example to use a default value, it would look like this:&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;java&quot;&gt;@Controller
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The code in the example will read the property app.name from property file and inject it into &lt;code&gt;appName&lt;/code&gt; field. The &lt;code&gt;${...}&lt;/code&gt; syntax is Spring&apos;s property placeholder syntax used in property placeholder replacement mechanism. If &lt;code&gt;app.name&lt;/code&gt; is not defined, then an exception will be thrown. Which brings us to a less known fact about property placeholders - it&apos;s possible to set a default value for a property that Spring would use if the property is not defined. The syntax for default values in property placeholders is &lt;code&gt;${property:defaultValue}&lt;/code&gt;. You can read about it the javadocs for &lt;a href=&quot;http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/beans/factory/config/PlaceholderConfigurerSupport.html&quot;&gt;PlaceholderConfigurerSupport&lt;/a&gt; class. I find default values quite useful, especially in situations where a particular property of a bean is not likely to be changed in different environments and as such you don&apos;t want to introduce it needlessly into a property file, but still want to give yourself an option to change your mind later. If we were to modify our example to use a default value, it would look like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-java&quot;&gt;@Controller
 public class HelloController {
 	
 	@Value(&amp;quot;${app.name:My Excellent Application}&amp;quot;)
@@ -831,14 +983,22 @@ public class HelloController {
 	}
 
 }
-&lt;/code&gt;&lt;/pre&gt;&lt;h4&gt;Injecting a SpringEL dynamically evaluated value&lt;/h4&gt;&lt;p&gt;Do you remember &lt;code&gt;@Value&lt;/code&gt;&apos;s javadoc that was shown previously? It described a &lt;code&gt;#{...}&lt;/code&gt; syntax rather than property replacement &lt;code&gt;${...}&lt;/code&gt; syntax that we used in our example. What&apos;s the difference? The &lt;code&gt;#{...}&lt;/code&gt; syntax invokes Spring Expression Language (SpringEL) and evaluates the expression dynamically. For example we could obtain a value from the system settings:&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;java&quot;&gt;@Value(&amp;quot;#{systemSettings[&amp;#39;user.region&amp;#39;]}&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;Injecting a SpringEL dynamically evaluated value&lt;/h4&gt;
+&lt;p&gt;Do you remember &lt;code&gt;@Value&lt;/code&gt;&apos;s javadoc that was shown previously? It described a &lt;code&gt;#{...}&lt;/code&gt; syntax rather than property replacement &lt;code&gt;${...}&lt;/code&gt; syntax that we used in our example. What&apos;s the difference? The &lt;code&gt;#{...}&lt;/code&gt; syntax invokes Spring Expression Language (SpringEL) and evaluates the expression dynamically. For example we could obtain a value from the system settings:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-java&quot;&gt;@Value(&amp;quot;#{systemSettings[&apos;user.region&apos;]}&amp;quot;)
 private String locale; 
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The above expression works because systemSettings is a variable that&apos;s always available to SpringEL when it&apos;s invoked in this context (e.g. when configuring beans).&lt;/p&gt;&lt;p&gt;We may even inject a return value of a method of another bean:&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;java&quot;&gt;@Value(&amp;quot;#{&amp;#39;V1.0S&amp;#39; + migrationService.version}&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The above expression works because systemSettings is a variable that&apos;s always available to SpringEL when it&apos;s invoked in this context (e.g. when configuring beans).&lt;/p&gt;
+&lt;p&gt;We may even inject a return value of a method of another bean:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-java&quot;&gt;@Value(&amp;quot;#{&apos;V1.0S&apos; + migrationService.version}&amp;quot;)
 private String version;
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;In this example Spring will inject string &quot;V1.0S&quot; prepended to the return value of method &lt;code&gt;getVersion()&lt;/code&gt; of a bean with name &lt;code&gt;migrationService&lt;/code&gt; (all beans in Spring&apos;s context are available as variables in SpringEL).&lt;/p&gt;&lt;p&gt;To conclude,&lt;code&gt;@Value&lt;/code&gt; annotation is indispensable asset when configuring your beans. When pursing convention-over-configuration style, default values for property placeholders used in&lt;code&gt;@Value&lt;/code&gt; configs may come in handy. And finally, always keep on your mind that you can invoke SpringEL to help you to simplify scenarios that may otherwise require complex config or workarounds. &lt;/p&gt;
-&lt;hr&gt;&lt;p&gt;Did you find this article helpful? What is your favorite Spring feature? Do you have a related blog post? Feel welcome to leave feedback or comments below :)&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In this example Spring will inject string &amp;quot;V1.0S&amp;quot; prepended to the return value of method &lt;code&gt;getVersion()&lt;/code&gt; of a bean with name &lt;code&gt;migrationService&lt;/code&gt; (all beans in Spring&apos;s context are available as variables in SpringEL).&lt;/p&gt;
+&lt;p&gt;To conclude,&lt;code&gt;@Value&lt;/code&gt; annotation is indispensable asset when configuring your beans. When pursing convention-over-configuration style, default values for property placeholders used in&lt;code&gt;@Value&lt;/code&gt; configs may come in handy. And finally, always keep on your mind that you can invoke SpringEL to help you to simplify scenarios that may otherwise require complex config or workarounds.&lt;/p&gt;
+&lt;hr&gt;
+Did you find this article helpful? What is your favorite Spring feature? Do you have a related blog post? Feel welcome to leave feedback or comments below :)
+
 	</description>
     </item>
     <item>
@@ -847,9 +1007,14 @@ private String version;
       <pubDate>Mon, 18 Aug 2014 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2014/2014-08-18-concise-integration-tests-that-contain-mocks-in-spring-framework.html</guid>
       	<description>
-	&lt;p&gt;In this post I&apos;ll write about how to reduce a bit of boilerplate code when writing tests in Spring Framework in a situation where we don&apos;t want to bring up the whole Spring context in order to test if only a subset of components are working together correctly.&lt;/p&gt;&lt;p&gt;Our goal will be to have Spring load only the components that we are interested in testing, mock out everything else and do it in a simple and readable way.&lt;/p&gt;
-&lt;!-- more --&gt;&lt;p&gt;Let&apos;s start with an example. Our example application has a &lt;code&gt;UserService&lt;/code&gt; with a &lt;code&gt;registerNewUser&lt;/code&gt; method. Whenever a new user is added to the system, &lt;code&gt;UserService&lt;/code&gt;&apos;s &lt;code&gt;registerNewUser&lt;/code&gt; method is called. This method adds the user to the system, hashes user&apos;s password, stores user data to the database, updates application&apos;s user statistics and sends out confirmation e-mail. To accomplish these tasks, &lt;code&gt;UserService&lt;/code&gt; depends on &lt;code&gt;PasswordEncoder&lt;/code&gt;, &lt;code&gt;UserRepository&lt;/code&gt;, &lt;code&gt;StatisticsService&lt;/code&gt; and &lt;code&gt;EmailService&lt;/code&gt;.&lt;/p&gt;&lt;p&gt;We want to write an integration test that will verify that when &lt;code&gt;registerNewUser&lt;/code&gt; is called, the user is indeed stored correctly to the database and user password is hashed. To do this, we want actual &lt;code&gt;UserService&lt;/code&gt; implementation brought up in our test Spring context, along with &lt;code&gt;PasswordEncoder&lt;/code&gt; and persistence related components and have everything else mocked out (side note: I&apos;m using the term mock here, but since we&apos;re not verifying interactions with mock objects in the example tests, some testing vocabularies would refer to these kind of test objects as dummy objects).&lt;/p&gt;&lt;p&gt;To mock out the beans we&apos;ll be using &lt;a href=&quot;https://code.google.com/p/mockito/&quot;&gt;Mockito&lt;/a&gt; library. Our JUnit test will be run with &lt;code&gt;SpringJUnit4ClassRunner&lt;/code&gt;. Demo application&apos;s code is available at &lt;a href=&quot;https://github.com/knes1/springmockedtests&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Here&apos;s the test class:&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;java&quot;&gt;@RunWith(SpringJUnit4ClassRunner.class)
+	&lt;p&gt;In this post I&apos;ll write about how to reduce a bit of boilerplate code when writing tests in Spring Framework in a situation where we don&apos;t want to bring up the whole Spring context in order to test if only a subset of components are working together correctly.&lt;/p&gt;
+&lt;p&gt;Our goal will be to have Spring load only the components that we are interested in testing, mock out everything else and do it in a simple and readable way.&lt;/p&gt;
+&lt;!-- more --&gt;
+Let&apos;s start with an example. Our example application has a `UserService` with a `registerNewUser` method. Whenever a new user is added to the system, `UserService`&apos;s `registerNewUser` method is called. This method adds the user to the system, hashes user&apos;s password, stores user data to the database, updates application&apos;s user statistics and sends out confirmation e-mail. To accomplish these tasks, `UserService` depends on `PasswordEncoder`, `UserRepository`, `StatisticsService` and `EmailService`.
+&lt;p&gt;We want to write an integration test that will verify that when &lt;code&gt;registerNewUser&lt;/code&gt; is called, the user is indeed stored correctly to the database and user password is hashed. To do this, we want actual &lt;code&gt;UserService&lt;/code&gt; implementation brought up in our test Spring context, along with &lt;code&gt;PasswordEncoder&lt;/code&gt; and persistence related components and have everything else mocked out (side note: I&apos;m using the term mock here, but since we&apos;re not verifying interactions with mock objects in the example tests, some testing vocabularies would refer to these kind of test objects as dummy objects).&lt;/p&gt;
+&lt;p&gt;To mock out the beans we&apos;ll be using &lt;a href=&quot;https://code.google.com/p/mockito/&quot;&gt;Mockito&lt;/a&gt; library. Our JUnit test will be run with &lt;code&gt;SpringJUnit4ClassRunner&lt;/code&gt;. Demo application&apos;s code is available at &lt;a href=&quot;https://github.com/knes1/springmockedtests&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Here&apos;s the test class:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-java&quot;&gt;@RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader=AnnotationConfigContextLoader.class)
 public class UserServiceImplIntegrationTest {
 
@@ -895,13 +1060,19 @@ public class UserServiceImplIntegrationTest {
 		}
 	}
 }
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Let&apos;s examine the code:&lt;/p&gt;&lt;p&gt;With &lt;code&gt;@ContextConfiguration(loader=AnnotationConfigContextLoader.class)&lt;/code&gt; we instruct Spring to load test context configuration from the annotated class. We have defined the configuration class as a static inner class of our test class (&lt;code&gt;ContextConfiguration&lt;/code&gt;). We import common configuration that will be shared among different integration tests form &lt;code&gt;TestAppConfig.class&lt;/code&gt;. In the &lt;code&gt;ContextConfiguration&lt;/code&gt; we define the beans whose actual implementation will participate in the integration test (&lt;code&gt;UserServiceImpl&lt;/code&gt; and &lt;code&gt;SCryptPasswordEncoder&lt;/code&gt;) and we mock out their dependencies (&lt;code&gt;EmailService&lt;/code&gt;, &lt;code&gt;StatisticsService&lt;/code&gt;). The inspiration for this pattern of writing integration tests that combine actual and mocked beans originate from great answers found in this stack overflow question: &lt;a href=&quot;http://stackoverflow.com/questions/2457239/injecting-mockito-mocks-into-a-spring-bean&quot;&gt;Injecting Mockito mocks into a Spring bean&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;The idea is to keep common configuration that we plan to reuse between various tests in &lt;code&gt;TestAppConfig.class&lt;/code&gt; (in our example, &lt;code&gt;TestAppConfig&lt;/code&gt; contains test database, JPA and Spring-data configuration) and add keep per test specific configuration in an inner class of the test class. We also manually define beans that we need to mock out in order for Spring to satisfy all the dependencies of the beans we plan to test.&lt;/p&gt;&lt;p&gt;This works just fine, expect in certain more complex integration tests, there will be a lot of beans to be mocked out, and we have to write lots of boilerplate code to define those. For example, to mock out &lt;code&gt;EmailService&lt;/code&gt; class we write:&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;java&quot;&gt;@Bean
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Let&apos;s examine the code:&lt;/p&gt;
+&lt;p&gt;With &lt;code&gt;@ContextConfiguration(loader=AnnotationConfigContextLoader.class)&lt;/code&gt; we instruct Spring to load test context configuration from the annotated class. We have defined the configuration class as a static inner class of our test class (&lt;code&gt;ContextConfiguration&lt;/code&gt;). We import common configuration that will be shared among different integration tests form &lt;code&gt;TestAppConfig.class&lt;/code&gt;. In the &lt;code&gt;ContextConfiguration&lt;/code&gt; we define the beans whose actual implementation will participate in the integration test (&lt;code&gt;UserServiceImpl&lt;/code&gt; and &lt;code&gt;SCryptPasswordEncoder&lt;/code&gt;) and we mock out their dependencies (&lt;code&gt;EmailService&lt;/code&gt;, &lt;code&gt;StatisticsService&lt;/code&gt;). The inspiration for this pattern of writing integration tests that combine actual and mocked beans originate from great answers found in this stack overflow question: &lt;a href=&quot;http://stackoverflow.com/questions/2457239/injecting-mockito-mocks-into-a-spring-bean&quot;&gt;Injecting Mockito mocks into a Spring bean&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The idea is to keep common configuration that we plan to reuse between various tests in &lt;code&gt;TestAppConfig.class&lt;/code&gt; (in our example, &lt;code&gt;TestAppConfig&lt;/code&gt; contains test database, JPA and Spring-data configuration) and add keep per test specific configuration in an inner class of the test class. We also manually define beans that we need to mock out in order for Spring to satisfy all the dependencies of the beans we plan to test.&lt;/p&gt;
+&lt;p&gt;This works just fine, expect in certain more complex integration tests, there will be a lot of beans to be mocked out, and we have to write lots of boilerplate code to define those. For example, to mock out &lt;code&gt;EmailService&lt;/code&gt; class we write:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-java&quot;&gt;@Bean
 public EmailService emailService() {
 	return Mockito.mock(EmailService.class);
 }
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Characters &quot;EmailService&quot; are typed three times (Type definition, method name and as a parameter to mock method) and we hat to write 4 lines of code. If there&apos;s 10 beans to mock out, that&apos;s a lot of typing! Is there a way to make things more concise? It turns out there is, using the &lt;code&gt;ImportBeanDefinitionRegistrar&lt;/code&gt;. We will create an annotation that we&apos;ll use to specify which classes we plan to mock out, and then implement &lt;code&gt;ImportBeanDefinitionRegistrar&lt;/code&gt; that will look for the annotation and register bean definitions we specified as a mocked beans.&lt;/p&gt;&lt;p&gt;Here&apos;s the custom annotation:&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;java&quot;&gt;@Import(MockImportRegistar.class)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Characters &amp;quot;EmailService&amp;quot; are typed three times (Type definition, method name and as a parameter to mock method) and we hat to write 4 lines of code. If there&apos;s 10 beans to mock out, that&apos;s a lot of typing! Is there a way to make things more concise? It turns out there is, using the &lt;code&gt;ImportBeanDefinitionRegistrar&lt;/code&gt;. We will create an annotation that we&apos;ll use to specify which classes we plan to mock out, and then implement &lt;code&gt;ImportBeanDefinitionRegistrar&lt;/code&gt; that will look for the annotation and register bean definitions we specified as a mocked beans.&lt;/p&gt;
+&lt;p&gt;Here&apos;s the custom annotation:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-java&quot;&gt;@Import(MockImportRegistar.class)
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
@@ -912,8 +1083,9 @@ public @interface MockedBeans {
 	 */
 	Class&amp;lt;?&amp;gt;[] value() default {};
 }
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Here&apos;s the code for &lt;code&gt;ImportBeanDefinitionRegistrar&lt;/code&gt; implementation (note that we referenced &lt;code&gt;MockImportRegistar&lt;/code&gt; with &lt;code&gt;@Import&lt;/code&gt; in &lt;code&gt;MockedBean&lt;/code&gt; annotation above):&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;java&quot;&gt;public class MockImportRegistar implements ImportBeanDefinitionRegistrar {
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here&apos;s the code for &lt;code&gt;ImportBeanDefinitionRegistrar&lt;/code&gt; implementation (note that we referenced &lt;code&gt;MockImportRegistar&lt;/code&gt; with &lt;code&gt;@Import&lt;/code&gt; in &lt;code&gt;MockedBean&lt;/code&gt; annotation above):&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-java&quot;&gt;public class MockImportRegistar implements ImportBeanDefinitionRegistrar {
 
 	@Override
 	public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
@@ -940,8 +1112,9 @@ public @interface MockedBeans {
 		}
 	}
 }
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Now that have defined the annotation and the registrar we can rewrite the &lt;code&gt;ContextConfiguration&lt;/code&gt; like this:&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;java&quot;&gt;@Configuration
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now that have defined the annotation and the registrar we can rewrite the &lt;code&gt;ContextConfiguration&lt;/code&gt; like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-java&quot;&gt;@Configuration
 @Import(TestAppConfig.class)
 @MockedBeans({EmailService.class, StatisticsService.class})
 static class ContextConfiguration {
@@ -956,7 +1129,9 @@ static class ContextConfiguration {
 		return new SCryptPasswordEncoder();
 	}
 }
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Beans that we need to be mocked are now defined using our &lt;code&gt;@MockedBeans&lt;/code&gt; annotation. I find this approach more concise, simpler and easier to maintain, especially for more complex integration tests.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Beans that we need to be mocked are now defined using our &lt;code&gt;@MockedBeans&lt;/code&gt; annotation. I find this approach more concise, simpler and easier to maintain, especially for more complex integration tests.&lt;/p&gt;
+
 	</description>
     </item>
 
