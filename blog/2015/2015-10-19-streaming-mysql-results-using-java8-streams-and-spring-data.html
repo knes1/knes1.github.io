@@ -77,11 +77,7 @@
 		| <i class="el el-user"></i>
  Krešimir Nesek
 	</div>
-<div style="padding: 5px; background-color: #fff6dc; margin-bottom: 20px">
-    ⭐️⭐⭐ <a href="https://grnh.se/cc20bfe52us">VIOOH</a>, the company I'm working at is hiring Java Engineers. Take a look the following open positions:
-    🚀<a href="https://grnh.se/3cbd36f32us">Java Software Engineer</a> and 🚀🚀<a href="https://grnh.se/43cab8a32us">Java Tech Lead</a>. We're located in London 🇬🇧. Join us!
-</div>
-	
+
 	<div><p>Since version 1.8, Spring data project includes an interesting feature - through a simple API call developer can request database query results to be returned as Java 8 stream. Where technically possible and supported by underlying database technology, results are being streamed one by one and are available for processing using stream operations. This technique can be particularly useful when processing large datasets (for example, exporting larger amounts of database data in a specific format) because, among other things, it can limit memory consumption in the processing layer of the application. In this article I will discuss some of the benefits (and gotchas!) when Spring Data streaming is used with MySQL database.</p>
 <!-- more -->
 <p>Naive approaches to fetching and processing a larger amount of data (by larger, I mean datasets that do not fit into the memory of the running application) from the database will often result with running out of memory. This is especially true when using ORMs / abstraction layers such as JPA where you don't have access to lower level facilities that would allow you to manually manage how data is fetched from the database. Typically, at least with the stack that I'm usually using - MySQL, Hibernate/JPA and Spring Data - the whole resultset of a large query will be fetched entirely either by MySQL's JDBC driver or one of the aforementioned frameworks that come after it. This will lead to OutOfMemory exceptions if the resultset is sufficiently large.</p>
